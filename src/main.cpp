@@ -6,7 +6,6 @@
 // TODO: Some main while loop for handling user interaction
 int main(int argc, char ** argv) {
 
-
     return 0;
 }
 
@@ -22,4 +21,5 @@ int main(int argc, char ** argv) {
  * TODO: [ ] Visualisation of game play (backwards) from loaded state (2pt)
  * TODO: [ ] Complete UI (1pt)
  * TODO: [ ] Player Rankings "Hall of Fame" (1pt)
+ * use enum somewhere...
  */
