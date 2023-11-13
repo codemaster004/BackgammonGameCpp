@@ -1,3 +1,6 @@
 # Ignore CLion build makes and files
 cmake-build-debug
 .idea
+
+# Run .sh files
+*.sh
