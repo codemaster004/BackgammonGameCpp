@@ -3,4 +3,14 @@ project(BackgammonGame)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(BackgammonGame main.cpp)
+include_directories(/opt/homebrew/opt/ncurses/include)
+link_directories(/opt/homebrew/opt/ncurses/lib)
+
+add_executable(BackgammonGame src/main.cpp
+        src/viewHandeler.cpp
+        src/model/Player.cpp
+        src/model/Pawn.cpp
+        src/model/Board.cpp
+)
+
+target_link_libraries(BackgammonGame ncurses)
