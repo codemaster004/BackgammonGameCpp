@@ -36,6 +36,8 @@ typedef struct {
 typedef struct {
     // TODO: Pawn goes here
     int *pawns[PAWNS_PER_PLAYER];
+    // TODO: Use player structure here
+    int *owner;
 } Court;
 
 typedef struct {
