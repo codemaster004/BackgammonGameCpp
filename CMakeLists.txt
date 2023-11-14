@@ -11,6 +11,9 @@ add_executable(BackgammonGame src/main.cpp
         src/model/Player.cpp
         src/model/Pawn.cpp
         src/model/Board.cpp
+        src/model/Pawn.h
+        src/model/Board.h
+        src/model/Player.h
 )
 
 target_link_libraries(BackgammonGame ncurses)
