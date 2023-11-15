@@ -5,11 +5,16 @@
 #ifndef BACKGAMMONGAME_BOARD_H
 #define BACKGAMMONGAME_BOARD_H
 
+#include "string"
+
+#include "Pawn.h"
+
 #define N_BOARDS 4
 #define POINTS_PER_BOARD 6
 #define PAWNS_PER_POINT 5
 #define PAWNS_PER_PLAYER 15
 #define N_PLAYERS 2
+#define PLAYERS_PER_GAME 2
 
 typedef unsigned int uint;
 
@@ -22,19 +27,16 @@ enum PointColor {
 };
 
 typedef struct {
-    // TODO: Pawn goes here
-    int pawns[PAWNS_PER_POINT];
+    Pawn pawns[PAWNS_PER_POINT];
     PointColor color;
 } Point;
 
 typedef struct {
-    // TODO: Pawn goes here
-    int *pawns[totalPawns];
+    Pawn *pawns[totalPawns];
 } Bar;
 
 typedef struct {
-    // TODO: Pawn goes here
-    int *pawns[PAWNS_PER_PLAYER];
+    Pawn *pawns[PAWNS_PER_PLAYER];
     // TODO: Use player structure here
     int *owner;
 } Court;
@@ -45,5 +47,17 @@ typedef struct {
     Court courts[N_PLAYERS];
 } Board;
 
+typedef struct {
+    std::string gameName;
+    std::string authorName;
+    int authorId;
+    // TODO: implement player structure
+    int players[N_PLAYERS];
+    int currentPlayer;
+    Board board;
+    // TODO: create/implement structure for keeping currentPlayersScores
+    int currentScores[PLAYERS_PER_GAME];
+
+} UserInterface;
 
 #endif //BACKGAMMONGAME_BOARD_H
