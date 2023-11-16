@@ -5,11 +5,10 @@
 #ifndef BACKGAMMONGAME_PLAYER_H
 #define BACKGAMMONGAME_PLAYER_H
 
-#define N_DICES 2
-
 #include "string"
 
-typedef unsigned int uint;
+#include "../DefineConsts.h"
+
 
 typedef struct {
     int id;

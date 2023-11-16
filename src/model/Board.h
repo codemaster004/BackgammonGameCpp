@@ -7,19 +7,9 @@
 
 #include "string"
 
+#include "../DefineConsts.h"
 #include "Pawn.h"
 
-#define N_BOARDS 4
-#define POINTS_PER_BOARD 6
-#define PAWNS_PER_POINT 5
-#define PAWNS_PER_PLAYER 15
-#define N_PLAYERS 2
-#define PLAYERS_PER_GAME 2
-
-typedef unsigned int uint;
-
-const uint nPoints = N_BOARDS * POINTS_PER_BOARD;
-const uint totalPawns = N_PLAYERS * PAWNS_PER_PLAYER;
 
 enum PointColor {
     LIGHT,
