@@ -10,6 +10,10 @@
 #define COLOUR_MAIN_LIGHT COLOR_BLUE
 #define COLOUR_MAIN_DARK COLOR_CYAN
 
+#define BORDER_HORIZON '-'
+#define BORDER_VERTICAL '|'
+#define BORDER_CORNER '+'
+
 const float colorContrast = 0.1;
 
 #endif //BACKGAMMONGAME_UICONFIGS_H
