@@ -3,10 +3,14 @@
 // Full Project can be vied online at https://github.com/codemaster004/BackgammonGameCpp
 //
 
-// TODO: Some main while loop for handling user interaction
-int main(int argc, char ** argv) {
+#include "ViewHandeler.h"
 
-    return 0;
+// TODO: Some main while loop for handling user interaction
+int main(int argc, char **argv) {
+
+	uiStaff();
+
+	return 0;
 }
 
 /**

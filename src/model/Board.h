@@ -7,46 +7,46 @@
 
 #include "string"
 
-#include "../DefineConsts.h"
+#include "../configs/GameConfigs.h"
 #include "Pawn.h"
 
 
 enum PointColor {
-    LIGHT,
-    DARK
+	C_ID_LIGHT,
+	C_ID_DARK
 };
 
 typedef struct {
-    Pawn pawns[PAWNS_PER_POINT];
-    PointColor color;
+	Pawn pawns[PAWNS_PER_POINT];
+	PointColor color;
 } Point;
 
 typedef struct {
-    Pawn *pawns[totalPawns];
+	Pawn *pawns[totalPawns];
 } Bar;
 
 typedef struct {
-    Pawn *pawns[PAWNS_PER_PLAYER];
-    // TODO: Use player structure here
-    int *owner;
+	Pawn *pawns[PAWNS_PER_PLAYER];
+	// TODO: Use player structure here
+	int *owner;
 } Court;
 
 typedef struct {
-    Point points[nPoints];
-    Bar bar;
-    Court courts[N_PLAYERS];
+	Point points[nPoints];
+	Bar bar;
+	Court courts[N_PLAYERS];
 } Board;
 
 typedef struct {
-    std::string gameName;
-    std::string authorName;
-    int authorId;
-    // TODO: implement player structure
-    int players[N_PLAYERS];
-    int currentPlayer;
-    Board board;
-    // TODO: create/implement structure for keeping currentPlayersScores
-    int currentScores[PLAYERS_PER_GAME];
+	std::string gameName;
+	std::string authorName;
+	int authorId;
+	// TODO: implement player structure
+	int players[N_PLAYERS];
+	int currentPlayer;
+	Board board;
+	// TODO: create/implement structure for keeping currentPlayersScores
+	int currentScores[PLAYERS_PER_GAME];
 
 } UserInterface;
 

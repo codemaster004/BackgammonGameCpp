@@ -6,16 +6,16 @@
 #define BACKGAMMONGAME_PAWN_H
 
 enum PawnColor {
-    WHITE,
-    RED
+	WHITE,
+	RED
 };
 
 typedef struct {
-    PawnColor color;
-    int *owner;
-    bool isHome;
-    bool isOnBar;
-    const short moveDirection;
+	PawnColor color;
+	int *owner;
+	bool isHome;
+	bool isOnBar;
+	const short moveDirection;
 } Pawn;
 
 

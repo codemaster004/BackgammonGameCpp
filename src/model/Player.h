@@ -7,15 +7,15 @@
 
 #include "string"
 
-#include "../DefineConsts.h"
+#include "../configs/GameConfigs.h"
 
 
 typedef struct {
-    int id;
-    std::string name;
-    bool isHisTurn;
-    uint  points;
-    int *numbersRolled[N_DICES];
+	int id;
+	std::string name;
+	bool isHisTurn;
+	uint points;
+	int *numbersRolled[N_DICES];
 } Player;
 
 #endif //BACKGAMMONGAME_PLAYER_H
