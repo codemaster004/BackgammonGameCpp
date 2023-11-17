@@ -6,7 +6,9 @@
 #include "string"
 
 #include "configs/UIConfigs.h"
+#include "configs/GameConfigs.h"
 #include "ViewHandeler.h"
+#include "Utility.h"
 
 // TODO: Figure out how this works
 
@@ -14,7 +16,7 @@ const int boardMarginVertical = 5;
 const int boardMarginHorizontal = 5;
 
 enum UiColorsId {
-	FOREGROUND=1,
+	FOREGROUND = 1,
 	FOREGROUND_LIGHT,
 	FOREGROUND_DARK,
 	BACKGROUND_LIGHT,
@@ -37,27 +39,14 @@ void uiStaff() {
 	init_pair(BACKGROUND_DARK, COLOR_BLACK, COLOUR_MAIN_DARK);
 
 	attron(COLOR_PAIR(FOREGROUND));
-	drawBorder(0, 2, 20, 10);
+	int boardWidth = PIECE_PER_BOARD * pieceWidth + pieceSpacing * (PIECE_PER_BOARD - 1) + pieceSpacing / 2 * 2;
+	int boardHeight = PIECE_PER_BOARD * 2 + pieceSpacing;
+	drawBorders(boardOffsetX, boardOffsetY, boardWidth + BORDER_WIDTH * 2, boardHeight + BORDER_WIDTH * 2);
 
-
-//	// Draw the upper part of the board
-//	for (int i = 0; i < 12; i++) {
-//		mvprintw(2, 4 + i * 4, "V");  // Change coordinates accordingly
-//	}
-//	// ... Continue for each row required to create the pawns look
-//
-//	// Draw the lower part of the board
-//	for (int i = 0; i < 12; i++) {
-//		mvprintw(10, 4 + i * 4, "^");  // Change coordinates accordingly
-//	}
-//	// ... Continue for each row required to create the pawns look
-
-	// Draw the middle bar
-//	attron(COLOR_PAIR(1));
-//	mvprintw(6, 20, "[BAR]");
-//	attroff(COLOR_PAIR(1));
-
-	// Draw the score and other UI elements similarly using mvprintw
+	char *reversePiece = reverseString(piece1);
+	drawPieces(reversePiece, boardOffsetX + BORDER_WIDTH, boardOffsetY + BORDER_WIDTH);
+	reversePiece = reverseString(piece2);
+	drawPieces(reversePiece, boardOffsetX + BORDER_WIDTH + pieceWidth + pieceSpacing, boardOffsetY + BORDER_WIDTH);
 
 	// Refresh the screen to show changes
 	refresh();
@@ -67,10 +56,6 @@ void uiStaff() {
 
 	// End curses mode
 	endwin();
-}
-
-short multiplyFloat(short baseColor, float multiplier) {
-	return (short) ((float) baseColor * multiplier);
 }
 
 void setColourTheme(short baseRed, short baseGreen, short baseBlue) {
@@ -90,23 +75,32 @@ void setColourTheme(short baseRed, short baseGreen, short baseBlue) {
 			   multiplyFloat(nBlue, (1 + colorContrast)));
 }
 
-void drawBorder(int offsetX, int offsetY, int width, int height) {
-	mvaddch(offsetY, offsetX, BORDER_CORNER);
-	mvaddch(offsetY, offsetX + width, BORDER_CORNER);
-	mvaddch(offsetY + height, offsetX, BORDER_CORNER);
-	mvaddch(offsetY + height, offsetX + width, BORDER_CORNER);
+void drawBorders(int offsetX, int offsetY, int width, int height) {
+	Pos corTL = {.x=offsetX, .y=offsetY},
+		corTR = {.x=offsetX + width - 1, .y=offsetY},
+		corBL = {.x=offsetX, .y=offsetY + height - 1},
+		corBR = {.x=offsetX + width - 1, .y=offsetY + height - 1};
+	mvprintw(corTL.y, corTL.x, borderCorner);
+	mvprintw(corTR.y, corTR.x, borderCorner);
+	mvprintw(corBL.y, corBL.x, borderCorner);
+	mvprintw(corBR.y, corBR.x, borderCorner);
 
-	drawLine(BORDER_HORIZON, offsetX + 1, offsetX + width - 1, offsetY, offsetY);
-	drawLine(BORDER_HORIZON, offsetX + 1, offsetX + width - 1, offsetY + height, offsetY + height);
-	drawLine(BORDER_VERTICAL, offsetX, offsetX, offsetY + 1, offsetY + height - 1);
-	drawLine(BORDER_VERTICAL, offsetX + width, offsetX + width, offsetY + 1, offsetY + height - 1);
+	drawLine(borderHorizon, corTL.x + 1, corTR.x - 1, corTL.y, corTR.y);
+	drawLine(borderHorizon, corBL.x + 1, corBR.x - 1, corBL.y, corBR.y);
+	drawLine(borderVertical, corTL.x, corBL.x, corTL.y + 1, corBL.y - 1);
+	drawLine(borderVertical, corTR.x, corBR.x, corTR.y + 1, corBR.y - 1);
 }
 
-int max(int a, int b) {
-	return a > b ? a : b;
+void drawPieces(const char *symbol, int offsetX, int offsetY) {
+	int totalOffsetX = offsetX + pieceSpacing / 2;
+	int totalOffsetY = offsetY;
+	for (int i = 0; i < PIECE_PER_BOARD; i += 2) {
+		drawLine(symbol, totalOffsetX, totalOffsetX, totalOffsetY, totalOffsetY + PAWNS_PER_POINT);
+		totalOffsetX += (pieceWidth + pieceSpacing) * 2;
+	}
 }
 
-void drawLine(char symbol, int fromX, int toX, int fromY, int toY) {
+void drawLine(const char *symbol, int fromX, int toX, int fromY, int toY) {
 	int deltaX = toX - fromX;
 	int deltaY = toY - fromY;
 
@@ -119,7 +113,7 @@ void drawLine(char symbol, int fromX, int toX, int fromY, int toY) {
 	auto y = (float) (fromY);
 
 	for (int i = 0; i <= steps; ++i) {
-		mvaddch((int) (round(y)), (int) (round(x)), symbol);
+		mvprintw((int) (round(y)), (int) (round(x)), "%s", symbol);
 		x += xIncrement;
 		y += yIncrement;
 	}
