@@ -16,6 +16,8 @@ const char borderHorizon[] = { "=" };
 const char borderVertical[] = { "|" };
 const char borderCorner[] = { "+" };
 
+const char barLabel[] = {"[BAR]"};
+
 const int boardOffsetX = 2;
 const int boardOffsetY = 0;
 

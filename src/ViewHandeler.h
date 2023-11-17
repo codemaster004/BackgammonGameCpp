@@ -13,6 +13,8 @@ void drawPieces(int offsetX, int offsetY);
 
 void drawPiece(const char *symbol, int offsetX, int offsetY);
 
+void drawBar(int offsetX, int offsetY, int boardHeight);
+
 void drawBorders(int offsetX, int offsetY, int width, int height);
 
 void uiStaff();
