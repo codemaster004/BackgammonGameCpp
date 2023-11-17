@@ -17,6 +17,8 @@ add_executable(BackgammonGame src/main.cpp
         src/ViewHandeler.h
         src/configs/GameConfigs.h
         src/configs/UIConfigs.h
+        src/Utility.h
+        src/Utility.cpp
 )
 
 target_link_libraries(BackgammonGame ncurses)

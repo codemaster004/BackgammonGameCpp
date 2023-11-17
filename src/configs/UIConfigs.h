@@ -10,9 +10,20 @@
 #define COLOUR_MAIN_LIGHT COLOR_BLUE
 #define COLOUR_MAIN_DARK COLOR_CYAN
 
-#define BORDER_HORIZON '-'
-#define BORDER_VERTICAL '|'
-#define BORDER_CORNER '+'
+#define BORDER_WIDTH 1
+
+const char borderHorizon[] = { "=" };
+const char borderVertical[] = { "|" };
+const char borderCorner[] = { "+" };
+
+const int boardOffsetX = 2;
+const int boardOffsetY = 0;
+
+const char piece1[] = { "/\\" };
+const char piece2[] = { "''" };
+
+const int pieceWidth = 2;
+const int pieceSpacing = 3;
 
 const float colorContrast = 0.1;
 
