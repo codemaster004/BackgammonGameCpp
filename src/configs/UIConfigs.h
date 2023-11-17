@@ -25,6 +25,6 @@ const char piece2[] = { "''" };
 const int pieceWidth = 2;
 const int pieceSpacing = 3;
 
-const float colorContrast = 0.1;
+const float colorDiff = 0.1;
 
 #endif //BACKGAMMONGAME_UICONFIGS_H

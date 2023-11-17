@@ -31,7 +31,6 @@ void uiStaff() {
 
 	setColourTheme();
 
-	// Define colors
 	init_pair(FOREGROUND, COLOUR_MAIN, COLOR_BLACK);
 	init_pair(FOREGROUND_LIGHT, COLOUR_MAIN_LIGHT, COLOR_BLACK);
 	init_pair(FOREGROUND_DARK, COLOUR_MAIN_DARK, COLOR_BLACK);
@@ -40,14 +39,19 @@ void uiStaff() {
 
 	attron(COLOR_PAIR(FOREGROUND));
 	int boardWidth = PIECE_PER_BOARD * pieceWidth + pieceSpacing * (PIECE_PER_BOARD - 1) + pieceSpacing / 2 * 2;
-	int boardHeight = PIECE_PER_BOARD * 2 + pieceSpacing;
+	int boardHeight = PAWNS_PER_POINT * 2 + pieceSpacing;
 	drawBorders(boardOffsetX, boardOffsetY, boardWidth + BORDER_WIDTH * 2, boardHeight + BORDER_WIDTH * 2);
+	drawPieces(boardOffsetX + BORDER_WIDTH, boardOffsetY + BORDER_WIDTH);
 
-	char *reversePiece = reverseString(piece1);
-	drawPieces(reversePiece, boardOffsetX + BORDER_WIDTH, boardOffsetY + BORDER_WIDTH);
-	reversePiece = reverseString(piece2);
-	drawPieces(reversePiece, boardOffsetX + BORDER_WIDTH + pieceWidth + pieceSpacing, boardOffsetY + BORDER_WIDTH);
+	drawBorders(boardOffsetX + boardWidth + BORDER_WIDTH * 2 + 1, boardOffsetY, boardWidth + BORDER_WIDTH * 2,
+				boardHeight + BORDER_WIDTH * 2);
+	drawPieces(boardOffsetX + boardWidth + BORDER_WIDTH * 3 + 1, boardOffsetY + BORDER_WIDTH);
 
+	mvprintw(boardOffsetY, boardOffsetX + boardWidth + BORDER_WIDTH * 2, borderCorner);
+	drawLine(borderVertical, boardOffsetX + boardWidth + BORDER_WIDTH * 2, boardOffsetX + boardWidth + BORDER_WIDTH * 2,
+			 boardOffsetY + BORDER_WIDTH, boardOffsetY + BORDER_WIDTH + boardHeight - 1);
+	mvprintw(boardOffsetY + BORDER_WIDTH + boardHeight, boardOffsetX + boardWidth + BORDER_WIDTH * 2, borderCorner);
+	move(0, 0);
 	// Refresh the screen to show changes
 	refresh();
 
@@ -66,13 +70,13 @@ void setColourTheme(short baseRed, short baseGreen, short baseBlue) {
 	init_color(COLOUR_MAIN, nRed, nGreen, nBlue);
 	// TODO: Conversion in a function
 	init_color(COLOUR_MAIN_DARK,
-			   multiplyFloat(nRed, (1 - colorContrast)),
-			   multiplyFloat(nGreen, (1 - colorContrast)),
-			   multiplyFloat(nBlue, (1 - colorContrast)));
+			   multiplyFloat(nRed, (1 - colorDiff)),
+			   multiplyFloat(nGreen, (1 - colorDiff)),
+			   multiplyFloat(nBlue, (1 - colorDiff)));
 	init_color(COLOUR_MAIN_LIGHT,
-			   multiplyFloat(nRed, (1 + colorContrast)),
-			   multiplyFloat(nGreen, (1 + colorContrast)),
-			   multiplyFloat(nBlue, (1 + colorContrast)));
+			   multiplyFloat(nRed, (1 + colorDiff)),
+			   multiplyFloat(nGreen, (1 + colorDiff)),
+			   multiplyFloat(nBlue, (1 + colorDiff)));
 }
 
 void drawBorders(int offsetX, int offsetY, int width, int height) {
@@ -91,11 +95,11 @@ void drawBorders(int offsetX, int offsetY, int width, int height) {
 	drawLine(borderVertical, corTR.x, corBR.x, corTR.y + 1, corBR.y - 1);
 }
 
-void drawPieces(const char *symbol, int offsetX, int offsetY) {
+void drawPiece(const char *symbol, int offsetX, int offsetY) {
 	int totalOffsetX = offsetX + pieceSpacing / 2;
 	int totalOffsetY = offsetY;
-	for (int i = 0; i < PIECE_PER_BOARD; i += 2) {
-		drawLine(symbol, totalOffsetX, totalOffsetX, totalOffsetY, totalOffsetY + PAWNS_PER_POINT);
+	for (int i = 0; i < PAWNS_PER_POINT; i += 2) {
+		drawLine(symbol, totalOffsetX, totalOffsetX, totalOffsetY, totalOffsetY + PAWNS_PER_POINT - 1);
 		totalOffsetX += (pieceWidth + pieceSpacing) * 2;
 	}
 }
@@ -117,4 +121,14 @@ void drawLine(const char *symbol, int fromX, int toX, int fromY, int toY) {
 		x += xIncrement;
 		y += yIncrement;
 	}
+}
+
+void drawPieces(int offsetX, int offsetY) {
+	char *reversePiece = reverseString(piece1);
+	drawPiece(reversePiece, offsetX, offsetY);
+	reversePiece = reverseString(piece2);
+	drawPiece(reversePiece, offsetX + pieceWidth + pieceSpacing, offsetY);
+	drawPiece(piece1, offsetX + pieceWidth + pieceSpacing,
+			  offsetY + PAWNS_PER_POINT + pieceSpacing);
+	drawPiece(piece2, offsetX, offsetY + PAWNS_PER_POINT + pieceSpacing);
 }
