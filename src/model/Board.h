@@ -16,6 +16,7 @@ enum PointColor {
 	C_ID_DARK
 };
 
+// TODO: add comments
 typedef struct {
 	Pawn pawns[PAWNS_PER_POINT];
 	PointColor color;

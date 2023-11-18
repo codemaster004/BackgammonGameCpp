@@ -3,7 +3,6 @@
 //
 #include <ncurses.h>
 #include "cmath"
-#include "string"
 
 #include "configs/UIConfigs.h"
 #include "configs/GameConfigs.h"
@@ -11,9 +10,6 @@
 #include "Utility.h"
 
 // TODO: Figure out how this works
-
-const int boardMarginVertical = 5;
-const int boardMarginHorizontal = 5;
 
 enum UiColorsId {
 	FOREGROUND = 1,
