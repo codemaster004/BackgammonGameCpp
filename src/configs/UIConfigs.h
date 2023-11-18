@@ -12,6 +12,9 @@
 
 #define BORDER_WIDTH 1
 
+#define OPTION_SPACING 2
+#define MENU_TOP_SPACING 3
+
 const char borderHorizon[] = { "=" };
 const char borderVertical[] = { "|" };
 const char borderCorner[] = { "+" };
