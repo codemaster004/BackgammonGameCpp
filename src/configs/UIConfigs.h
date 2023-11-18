@@ -15,13 +15,21 @@
 #define OPTION_SPACING 2
 #define MENU_TOP_SPACING 3
 
+enum UiColorsId {
+	FOREGROUND = 1,
+	FOREGROUND_LIGHT,
+	FOREGROUND_DARK,
+	BACKGROUND_LIGHT,
+	BACKGROUND_DARK
+};
+
 const char borderHorizon[] = { "=" };
 const char borderVertical[] = { "|" };
 const char borderCorner[] = { "+" };
 
 const char barLabel[] = {"[BAR]"};
 
-const int boardOffsetX = 2;
+const int boardOffsetX = 3;
 const int boardOffsetY = 0;
 
 const char piece1[] = { "/\\" };
@@ -30,6 +38,6 @@ const char piece2[] = { "''" };
 const int pieceWidth = 2;
 const int pieceSpacing = 3;
 
-const float colorDiff = 0.1;
+const float colorDiff = 0.25;
 
 #endif //BACKGAMMONGAME_UICONFIGS_H

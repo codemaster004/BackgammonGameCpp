@@ -5,7 +5,7 @@
 #ifndef BACKGAMMONGAME_GAMECONFIGS_H
 #define BACKGAMMONGAME_GAMECONFIGS_H
 
-#include "Utility.h"
+#include "../Utility.h"
 
 #define N_BOARDS 2
 #define POINTS_PER_BOARD 6
@@ -15,11 +15,13 @@
 #define PLAYERS_PER_GAME 2
 #define N_DICES 2
 
-#define N_MENU_OPTIONS 2
-#define MENU_ELEMENT_LEN 6
+#define N_MENU_OPTIONS 4
+#define MENU_ELEMENT_LEN 5
 
 const uint nPoints = N_BOARDS * POINTS_PER_BOARD;
 const uint totalPawns = N_PLAYERS * PAWNS_PER_PLAYER;
+
+const char menuOptions[N_MENU_OPTIONS][MENU_ELEMENT_LEN] = {{"Move"}, {"Roll"}, {"Undo"}, {"Quit"}};
 
 
 #endif //BACKGAMMONGAME_GAMECONFIGS_H
