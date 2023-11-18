@@ -3,7 +3,6 @@
 //
 #include <ncurses.h>
 #include "cmath"
-#include "string"
 
 #include "configs/UIConfigs.h"
 #include "configs/GameConfigs.h"
@@ -11,9 +10,6 @@
 #include "Utility.h"
 
 // TODO: Figure out how this works
-
-const int boardMarginVertical = 5;
-const int boardMarginHorizontal = 5;
 
 enum UiColorsId {
 	FOREGROUND = 1,
@@ -38,19 +34,17 @@ void uiStaff() {
 	init_pair(BACKGROUND_DARK, COLOR_BLACK, COLOUR_MAIN_DARK);
 
 	attron(COLOR_PAIR(FOREGROUND));
-	int boardWidth = PIECE_PER_BOARD * pieceWidth + pieceSpacing * (PIECE_PER_BOARD - 1) + pieceSpacing / 2 * 2;
+	int boardWidth = POINTS_PER_BOARD * pieceWidth + pieceSpacing * (POINTS_PER_BOARD - 1) + pieceSpacing / 2 * 2;
 	int boardHeight = PAWNS_PER_POINT * 2 + pieceSpacing;
-	drawBorders(boardOffsetX, boardOffsetY, boardWidth + BORDER_WIDTH * 2, boardHeight + BORDER_WIDTH * 2);
-	drawPieces(boardOffsetX + BORDER_WIDTH, boardOffsetY + BORDER_WIDTH);
 
-	drawBorders(boardOffsetX + boardWidth + BORDER_WIDTH * 2 + 1, boardOffsetY, boardWidth + BORDER_WIDTH * 2,
-				boardHeight + BORDER_WIDTH * 2);
-	drawPieces(boardOffsetX + boardWidth + BORDER_WIDTH * 3 + 1, boardOffsetY + BORDER_WIDTH);
+	for (int i = N_BOARDS - 1; i >= 0; --i) {
+		drawBorders(boardOffsetX + (boardWidth + BORDER_WIDTH * 2 + 1) * i, boardOffsetY,
+					boardWidth + BORDER_WIDTH * 2, boardHeight + BORDER_WIDTH * 2);
+		drawPieces(boardOffsetX + (boardWidth + BORDER_WIDTH * 2 + 1) * i + BORDER_WIDTH, boardOffsetY + BORDER_WIDTH);
+	}
+	for (int i = N_BOARDS - 1; i > 0; --i)
+		drawBar(boardOffsetX + (boardWidth + BORDER_WIDTH * 2) * i, boardOffsetY, boardHeight);
 
-	mvprintw(boardOffsetY, boardOffsetX + boardWidth + BORDER_WIDTH * 2, borderCorner);
-	drawLine(borderVertical, boardOffsetX + boardWidth + BORDER_WIDTH * 2, boardOffsetX + boardWidth + BORDER_WIDTH * 2,
-			 boardOffsetY + BORDER_WIDTH, boardOffsetY + BORDER_WIDTH + boardHeight - 1);
-	mvprintw(boardOffsetY + BORDER_WIDTH + boardHeight, boardOffsetX + boardWidth + BORDER_WIDTH * 2, borderCorner);
 	move(0, 0);
 	// Refresh the screen to show changes
 	refresh();
@@ -131,4 +125,13 @@ void drawPieces(int offsetX, int offsetY) {
 	drawPiece(piece1, offsetX + pieceWidth + pieceSpacing,
 			  offsetY + PAWNS_PER_POINT + pieceSpacing);
 	drawPiece(piece2, offsetX, offsetY + PAWNS_PER_POINT + pieceSpacing);
+}
+
+void drawBar(int offsetX, int offsetY, int boardHeight) {
+	mvprintw(offsetY, offsetX, borderCorner);
+	drawLine(borderVertical, offsetX, offsetX,
+			 offsetY + 1, offsetY + boardHeight);
+	mvprintw(offsetY + boardHeight + 1, offsetX, borderCorner);
+
+	mvprintw(offsetY + (boardHeight) / 2, offsetX - (int) (sizeof(barLabel)) / 2 + 1, barLabel);
 }

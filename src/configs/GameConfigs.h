@@ -5,8 +5,8 @@
 #ifndef BACKGAMMONGAME_GAMECONFIGS_H
 #define BACKGAMMONGAME_GAMECONFIGS_H
 
-#define N_BOARDS 4
-#define PIECE_PER_BOARD 6
+#define N_BOARDS 2
+#define POINTS_PER_BOARD 6
 #define PAWNS_PER_POINT 5
 #define PAWNS_PER_PLAYER 15
 #define N_PLAYERS 2
@@ -15,7 +15,7 @@
 
 typedef unsigned int uint;
 
-const uint nPoints = N_BOARDS * PIECE_PER_BOARD;
+const uint nPoints = N_BOARDS * POINTS_PER_BOARD;
 const uint totalPawns = N_PLAYERS * PAWNS_PER_PLAYER;
 
 
