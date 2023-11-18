@@ -14,8 +14,9 @@ char* reverseString(const char* str) {
 	return reversed;
 }
 
-short multiplyFloat(short baseColor, float multiplier) {
-	return (short) ((float) baseColor * multiplier);
+short multiplyFloat(short baseColor, float multiplier, short max) {
+	short res = (short) ((float) baseColor * multiplier);
+	return res > max ? max : res;
 }
 
 int max(int a, int b) {
