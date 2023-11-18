@@ -7,11 +7,13 @@
 
 #include "ViewHandeler.h"
 #include "configs/UIConfigs.h"
+#include "Controller.h"
 
 // TODO: Some main while loop for handling user interaction
 int main(int argc, char **argv) {
 	initscr();
 	cbreak();
+	curs_set(0);
 	noecho();
 	keypad(stdscr, TRUE);
 
@@ -32,29 +34,11 @@ int main(int argc, char **argv) {
 	uiStaff(&menuSelected);
 
 	int ch;
-	while((ch = getch()) != 'x') { // Change 'q' to 'x' for quitting
-		switch(ch) {
-			case KEY_UP:
-				break;
-			case KEY_DOWN:
-				break;
-			case KEY_LEFT:
-				menuSelected -= 1;
-				break;
-			case KEY_RIGHT:
-				menuSelected += 1;
-				break;
-			case 'm':
-				break;
-			case 'q':
-				break;
-			case 'u':
-				break;
-			case 'r':
-				break;
-			default:
-				break;
-		}
+	bool gameEnded = false;
+	while((ch = getch()) != 'q') {
+		inputController(ch, &menuSelected, &gameEnded);
+		if (gameEnded)
+			break;
 
 		uiStaff(&menuSelected);
 	}
