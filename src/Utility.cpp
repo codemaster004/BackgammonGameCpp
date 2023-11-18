@@ -4,6 +4,8 @@
 
 #include "algorithm"
 
+#include "Utility.h"
+
 char* reverseString(const char* str) {
 	unsigned long length = std::strlen(str);
 	char* reversed = new char[length + 1];
@@ -21,4 +23,12 @@ short multiplyFloat(short baseColor, float multiplier, short max) {
 
 int max(int a, int b) {
 	return a > b ? a : b;
+}
+
+uint len(const char *text) {
+	uint length = 0;
+	while (true)
+		if (text[length++] == 0)
+			break;
+	return length;
 }
