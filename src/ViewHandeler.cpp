@@ -3,74 +3,85 @@
 //
 #include <ncurses.h>
 #include "cmath"
+#include "string"
 
 #include "configs/UIConfigs.h"
 #include "configs/GameConfigs.h"
 #include "ViewHandeler.h"
 #include "Utility.h"
+#include "ViewModel.h"
 
 // TODO: Figure out how this works
 
-enum UiColorsId {
-	FOREGROUND = 1,
-	FOREGROUND_LIGHT,
-	FOREGROUND_DARK,
-	BACKGROUND_LIGHT,
-	BACKGROUND_DARK
-};
-
 // TODO: Implement UI generating
-void uiStaff() {
-	initscr();
+void uiStaff(const int *menuSelected, int *dice1, int *dice2) {
 
-	start_color();
+	auto *testMenu = new MenuElement[N_MENU_OPTIONS];
+	for (int i = 0; i < N_MENU_OPTIONS; ++i) {
+		testMenu[i] = MenuElement{.id=i, .value=menuOptions[i]};
+	}
 
-	setColourTheme();
-
-	init_pair(FOREGROUND, COLOUR_MAIN, COLOR_BLACK);
-	init_pair(FOREGROUND_LIGHT, COLOUR_MAIN_LIGHT, COLOR_BLACK);
-	init_pair(FOREGROUND_DARK, COLOUR_MAIN_DARK, COLOR_BLACK);
-	init_pair(BACKGROUND_LIGHT, COLOR_BLACK, COLOUR_MAIN_LIGHT);
-	init_pair(BACKGROUND_DARK, COLOR_BLACK, COLOUR_MAIN_DARK);
-
+	// TODO: Separete functionS
+	// TODO: add CORDS
+	Pos boardStart = {.x=boardOffsetX, .y=boardOffsetY};
+	Pos boardEnd = {.x=boardOffsetX, .y=boardOffsetY};
 	attron(COLOR_PAIR(FOREGROUND));
 	int boardWidth = POINTS_PER_BOARD * pieceWidth + pieceSpacing * (POINTS_PER_BOARD - 1) + pieceSpacing / 2 * 2;
 	int boardHeight = PAWNS_PER_POINT * 2 + pieceSpacing;
 
-	for (int i = N_BOARDS - 1; i >= 0; --i) {
-		drawBorders(boardOffsetX + (boardWidth + BORDER_WIDTH * 2 + 1) * i, boardOffsetY,
-					boardWidth + BORDER_WIDTH * 2, boardHeight + BORDER_WIDTH * 2);
-		drawPieces(boardOffsetX + (boardWidth + BORDER_WIDTH * 2 + 1) * i + BORDER_WIDTH, boardOffsetY + BORDER_WIDTH);
+	int borders = BORDER_WIDTH * 2;
+	boardEnd.y = boardHeight + borders;
+//	int endOfBoard = boardOffsetX;
+	for (int _ = 0; _ < N_BOARDS; ++_) {
+		drawBorders(boardEnd.x, boardStart.y,
+					boardWidth + borders, boardEnd.y);
+		drawPieces(boardEnd.x + BORDER_WIDTH, boardStart.y + BORDER_WIDTH);
+		boardEnd.x += (boardWidth + borders + BAR_WIDTH);
 	}
 	for (int i = N_BOARDS - 1; i > 0; --i)
-		drawBar(boardOffsetX + (boardWidth + BORDER_WIDTH * 2) * i, boardOffsetY, boardHeight);
+		drawBar(boardOffsetX + (boardWidth + borders) * i, boardOffsetY, boardHeight + borders);
+	boardEnd.x -= BAR_WIDTH;
+
+	Pos boardCenter = {
+		.x=boardStart.x + (boardEnd.x - boardStart.x) / 2,
+		.y=boardStart.y + (boardEnd.y - boardStart.y) / 2
+	};
+
+	// Dies
+	drawBorders(boardEnd.x - 1, boardStart.y, DICE_WIDTH + borders, boardHeight + borders);
+	drawBorders(boardEnd.x - 1, boardCenter.y - DICE_HEIGHT - BORDER_WIDTH,
+				DICE_WIDTH + borders, 2 * DICE_HEIGHT + 3 * BAR_WIDTH);
+	drawBorders(boardEnd.x - 1, boardCenter.y, DICE_WIDTH + borders, BORDER_WIDTH);
+	mvaddch(boardOffsetY + boardHeight / 2 + 1 + 1, boardEnd.x + DICE_WIDTH / 2, *dice1 + 48);
+	mvaddch(boardOffsetY + boardHeight / 2, boardEnd.x + DICE_WIDTH / 2, *dice2 + 48);
+	attroff(COLOR_PAIR(FOREGROUND));
+
+	drawMenu(testMenu, N_MENU_OPTIONS, *menuSelected, boardCenter.x,
+			 boardEnd.y + MENU_TOP_SPACING);
 
 	move(0, 0);
 	// Refresh the screen to show changes
 	refresh();
 
-	// Wait for user input
-	getch();
-
-	// End curses mode
-	endwin();
+	/// CLEAR MEMORY!!!
+	free(testMenu);
 }
 
 void setColourTheme(short baseRed, short baseGreen, short baseBlue) {
 	float nMultiplier = 1000.0 / 255.0;
-	short nRed = multiplyFloat(baseRed, nMultiplier),
-		nGreen = multiplyFloat(baseGreen, nMultiplier),
-		nBlue = multiplyFloat(baseBlue, nMultiplier);
+	short nRed = multiplyFloat(baseRed, nMultiplier, 1000.0),
+		nGreen = multiplyFloat(baseGreen, nMultiplier, 1000.0),
+		nBlue = multiplyFloat(baseBlue, nMultiplier, 1000.0);
 	init_color(COLOUR_MAIN, nRed, nGreen, nBlue);
 	// TODO: Conversion in a function
 	init_color(COLOUR_MAIN_DARK,
-			   multiplyFloat(nRed, (1 - colorDiff)),
-			   multiplyFloat(nGreen, (1 - colorDiff)),
-			   multiplyFloat(nBlue, (1 - colorDiff)));
+			   multiplyFloat(nRed, (1 - colorDiff), 1000.0),
+			   multiplyFloat(nGreen, (1 - colorDiff), 1000.0),
+			   multiplyFloat(nBlue, (1 - colorDiff), 1000.0));
 	init_color(COLOUR_MAIN_LIGHT,
-			   multiplyFloat(nRed, (1 + colorDiff)),
-			   multiplyFloat(nGreen, (1 + colorDiff)),
-			   multiplyFloat(nBlue, (1 + colorDiff)));
+			   multiplyFloat(nRed, (1 + colorDiff), 1000.0),
+			   multiplyFloat(nGreen, (1 + colorDiff), 1000.0),
+			   multiplyFloat(nBlue, (1 + colorDiff), 1000.0));
 }
 
 void drawBorders(int offsetX, int offsetY, int width, int height) {
@@ -83,17 +94,17 @@ void drawBorders(int offsetX, int offsetY, int width, int height) {
 	mvprintw(corBL.y, corBL.x, borderCorner);
 	mvprintw(corBR.y, corBR.x, borderCorner);
 
-	drawLine(borderHorizon, corTL.x + 1, corTR.x - 1, corTL.y, corTR.y);
-	drawLine(borderHorizon, corBL.x + 1, corBR.x - 1, corBL.y, corBR.y);
-	drawLine(borderVertical, corTL.x, corBL.x, corTL.y + 1, corBL.y - 1);
-	drawLine(borderVertical, corTR.x, corBR.x, corTR.y + 1, corBR.y - 1);
+	drawLine(borderHorizon, corTL.x + 1, corTR.x, corTL.y, corTR.y);
+	drawLine(borderHorizon, corBL.x + 1, corBR.x, corBL.y, corBR.y);
+	drawLine(borderVertical, corTL.x, corBL.x, corTL.y + 1, corBL.y);
+	drawLine(borderVertical, corTR.x, corBR.x, corTR.y + 1, corBR.y);
 }
 
 void drawPiece(const char *symbol, int offsetX, int offsetY) {
 	int totalOffsetX = offsetX + pieceSpacing / 2;
 	int totalOffsetY = offsetY;
 	for (int i = 0; i < PAWNS_PER_POINT; i += 2) {
-		drawLine(symbol, totalOffsetX, totalOffsetX, totalOffsetY, totalOffsetY + PAWNS_PER_POINT - 1);
+		drawLine(symbol, totalOffsetX, totalOffsetX, totalOffsetY, totalOffsetY + PAWNS_PER_POINT);
 		totalOffsetX += (pieceWidth + pieceSpacing) * 2;
 	}
 }
@@ -110,7 +121,7 @@ void drawLine(const char *symbol, int fromX, int toX, int fromY, int toY) {
 	auto x = (float) (fromX);
 	auto y = (float) (fromY);
 
-	for (int i = 0; i <= steps; ++i) {
+	for (int i = 0; i < steps; ++i) {
 		mvprintw((int) (round(y)), (int) (round(x)), "%s", symbol);
 		x += xIncrement;
 		y += yIncrement;
@@ -127,11 +138,48 @@ void drawPieces(int offsetX, int offsetY) {
 	drawPiece(piece2, offsetX, offsetY + PAWNS_PER_POINT + pieceSpacing);
 }
 
-void drawBar(int offsetX, int offsetY, int boardHeight) {
+void drawBar(int offsetX, int offsetY, int height) {
 	mvprintw(offsetY, offsetX, borderCorner);
 	drawLine(borderVertical, offsetX, offsetX,
-			 offsetY + 1, offsetY + boardHeight);
-	mvprintw(offsetY + boardHeight + 1, offsetX, borderCorner);
+			 offsetY + 1, offsetY + height - 1);
+	mvprintw(offsetY + height - 1, offsetX, borderCorner);
 
-	mvprintw(offsetY + (boardHeight) / 2, offsetX - (int) (sizeof(barLabel)) / 2 + 1, barLabel);
+	mvprintw(offsetY + (height) / 2, offsetX - (int) (sizeof(barLabel)) / 2 + 1, barLabel);
+}
+
+void drawSpacedText(int minX, int maxX, int offsetY, const int spacing, const int count, const int len, char **text) {
+
+	int center = (maxX - minX) / 2;
+	int textWidth = count * (len - 1) + spacing * (count - 1);
+	int startPoint = minX + center - textWidth / 2;
+	if (startPoint < minX)
+		return;
+
+	int totalOffset = startPoint;
+//	for (const char *text: elements) {
+//		mvprintw(offsetY, totalOffset, "%s", text);
+//		totalOffset += maxLen + spacing;
+//	}
+}
+
+// TODO: DIVIDE
+void drawMenu(MenuElement *options, int length, int selected, int centerX, int offsetY) {
+	uint menuRealLen = OPTION_SPACING * (length - 1);
+	for (int i = 0; i < length; ++i) {
+		menuRealLen += len(options[i].value) - 1;
+	}
+
+	int startingPoint = centerX - (int) (menuRealLen / 2);
+	for (int i = 0; i < length; ++i) {
+		if (options[i].id == selected) {
+			attron(COLOR_PAIR(FOREGROUND_LIGHT));
+			mvprintw(offsetY, startingPoint, "%s", options[i].value);
+			attroff(COLOR_PAIR(FOREGROUND_LIGHT));
+		} else {
+			attron(COLOR_PAIR(FOREGROUND_DARK));
+			mvprintw(offsetY, startingPoint, "%s", options[i].value);
+			attroff(COLOR_PAIR(FOREGROUND_DARK));
+		}
+		startingPoint += (int) (len(options[i].value) - 1) + OPTION_SPACING;
+	}
 }
