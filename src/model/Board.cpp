@@ -23,6 +23,11 @@
 void setClearBoard(Board *gameBoard) {
 	gameBoard->bar = Bar{0};
 
+	gameBoard->currentPlayer = 0;
+	for (auto &player: gameBoard->players) {
+		player = 0;
+	}
+
 	// set Points to keep 0 Pawns
 	for (auto &point: gameBoard->points) {
 		point = Point{0};
@@ -34,9 +39,10 @@ void setClearBoard(Board *gameBoard) {
 	}
 }
 
+// TODO: rename
 void setupGame(Board *gameBoard, Pawn player1[], Pawn player2[]) {
 	int pawnIndex = 0;
-	for (auto pos : startingPos) {
+	for (auto pos: startingPos) {
 		gameBoard->points[pos->x].pawnsInside = pos->y;
 		for (int j = 0; j < pos->y; ++j) {
 			gameBoard->points[pos->x].pawns[j] = &player1[pawnIndex++];
@@ -45,7 +51,7 @@ void setupGame(Board *gameBoard, Pawn player1[], Pawn player2[]) {
 
 	pawnIndex = 0;
 	int endIndex = nPoints - 1;
-	for (auto pos : startingPos) {
+	for (auto pos: startingPos) {
 		gameBoard->points[endIndex - pos->x].pawnsInside = pos->y;
 		for (int j = 0; j < pos->y; ++j) {
 			gameBoard->points[endIndex - pos->x].pawns[j] = &player2[pawnIndex++];

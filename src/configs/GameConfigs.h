@@ -19,6 +19,8 @@
 #define N_MENU_OPTIONS 4
 #define MENU_ELEMENT_LEN 7
 
+#define CAPTURE_THRESHOLD 1
+
 const uint nPoints = N_BOARDS * POINTS_PER_BOARD * 2;
 const uint totalPawns = N_PLAYERS * PAWNS_PER_PLAYER;
 
