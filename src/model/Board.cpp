@@ -6,6 +6,7 @@
 // TODO: Keep Basic Student info in struct?
 // Use enum for color pallet
 
+#include "Pawn.h"
 #include "Board.h"
 
 

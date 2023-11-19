@@ -10,9 +10,19 @@
 #include "../configs/GameConfigs.h"
 
 
-// Forward declaration of Pawn
-typedef struct Pawn Pawn;
+enum PawnColor {
+	WHITE,
+	BLACK
+};
 
+typedef struct {
+	int *owner;
+	int id;
+	bool isHome;
+	bool isOnBar;
+	PawnColor color;
+	short moveDirection;
+} Pawn;
 
 // TODO: add comments
 typedef struct {
