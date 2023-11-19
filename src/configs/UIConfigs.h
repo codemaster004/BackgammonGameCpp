@@ -11,11 +11,13 @@
 #define COLOUR_MAIN_DARK COLOR_CYAN
 
 #define BORDER_WIDTH 1
+#define BAR_WIDTH 1
 
 #define DICE_WIDTH 3
+#define DICE_HEIGHT 1
 
-#define OPTION_SPACING 2
-#define MENU_TOP_SPACING 3
+#define OPTION_SPACING 3
+#define MENU_TOP_SPACING 2
 
 enum UiColorsId {
 	FOREGROUND = 1,
