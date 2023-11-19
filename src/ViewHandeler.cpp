@@ -138,8 +138,7 @@ void drawLine(const char *symbol, int fromX, int toX, int fromY, int toY) {
 	auto x = (float) (fromX);
 	auto y = (float) (fromY);
 
-	// TODO: change <= to <
-	for (int i = 0; i <= steps; ++i) {
+	for (int i = 0; i < steps; ++i) {
 		mvprintw((int) (round(y)), (int) (round(x)), "%s", symbol);
 		x += xIncrement;
 		y += yIncrement;
