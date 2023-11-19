@@ -46,15 +46,15 @@ typedef struct {
 	Point points[nPoints];
 	Bar bar;
 	Court courts[N_PLAYERS];
+	// TODO: implement player structure
+	int players[N_PLAYERS];
+	int currentPlayer;
 } Board;
 
 typedef struct {
 	std::string gameName;
 	std::string authorName;
 	int authorId;
-	// TODO: implement player structure
-	int players[N_PLAYERS];
-	int currentPlayer;
 	Board board;
 	// TODO: create/implement structure for keeping currentPlayersScores
 	int currentScores[PLAYERS_PER_GAME];
