@@ -59,7 +59,7 @@ int main(int argc, char **argv) {
 }
 
 /**
- * TODO: [ ] Basic Board UI (1pt)
+ * TODO: [x] Basic Board UI (1pt)
  * TODO: [ ] Visualisation of game state (1pt)
  * TODO: [ ] Saving game state to a file (2pt)
  * TODO: [ ] Loading game state from file + ?next move? (2pt)
