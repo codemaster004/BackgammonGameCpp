@@ -3,19 +3,26 @@
 // Full Project can be vied online at https://github.com/codemaster004/BackgammonGameCpp
 //
 
-#include <ncurses.h>
+#include "ncurses.h"
+#include "cstdio"
+#include "cstdlib"
+#include "ctime"
 
 #include "ViewHandeler.h"
 #include "configs/UIConfigs.h"
 #include "Controller.h"
+#include "model/Board.h"
 
 // TODO: Some main while loop for handling user interaction
 int main(int argc, char **argv) {
-	initscr();
+	if (argc > 1)
+		initscr();
 	cbreak();
 	curs_set(0);
 	noecho();
 	keypad(stdscr, TRUE);
+
+//	srand(time(nullptr));
 
 	start_color();
 
@@ -29,18 +36,20 @@ int main(int argc, char **argv) {
 	init_pair(BACKGROUND_LIGHT, COLOR_BLACK, COLOUR_MAIN_LIGHT);
 	init_pair(BACKGROUND_DARK, COLOR_BLACK, COLOUR_MAIN_DARK);
 
-	int menuSelected = 0;
+	auto game = Board{};
+	int dice1 = 0, dice2 = 0;
+	int menuSelected = 3;
 
-	uiStaff(&menuSelected);
+	uiStaff(&menuSelected, &dice1, &dice2);
 
 	int ch;
 	bool gameEnded = false;
 	while((ch = getch()) != 'q') {
-		inputController(ch, &menuSelected, &gameEnded);
+		inputController(ch, &menuSelected, &gameEnded, &dice1, &dice2);
 		if (gameEnded)
 			break;
 
-		uiStaff(&menuSelected);
+		uiStaff(&menuSelected, &dice1, &dice2);
 	}
 
 	// End curses mode

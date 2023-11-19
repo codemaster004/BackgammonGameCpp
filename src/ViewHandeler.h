@@ -23,6 +23,6 @@ void drawSpacedText(int minX, int maxX, int offsetY, const int spacing, const in
 
 void drawMenu(MenuElement *options, int length, int selected, int centerX, int offsetY);
 
-void uiStaff(int *menuSelected);
+void uiStaff(const int *menuSelected, int *dice1, int *dice2);
 
 #endif //BACKGAMMONGAME_VIEWHANDELER_H

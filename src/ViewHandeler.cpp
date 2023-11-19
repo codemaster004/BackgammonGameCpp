@@ -14,7 +14,7 @@
 // TODO: Figure out how this works
 
 // TODO: Implement UI generating
-void uiStaff(int *menuSelected) {
+void uiStaff(const int *menuSelected, int *dice1, int *dice2) {
 
 	auto *testMenu = new MenuElement[N_MENU_OPTIONS];
 	for (int i = 0; i < N_MENU_OPTIONS; ++i) {
@@ -22,6 +22,7 @@ void uiStaff(int *menuSelected) {
 	}
 
 	// TODO: Separete functionS
+	// TODO: add CORDS
 	attron(COLOR_PAIR(FOREGROUND));
 	int boardWidth = POINTS_PER_BOARD * pieceWidth + pieceSpacing * (POINTS_PER_BOARD - 1) + pieceSpacing / 2 * 2;
 	int boardHeight = PAWNS_PER_POINT * 2 + pieceSpacing;
@@ -36,6 +37,33 @@ void uiStaff(int *menuSelected) {
 	}
 	for (int i = N_BOARDS - 1; i > 0; --i)
 		drawBar(boardOffsetX + (boardWidth + borders) * i, boardOffsetY, boardHeight + borders);
+
+	// TODO: Dies
+	drawLine(borderHorizon, endOfBoard - 1, endOfBoard + DICE_WIDTH - 1, boardOffsetY, boardOffsetY);
+	drawLine(borderHorizon, endOfBoard - 1, endOfBoard + DICE_WIDTH - 1, boardOffsetY + boardHeight + 1,
+			 boardOffsetY + boardHeight + 1);
+	// middle one
+	drawLine(borderHorizon, endOfBoard - 1, endOfBoard + DICE_WIDTH - 1,
+			 boardOffsetY + boardHeight / 2 - 2 + 1, boardOffsetY + boardHeight / 2 - 2 + 1);
+	drawLine(borderHorizon, endOfBoard - 1, endOfBoard + DICE_WIDTH - 1,
+			 boardOffsetY + boardHeight / 2 + 1, boardOffsetY + boardHeight / 2 + 1);
+	drawLine(borderHorizon, endOfBoard - 1, endOfBoard + DICE_WIDTH - 1,
+			 boardOffsetY + boardHeight / 2 + DICE_WIDTH, boardOffsetY + boardHeight / 2 + DICE_WIDTH);
+	// vertical
+	drawLine(borderVertical, endOfBoard + DICE_WIDTH - 1, endOfBoard + DICE_WIDTH - 1, boardOffsetY, boardOffsetY + boardHeight + 1);
+
+	mvprintw(boardOffsetY, endOfBoard + DICE_WIDTH - 1, borderCorner);
+	mvprintw(boardOffsetY + boardHeight + 1, endOfBoard + DICE_WIDTH - 1, borderCorner);
+
+	// center +
+	mvprintw(boardOffsetY + boardHeight / 2 + 1 - 2, endOfBoard + DICE_WIDTH - 1, borderCorner);
+	mvprintw(boardOffsetY + boardHeight / 2 + 1 - 2, endOfBoard - 2, borderCorner);
+	mvprintw(boardOffsetY + boardHeight / 2 + 1, endOfBoard + DICE_WIDTH - 1, borderCorner);
+	mvprintw(boardOffsetY + boardHeight / 2 + 1, endOfBoard - 2, borderCorner);
+	mvprintw(boardOffsetY + boardHeight / 2 + 1 + 2, endOfBoard + DICE_WIDTH - 1, borderCorner);
+	mvprintw(boardOffsetY + boardHeight / 2 + 1 + 2, endOfBoard - 2, borderCorner);
+	mvaddch(boardOffsetY + boardHeight / 2 + 1 + 1, endOfBoard + DICE_WIDTH / 2 - 1, *dice1 + 48);
+	mvaddch(boardOffsetY + boardHeight / 2, endOfBoard + DICE_WIDTH / 2 - 1, *dice2 + 48);
 	attroff(COLOR_PAIR(FOREGROUND));
 
 	drawMenu(testMenu, N_MENU_OPTIONS, *menuSelected, boardOffsetX + (endOfBoard - boardOffsetX) / 2,
@@ -110,6 +138,7 @@ void drawLine(const char *symbol, int fromX, int toX, int fromY, int toY) {
 	auto x = (float) (fromX);
 	auto y = (float) (fromY);
 
+	// TODO: change <= to <
 	for (int i = 0; i <= steps; ++i) {
 		mvprintw((int) (round(y)), (int) (round(x)), "%s", symbol);
 		x += xIncrement;

@@ -3,15 +3,18 @@
 //
 
 #include "ncurses.h"
+#include "cstdlib"
 
 #include "configs/GameConfigs.h"
 
-void inputController(int input, int *menu, bool *gameEnded) {
+
+
+void inputController(int input, int *menu, bool *gameEnded, int *dice1, int *dice2) {
 	switch(input) {
 		// TODO: Probably rewrite for more options
 		case '\n':
 		case '\r':
-			inputController((int) (menuKeys[*menu]), menu, gameEnded);
+			inputController((int) (menuKeys[*menu]), menu, gameEnded, dice1, dice2);
 			break;
 		case KEY_UP:
 			break;
@@ -32,6 +35,8 @@ void inputController(int input, int *menu, bool *gameEnded) {
 		case 'u':
 			break;
 		case 'r':
+			*dice1 = rand() % 6 + 1;
+			*dice2 = rand() % 6 + 1;
 			break;
 		case 'q':
 			*gameEnded = true;

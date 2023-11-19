@@ -12,6 +12,8 @@
 
 #define BORDER_WIDTH 1
 
+#define DICE_WIDTH 3
+
 #define OPTION_SPACING 2
 #define MENU_TOP_SPACING 3
 
