@@ -6,11 +6,24 @@
 #include "cstdlib"
 
 #include "configs/GameConfigs.h"
+#include "model/Board.h"
 
+void handleGame(Board *game) {
+	setClearBoard(game);
+
+	// TODO: move this somewhere where it makes sense
+	Pawn white[PAWNS_PER_PLAYER] = {};
+	Pawn black[PAWNS_PER_PLAYER] = {};
+	for (int i = 0; i < PAWNS_PER_PLAYER; ++i) {
+		white[i] = Pawn{.id=i, .isHome=false, .isOnBar=false, .color=WHITE, .moveDirection=1};
+		black[i] = Pawn{.id=PAWNS_PER_PLAYER + i, .isHome=false, .isOnBar=false, .color=BLACK, .moveDirection=-1};
+	}
+	setupGame(game, white, black);
+}
 
 
 void inputController(int input, int *menu, bool *gameEnded, int *dice1, int *dice2) {
-	switch(input) {
+	switch (input) {
 		// TODO: Probably rewrite for more options
 		case '\n':
 		case '\r':

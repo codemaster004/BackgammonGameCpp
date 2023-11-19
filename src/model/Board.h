@@ -8,25 +8,25 @@
 #include "string"
 
 #include "../configs/GameConfigs.h"
-#include "Pawn.h"
 
 
-enum PointColor {
-	C_ID_LIGHT,
-	C_ID_DARK
-};
+// Forward declaration of Pawn
+typedef struct Pawn Pawn;
+
 
 // TODO: add comments
 typedef struct {
-	Pawn pawns[PAWNS_PER_POINT];
-	PointColor color;
+	int pawnsInside;
+	Pawn *pawns[PAWNS_PER_POINT];
 } Point;
 
 typedef struct {
+	int pawnsInside;
 	Pawn *pawns[totalPawns];
 } Bar;
 
 typedef struct {
+	int pawnsInside;
 	Pawn *pawns[PAWNS_PER_PLAYER];
 	// TODO: Use player structure here
 	int *owner;
@@ -50,5 +50,11 @@ typedef struct {
 	int currentScores[PLAYERS_PER_GAME];
 
 } UserInterface;
+
+void setClearBoard(Board *gameBoard);
+
+void setupGame(Board *gameBoard, Pawn player1[], Pawn player2[]);
+
+
 
 #endif //BACKGAMMONGAME_BOARD_H
