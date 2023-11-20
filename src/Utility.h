@@ -20,4 +20,12 @@ int max(int a, int b);
 
 uint len(const char *text);
 
+uint nDigits(int n, int base);
+
+uint maxInBase(int n, int base);
+
+char* numberToString(int number, int width);
+
+void revertTable(char **from, char **to);
+
 #endif //BACKGAMMONGAME_UTILITY_H
