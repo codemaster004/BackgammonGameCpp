@@ -30,11 +30,11 @@ void uiStaff(const int *menuSelected, int *dice1, int *dice2) {
 	int boardHeight = PAWNS_PER_POINT * 2 + pieceSpacing;
 
 	int borders = BORDER_WIDTH * 2;
-	boardEnd.y = boardHeight + borders;
+	boardEnd.y += boardHeight + borders;
 //	int endOfBoard = boardOffsetX;
 	for (int _ = 0; _ < N_BOARDS; ++_) {
 		drawBorders(boardEnd.x, boardStart.y,
-					boardWidth + borders, boardEnd.y);
+					boardWidth + borders, boardHeight + borders);
 		drawPieces(boardEnd.x + BORDER_WIDTH, boardStart.y + BORDER_WIDTH);
 		boardEnd.x += (boardWidth + borders + BAR_WIDTH);
 	}
@@ -70,6 +70,8 @@ void uiStaff(const int *menuSelected, int *dice1, int *dice2) {
 		int change = pieceWidth * POINTS_PER_BOARD + pieceSpacing * (POINTS_PER_BOARD - 1);
 		drawSpacedText(start, start + change, boardEnd.y, pieceSpacing, (int) (digits),
 					   &indexes[i * POINTS_PER_BOARD], POINTS_PER_BOARD);
+		drawSpacedText(start, start + change, boardStart.y - 1, pieceSpacing, (int) (digits),
+					   &indexes[nPoints + i * POINTS_PER_BOARD], POINTS_PER_BOARD);
 		start += change + borders + BAR_WIDTH + pieceSpacing / 2 * 2;
 	}
 
@@ -193,6 +195,7 @@ void drawMenu(MenuElement *options, int length, int selected, int centerX, int o
 
 	int startingPoint = centerX - (int) (menuRealLen / 2);
 	for (int i = 0; i < length; ++i) {
+		// TODO: Maybe callback?
 		if (options[i].id == selected) {
 			attron(COLOR_PAIR(FOREGROUND_LIGHT));
 			mvprintw(offsetY, startingPoint, "%s", options[i].value);

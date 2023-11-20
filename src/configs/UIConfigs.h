@@ -34,7 +34,7 @@ const char borderCorner[] = { "+" };
 const char barLabel[] = {"[BAR]"};
 
 const int boardOffsetX = 3;
-const int boardOffsetY = 0;
+const int boardOffsetY = 1;
 
 const char piece1[] = { "/\\" };
 const char piece2[] = { "''" };
