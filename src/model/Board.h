@@ -8,25 +8,35 @@
 #include "string"
 
 #include "../configs/GameConfigs.h"
-#include "Pawn.h"
 
 
-enum PointColor {
-	C_ID_LIGHT,
-	C_ID_DARK
+enum PawnColor {
+	WHITE,
+	BLACK
 };
+
+typedef struct {
+	int *owner;
+	int id;
+	bool isHome;
+	bool isOnBar;
+	PawnColor color;
+	short moveDirection;
+} Pawn;
 
 // TODO: add comments
 typedef struct {
-	Pawn pawns[PAWNS_PER_POINT];
-	PointColor color;
+	int pawnsInside;
+	Pawn *pawns[PAWNS_PER_POINT];
 } Point;
 
 typedef struct {
+	int pawnsInside;
 	Pawn *pawns[totalPawns];
 } Bar;
 
 typedef struct {
+	int pawnsInside;
 	Pawn *pawns[PAWNS_PER_PLAYER];
 	// TODO: Use player structure here
 	int *owner;
@@ -36,19 +46,25 @@ typedef struct {
 	Point points[nPoints];
 	Bar bar;
 	Court courts[N_PLAYERS];
+	// TODO: implement player structure
+	int players[N_PLAYERS];
+	int *currentPlayer;
 } Board;
 
 typedef struct {
 	std::string gameName;
 	std::string authorName;
 	int authorId;
-	// TODO: implement player structure
-	int players[N_PLAYERS];
-	int currentPlayer;
 	Board board;
 	// TODO: create/implement structure for keeping currentPlayersScores
 	int currentScores[PLAYERS_PER_GAME];
 
 } UserInterface;
+
+void setClearBoard(Board *gameBoard);
+
+void setupGame(Board *gameBoard, Pawn player1[], Pawn player2[]);
+
+
 
 #endif //BACKGAMMONGAME_BOARD_H

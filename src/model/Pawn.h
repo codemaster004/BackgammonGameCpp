@@ -5,18 +5,20 @@
 #ifndef BACKGAMMONGAME_PAWN_H
 #define BACKGAMMONGAME_PAWN_H
 
-enum PawnColor {
-	WHITE,
-	RED
+#include "Board.h"
+
+// TODO: Create functions for checks if points are valid to be moved & to be moved to
+
+enum moveToPoint {
+	BLOCKED,
+	POSSIBLE,
+	CAPTURE
 };
 
-typedef struct {
-	PawnColor color;
-	int *owner;
-	bool isHome;
-	bool isOnBar;
-	const short moveDirection;
-} Pawn;
+bool canBeMoved(Board *game, int pointIndex, int moveBy);
 
+moveToPoint canMoveTo(Board *game, int fromIndex, int toIndex);
+
+bool enumToBool(moveToPoint value);
 
 #endif //BACKGAMMONGAME_PAWN_H
