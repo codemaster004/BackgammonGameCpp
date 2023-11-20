@@ -7,7 +7,18 @@
 
 #include "Board.h"
 
+// TODO: Create functions for checks if points are valid to be moved & to be moved to
 
-bool canBeMoved(Board game, int pieceIndex, int moveBy);
+enum moveToPoint {
+	BLOCKED,
+	POSSIBLE,
+	CAPTURE
+};
+
+bool canBeMoved(Board *game, int pointIndex, int moveBy);
+
+moveToPoint canMoveTo(Board *game, int fromIndex, int toIndex);
+
+bool enumToBool(moveToPoint value);
 
 #endif //BACKGAMMONGAME_PAWN_H

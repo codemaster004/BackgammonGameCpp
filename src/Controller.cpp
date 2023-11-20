@@ -7,6 +7,9 @@
 
 #include "configs/GameConfigs.h"
 #include "model/Board.h"
+#include "Controller.h"
+#include "model/Pawn.h"
+
 
 void handleGame(Board *game) {
 	setClearBoard(game);
@@ -14,13 +17,21 @@ void handleGame(Board *game) {
 	// TODO: move this somewhere where it makes sense
 	Pawn white[PAWNS_PER_PLAYER] = {};
 	Pawn black[PAWNS_PER_PLAYER] = {};
+	int player1 = 1;
+	int player2 = 2;
 	for (int i = 0; i < PAWNS_PER_PLAYER; ++i) {
-		white[i] = Pawn{.id=i, .isHome=false, .isOnBar=false, .color=WHITE, .moveDirection=1};
-		black[i] = Pawn{.id=PAWNS_PER_PLAYER + i, .isHome=false, .isOnBar=false, .color=BLACK, .moveDirection=-1};
+		white[i] = Pawn{.owner=&player1, .id=i, .isHome=false, .isOnBar=false, .color=WHITE, .moveDirection=1};
+		black[i] = Pawn{.owner=&player2, .id=PAWNS_PER_PLAYER + i, .isHome=false, .isOnBar=false, .color=BLACK, .moveDirection=-1};
 	}
 	setupGame(game, white, black);
-}
 
+	// TODO: SEPARATE
+	game->currentPlayer = &player1;
+	int dice1 = 2, dice2 = 5;
+	movePawn(game, 0, dice1);
+	movePawn(game, 0, dice1);
+	game->currentPlayer = &player2;
+}
 
 void inputController(int input, int *menu, bool *gameEnded, int *dice1, int *dice2) {
 	switch (input) {
@@ -57,4 +68,29 @@ void inputController(int input, int *menu, bool *gameEnded, int *dice1, int *dic
 		default:
 			break;
 	}
+}
+
+// TODO: N pawns to move
+// TODO: maybe return 0 and 1 for eero check
+void movePawn(Board *game, int fromIndex, int moveBy) {
+	// TODO: Separate
+	if (!canBeMoved(game, fromIndex, moveBy)) {
+		return;
+	}
+	int toIndex = fromIndex + moveBy;
+	moveToPoint moveType = canMoveTo(game, fromIndex, toIndex);
+	if (!enumToBool(moveType)) {
+		return;
+	}
+	Point *toPoint = &game->points[toIndex];
+	Point *fromPoint = &game->points[fromIndex];
+	// TODO: Separate
+	if (moveType == CAPTURE) {
+		for (int i = 0; i < CAPTURE_THRESHOLD; ++i) {
+			game->bar.pawns[game->bar.pawnsInside++] = toPoint->pawns[i];
+		}
+		toPoint->pawnsInside -= CAPTURE_THRESHOLD;
+	}
+	toPoint->pawns[toPoint->pawnsInside++] = fromPoint->pawns[--fromPoint->pawnsInside];
+	fromPoint->pawns[fromPoint->pawnsInside] = nullptr;
 }
