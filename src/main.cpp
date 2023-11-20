@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
 	noecho();
 	keypad(stdscr, TRUE);
 
-//	srand(time(nullptr));
+	srand(time(nullptr));
 
 	start_color();
 
@@ -37,6 +37,8 @@ int main(int argc, char **argv) {
 	init_pair(BACKGROUND_DARK, COLOR_BLACK, COLOUR_MAIN_DARK);
 
 	auto game = Board{};
+	handleGame(&game);
+
 	int dice1 = 0, dice2 = 0;
 	int menuSelected = 3;
 
@@ -52,7 +54,7 @@ int main(int argc, char **argv) {
 		uiStaff(&menuSelected, &dice1, &dice2);
 	}
 
-	// End curses mode
+	// Finish curses mode
 	endwin();
 
 	return 0;
@@ -70,5 +72,4 @@ int main(int argc, char **argv) {
  * TODO: [ ] Visualisation of game play (backwards) from loaded state (2pt)
  * TODO: [ ] Complete UI (1pt)
  * TODO: [ ] Player Rankings "Hall of Fame" (1pt)
- * use enum somewhere...
  */

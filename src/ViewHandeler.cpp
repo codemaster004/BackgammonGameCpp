@@ -85,12 +85,11 @@ void uiStaff(const int *menuSelected, int *dice1, int *dice2) {
 	refresh();
 
 	/// CLEAR MEMORY!!!
-	free(testMenu);
-
 	for (int i = 0; i < totalNumbers; ++i) {
 		delete[] indexes[i];
 	}
 	delete[] indexes;
+	delete[] testMenu;
 }
 
 void setColourTheme(short baseRed, short baseGreen, short baseBlue) {
