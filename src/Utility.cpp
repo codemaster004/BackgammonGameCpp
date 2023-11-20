@@ -6,9 +6,9 @@
 
 #include "Utility.h"
 
-char* reverseString(const char* str) {
+char *reverseString(const char *str) {
 	unsigned long length = std::strlen(str);
-	char* reversed = new char[length + 1];
+	char *reversed = new char[length + 1];
 
 	std::copy(str, str + length + 1, reversed);
 	std::reverse(reversed, reversed + length);
@@ -31,4 +31,41 @@ uint len(const char *text) {
 		if (text[length++] == 0)
 			break;
 	return length;
+}
+
+uint nDigits(int n, int base) {
+	uint count = 1;
+	uint i = 1;
+	while (n / count) {
+		count *= base;
+		i++;
+	}
+	return --i;;
+}
+
+uint maxInBase(int n, int base) {
+	uint count = 1;
+	while (n / count)
+		count *= base;
+	return count / base;
+}
+
+char *numberToString(int number, int width) {
+	char *str = new char[width + 1];
+	str[width] = '\0';
+
+	for (int i = width - 1; i >= 0; --i) {
+		str[i] = (char) ('0' + (number % 10));
+		number /= 10;
+	}
+
+	return str;
+}
+
+void revertTable(char **from, char **to) {
+	for (int i = 0; i < (to - from) / 2; ++i) {
+		char *temp = from[i];
+		from[i] = *(to - i - 1);
+		*(to - i - 1) = temp;
+	}
 }

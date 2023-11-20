@@ -4,6 +4,7 @@
 #include <ncurses.h>
 #include "cmath"
 #include "string"
+#include "cstdio"
 
 #include "configs/UIConfigs.h"
 #include "configs/GameConfigs.h"
@@ -22,7 +23,6 @@ void uiStaff(const int *menuSelected, int *dice1, int *dice2) {
 	}
 
 	// TODO: Separete functionS
-	// TODO: add CORDS
 	Pos boardStart = {.x=boardOffsetX, .y=boardOffsetY};
 	Pos boardEnd = {.x=boardOffsetX, .y=boardOffsetY};
 	attron(COLOR_PAIR(FOREGROUND));
@@ -48,12 +48,31 @@ void uiStaff(const int *menuSelected, int *dice1, int *dice2) {
 	};
 
 	// Dies
+	// TODO: Rewrite with for N_DICES
 	drawBorders(boardEnd.x - 1, boardStart.y, DICE_WIDTH + borders, boardHeight + borders);
 	drawBorders(boardEnd.x - 1, boardCenter.y - DICE_HEIGHT - BORDER_WIDTH,
 				DICE_WIDTH + borders, 2 * DICE_HEIGHT + 3 * BAR_WIDTH);
 	drawBorders(boardEnd.x - 1, boardCenter.y, DICE_WIDTH + borders, BORDER_WIDTH);
 	mvaddch(boardOffsetY + boardHeight / 2 + 1 + 1, boardEnd.x + DICE_WIDTH / 2, *dice1 + 48);
 	mvaddch(boardOffsetY + boardHeight / 2, boardEnd.x + DICE_WIDTH / 2, *dice2 + 48);
+
+	// Indexes
+	int totalNumbers = nPoints * N_PLAYERS;
+	uint digits = nDigits(totalNumbers, 10);
+	char **indexes = new char *[totalNumbers];
+	for (int i = 0; i < totalNumbers; ++i) {
+		indexes[i] = numberToString(i, (int) (digits));
+	}
+	revertTable(indexes, indexes + nPoints);
+
+	int start = boardStart.x + BORDER_WIDTH + pieceSpacing / 2;
+	for (int i = 0; i < N_BOARDS; ++i) {
+		int change = pieceWidth * POINTS_PER_BOARD + pieceSpacing * (POINTS_PER_BOARD - 1);
+		drawSpacedText(start, start + change, boardEnd.y, pieceSpacing, (int) (digits),
+					   &indexes[i * POINTS_PER_BOARD], POINTS_PER_BOARD);
+		start += change + borders + BAR_WIDTH + pieceSpacing / 2 * 2;
+	}
+
 	attroff(COLOR_PAIR(FOREGROUND));
 
 	drawMenu(testMenu, N_MENU_OPTIONS, *menuSelected, boardCenter.x,
@@ -65,6 +84,11 @@ void uiStaff(const int *menuSelected, int *dice1, int *dice2) {
 
 	/// CLEAR MEMORY!!!
 	free(testMenu);
+
+	for (int i = 0; i < totalNumbers; ++i) {
+		delete[] indexes[i];
+	}
+	delete[] indexes;
 }
 
 void setColourTheme(short baseRed, short baseGreen, short baseBlue) {
@@ -147,19 +171,17 @@ void drawBar(int offsetX, int offsetY, int height) {
 	mvprintw(offsetY + (height) / 2, offsetX - (int) (sizeof(barLabel)) / 2 + 1, barLabel);
 }
 
-void drawSpacedText(int minX, int maxX, int offsetY, const int spacing, const int count, const int len, char **text) {
-
-	int center = (maxX - minX) / 2;
-	int textWidth = count * (len - 1) + spacing * (count - 1);
-	int startPoint = minX + center - textWidth / 2;
+void drawSpacedText(int minX, int maxX, int offsetY, const int spacing, const int len, char **text, const int count) {
+	int center = minX + (maxX - minX) / 2;
+	int textWidth = count * (len) + spacing * (count - 1);
+	int startPoint = center - textWidth / 2;
 	if (startPoint < minX)
 		return;
 
-	int totalOffset = startPoint;
-//	for (const char *text: elements) {
-//		mvprintw(offsetY, totalOffset, "%s", text);
-//		totalOffset += maxLen + spacing;
-//	}
+	for (int i = 0; i < count; ++i) {
+		mvprintw(offsetY, startPoint, "%s", text[i]);
+		startPoint += len + spacing;
+	}
 }
 
 // TODO: DIVIDE
