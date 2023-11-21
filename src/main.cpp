@@ -13,8 +13,42 @@
 #include "Controller.h"
 #include "model/Board.h"
 
+void startScreen(int argc, char **argv);
+
 // TODO: Some main while loop for handling user interaction
 int main(int argc, char **argv) {
+	startScreen(argc, argv);
+
+	UserInterface UI = UserInterface{
+		.authorId=197712,
+		.menuMode=DEFAULT
+	};
+
+	UI.board = Board{};
+	handleGame(&UI.board);
+
+	int dice1 = 0, dice2 = 0;
+	int menuSelected = 3;
+
+	uiStaff(&UI, &menuSelected, &dice1, &dice2);
+
+	int ch;
+	bool gameEnded = false;
+	while((ch = getch()) != 'q') {
+		inputController(ch, &menuSelected, &gameEnded, &dice1, &dice2);
+		if (gameEnded)
+			break;
+
+		uiStaff(&UI, &menuSelected, &dice1, &dice2);
+	}
+
+	// Finish curses mode
+	endwin();
+
+	return 0;
+}
+
+void startScreen(int argc, char **argv) {
 	if (argc > 1)
 		initscr();
 	cbreak();
@@ -27,7 +61,7 @@ int main(int argc, char **argv) {
 	start_color();
 
 	// TODO: CLEAN UP!!!
-	setColourTheme(0, 200, 0);
+	setColourTheme(COLOR_THEME);
 
 	// TODO: SEparete function
 	init_pair(FOREGROUND, COLOUR_MAIN, COLOR_BLACK);
@@ -35,29 +69,6 @@ int main(int argc, char **argv) {
 	init_pair(FOREGROUND_DARK, COLOUR_MAIN_DARK, COLOR_BLACK);
 	init_pair(BACKGROUND_LIGHT, COLOR_BLACK, COLOUR_MAIN_LIGHT);
 	init_pair(BACKGROUND_DARK, COLOR_BLACK, COLOUR_MAIN_DARK);
-
-	auto game = Board{};
-	handleGame(&game);
-
-	int dice1 = 0, dice2 = 0;
-	int menuSelected = 3;
-
-	uiStaff(&menuSelected, &dice1, &dice2);
-
-	int ch;
-	bool gameEnded = false;
-	while((ch = getch()) != 'q') {
-		inputController(ch, &menuSelected, &gameEnded, &dice1, &dice2);
-		if (gameEnded)
-			break;
-
-		uiStaff(&menuSelected, &dice1, &dice2);
-	}
-
-	// Finish curses mode
-	endwin();
-
-	return 0;
 }
 
 /**
