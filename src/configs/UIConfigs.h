@@ -19,6 +19,8 @@
 #define OPTION_SPACING 3
 #define MENU_TOP_SPACING 2
 
+#define COLOR_THEME 00, 200, 00
+
 enum UiColorsId {
 	FOREGROUND = 1,
 	FOREGROUND_LIGHT,

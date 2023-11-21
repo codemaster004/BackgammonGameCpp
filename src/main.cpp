@@ -27,7 +27,7 @@ int main(int argc, char **argv) {
 	start_color();
 
 	// TODO: CLEAN UP!!!
-	setColourTheme(0, 200, 0);
+	setColourTheme(COLOR_THEME);
 
 	// TODO: SEparete function
 	init_pair(FOREGROUND, COLOUR_MAIN, COLOR_BLACK);
