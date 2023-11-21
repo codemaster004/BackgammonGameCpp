@@ -15,7 +15,7 @@
 // TODO: Figure out how this works
 
 // TODO: Implement UI generating
-void uiStaff(const int *menuSelected, int *dice1, int *dice2) {
+void uiStaff(UserInterface *ui, const int *menuSelected, int *dice1, int *dice2) {
 
 	auto *testMenu = new MenuElement[N_MENU_OPTIONS];
 	for (int i = 0; i < N_MENU_OPTIONS; ++i) {
@@ -31,7 +31,6 @@ void uiStaff(const int *menuSelected, int *dice1, int *dice2) {
 
 	int borders = BORDER_WIDTH * 2;
 	boardEnd.y += boardHeight + borders;
-//	int endOfBoard = boardOffsetX;
 	for (int _ = 0; _ < N_BOARDS; ++_) {
 		drawBorders(boardEnd.x, boardStart.y,
 					boardWidth + borders, boardHeight + borders);
@@ -62,7 +61,7 @@ void uiStaff(const int *menuSelected, int *dice1, int *dice2) {
 	for (int i = 0; i < nPoints; ++i) {
 		indexes[i] = numberToString(i, (int) (digits));
 	}
-	drawIndexes(indexes, (int) (digits), boardStart, boardEnd);
+	drawIndexes(indexes, DEFAULT, (int) (digits), boardStart, boardEnd);
 
 	attroff(COLOR_PAIR(FOREGROUND));
 
@@ -161,7 +160,7 @@ void drawBar(int offsetX, int offsetY, int height) {
 	mvprintw(offsetY + (height) / 2, offsetX - (int) (sizeof(barLabel)) / 2 + 1, barLabel);
 }
 
-void drawIndexes(char **indexes, int digits, Pos boardStart, Pos boardEnd) {
+void drawIndexes(char **indexes, MenuMode drawMode, int digits, Pos boardStart, Pos boardEnd) {
 
 	revertTable(indexes, indexes + nPoints / 2);
 

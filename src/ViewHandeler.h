@@ -23,8 +23,8 @@ void drawSpacedText(int minX, int maxX, int offsetY, int spacing, int len, char 
 
 void drawMenu(MenuElement *options, int length, int selected, int centerX, int offsetY);
 
-void drawIndexes(char **indexes, int digits, Pos boardStart, Pos boardEnd);
+void drawIndexes(char **indexes, MenuMode drawMode, int digits, Pos boardStart, Pos boardEnd);
 
-void uiStaff(const int *menuSelected, int *dice1, int *dice2);
+void uiStaff(UserInterface *ui, const int *menuSelected, int *dice1, int *dice2);
 
 #endif //BACKGAMMONGAME_VIEWHANDELER_H
