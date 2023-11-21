@@ -19,9 +19,11 @@ void drawBar(int offsetX, int offsetY, int height);
 
 void drawBorders(int offsetX, int offsetY, int width, int height);
 
-void drawSpacedText(int minX, int maxX, int offsetY, const int spacing, const int len, char **text, const int count);
+void drawSpacedText(int minX, int maxX, int offsetY, int spacing, int len, char **text, int count);
 
 void drawMenu(MenuElement *options, int length, int selected, int centerX, int offsetY);
+
+void drawIndexes(char **indexes, int digits, Pos boardStart, Pos boardEnd);
 
 void uiStaff(const int *menuSelected, int *dice1, int *dice2);
 

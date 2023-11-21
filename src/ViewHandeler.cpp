@@ -57,23 +57,12 @@ void uiStaff(const int *menuSelected, int *dice1, int *dice2) {
 	mvaddch(boardOffsetY + boardHeight / 2, boardEnd.x + DICE_WIDTH / 2, *dice2 + 48);
 
 	// Indexes
-	int totalNumbers = nPoints * N_PLAYERS;
-	uint digits = nDigits(totalNumbers, 10);
-	char **indexes = new char *[totalNumbers];
-	for (int i = 0; i < totalNumbers; ++i) {
+	uint digits = nDigits(nPoints, 10);
+	char **indexes = new char *[nPoints];
+	for (int i = 0; i < nPoints; ++i) {
 		indexes[i] = numberToString(i, (int) (digits));
 	}
-	revertTable(indexes, indexes + nPoints);
-
-	int start = boardStart.x + BORDER_WIDTH + pieceSpacing / 2;
-	for (int i = 0; i < N_BOARDS; ++i) {
-		int change = pieceWidth * POINTS_PER_BOARD + pieceSpacing * (POINTS_PER_BOARD - 1);
-		drawSpacedText(start, start + change, boardEnd.y, pieceSpacing, (int) (digits),
-					   &indexes[i * POINTS_PER_BOARD], POINTS_PER_BOARD);
-		drawSpacedText(start, start + change, boardStart.y - 1, pieceSpacing, (int) (digits),
-					   &indexes[nPoints + i * POINTS_PER_BOARD], POINTS_PER_BOARD);
-		start += change + borders + BAR_WIDTH + pieceSpacing / 2 * 2;
-	}
+	drawIndexes(indexes, (int) (digits), boardStart, boardEnd);
 
 	attroff(COLOR_PAIR(FOREGROUND));
 
@@ -85,7 +74,7 @@ void uiStaff(const int *menuSelected, int *dice1, int *dice2) {
 	refresh();
 
 	/// CLEAR MEMORY!!!
-	for (int i = 0; i < totalNumbers; ++i) {
+	for (int i = 0; i < nPoints; ++i) {
 		delete[] indexes[i];
 	}
 	delete[] indexes;
@@ -172,7 +161,22 @@ void drawBar(int offsetX, int offsetY, int height) {
 	mvprintw(offsetY + (height) / 2, offsetX - (int) (sizeof(barLabel)) / 2 + 1, barLabel);
 }
 
-void drawSpacedText(int minX, int maxX, int offsetY, const int spacing, const int len, char **text, const int count) {
+void drawIndexes(char **indexes, int digits, Pos boardStart, Pos boardEnd) {
+
+	revertTable(indexes, indexes + nPoints / 2);
+
+	int start = boardStart.x + BORDER_WIDTH + pieceSpacing / 2;
+	for (int i = 0; i < N_BOARDS; ++i) {
+		int change = pieceWidth * POINTS_PER_BOARD + pieceSpacing * (POINTS_PER_BOARD - 1);
+		drawSpacedText(start, start + change, boardEnd.y, pieceSpacing, (int) (digits),
+					   &indexes[i * POINTS_PER_BOARD], POINTS_PER_BOARD);
+		drawSpacedText(start, start + change, boardStart.y - 1, pieceSpacing, (int) (digits),
+					   &indexes[nPoints / 2 + i * POINTS_PER_BOARD], POINTS_PER_BOARD);
+		start += change + BORDER_WIDTH * 2 + BAR_WIDTH + pieceSpacing / 2 * 2;
+	}
+}
+
+void drawSpacedText(int minX, int maxX, int offsetY, int spacing, int len, char **text, int count) {
 	int center = minX + (maxX - minX) / 2;
 	int textWidth = count * (len) + spacing * (count - 1);
 	int startPoint = center - textWidth / 2;
