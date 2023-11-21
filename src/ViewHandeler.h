@@ -6,10 +6,11 @@
 #define BACKGAMMONGAME_VIEWHANDELER_H
 
 #include "ViewModel.h"
+#include "Utility.h"
 
 void setColourTheme(short baseRed = 0, short baseGreen = 166, short baseBlue = 0);
 
-void drawLine(const char *symbol, int fromX, int toX, int fromY, int toY);
+void drawLine(const char *symbol, Placement pos);
 
 void drawPieces(int offsetX, int offsetY);
 
@@ -17,7 +18,9 @@ void drawPiece(const char *symbol, int offsetX, int offsetY);
 
 void drawBar(int offsetX, int offsetY, int height);
 
-void drawBorders(int offsetX, int offsetY, int width, int height);
+void drawCorners(Placement pos);
+
+void drawBorders(Placement pos);
 
 void drawSpacedText(int minX, int maxX, int offsetY, int spacing, int len, char **text, int count);
 
