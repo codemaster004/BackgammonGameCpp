@@ -5,8 +5,6 @@
 #ifndef BACKGAMMONGAME_BOARD_H
 #define BACKGAMMONGAME_BOARD_H
 
-#include "string"
-
 #include "../configs/GameConfigs.h"
 
 
@@ -50,16 +48,6 @@ typedef struct {
 	int players[N_PLAYERS];
 	int *currentPlayer;
 } Board;
-
-typedef struct {
-	std::string gameName;
-	std::string authorName;
-	int authorId;
-	Board board;
-	// TODO: create/implement structure for keeping currentPlayersScores
-	int currentScores[PLAYERS_PER_GAME];
-
-} UserInterface;
 
 void setClearBoard(Board *gameBoard);
 
