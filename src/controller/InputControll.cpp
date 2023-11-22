@@ -5,10 +5,10 @@
 #include "ncurses.h"
 #include "cstdlib"
 
-#include "configs/GameConfigs.h"
-#include "model/Board.h"
-#include "Controller.h"
-#include "model/Pawn.h"
+#include "../configs/GameConfigs.h"
+#include "../model/Board.h"
+#include "InputControll.h"
+#include "../model/Pawn.h"
 
 
 void handleGame(Board *game) {
@@ -41,17 +41,17 @@ void numberInputController(int input, int *inputtedNumber) {
 }
 
 void inputController(int input, Board *game, int *menu, bool *gameEnded, int *dice1, int *dice2, int *inputtedNumber) {
-	numberInputController(input, inputtedNumber);
-	if (input == '\r' || input == '\n') {
-		movePawn(game, *inputtedNumber, *dice1);
-		*inputtedNumber = 0;
-	}
+//	numberInputController(input, inputtedNumber);
+//	if (input == '\r' || input == '\n') {
+//		movePawn(game, *inputtedNumber, *dice1);
+//		*inputtedNumber = 0;
+//	}
 	switch (input) {
 		// TODO: Probably rewrite for more options
 		case '\n':
 		case '\r':
 			*dice1 = 0; // TODO: RANDOM
-//			inputController((int) (menuKeys[*menu]), nullptr, menu, gameEnded, dice1, dice2, nullptr);
+			inputController((int) (menuKeys[*menu]), nullptr, menu, gameEnded, dice1, dice2, nullptr);
 			break;
 		case KEY_UP:
 			break;
