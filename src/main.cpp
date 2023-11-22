@@ -18,7 +18,6 @@ void startScreen(int argc, char **argv);
 
 int getInput(int argc, char **argv);
 
-// TODO: Some main while loop for handling user interaction
 int main(int argc, char **argv) {
 	startScreen(argc, argv);
 
@@ -33,7 +32,7 @@ int main(int argc, char **argv) {
 	int dice1 = 0, dice2 = 0;
 	int menuSelected = 0;
 
-	uiStaff(&UI, &menuSelected, &dice1, &dice2);
+	generateBasicBoard(&UI, &menuSelected, &dice1, &dice2);
 
 	int ch;
 	bool gameEnded = false;
@@ -44,7 +43,12 @@ int main(int argc, char **argv) {
 		if (gameEnded)
 			break;
 
-		uiStaff(&UI, &menuSelected, &dice1, &dice2);
+		generateBasicBoard(&UI, &menuSelected, &dice1, &dice2);
+
+		generateInteractiveUI();
+
+		// Refresh the screen to show changes
+		refresh();
 	}
 
 	// Finish curses mode

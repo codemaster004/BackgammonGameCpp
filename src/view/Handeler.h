@@ -22,6 +22,8 @@ void handleMenu(MenuElement *options, int length, int selected, int centerX, int
 
 void handleIndexes(char **indexes, MenuMode drawMode, int digits, Placement pos);
 
-void uiStaff(UserInterface *ui, const int *menuSelected, int *dice1, int *dice2);
+void generateBasicBoard(UserInterface *ui, const int *menuSelected, int *dice1, int *dice2);
+
+void generateInteractiveUI();
 
 #endif //BACKGAMMONGAME_HANDELER_H

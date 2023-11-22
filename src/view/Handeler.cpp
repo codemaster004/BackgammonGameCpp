@@ -30,12 +30,7 @@ Pos initCenter(Placement space) {
 }
 
 // TODO: Implement UI generating
-void uiStaff(UserInterface *ui, const int *menuSelected, int *dice1, int *dice2) {
-
-	auto *testMenu = new MenuElement[N_MENU_OPTIONS];
-	for (int i = 0; i < N_MENU_OPTIONS; ++i) {
-		testMenu[i] = MenuElement{.id=i, .value=menuOptions[i]};
-	}
+void generateBasicBoard(UserInterface *ui, const int *menuSelected, int *dice1, int *dice2) {
 
 	// TODO: Separete functionS
 	Placement boardSpace = initBoard();
@@ -51,21 +46,26 @@ void uiStaff(UserInterface *ui, const int *menuSelected, int *dice1, int *dice2)
 	Placement diceSpace = initDice(boardSpace);
 	handleDices(diceSpace, boardCenter);
 
+	attroff(COLOR_PAIR(FOREGROUND));
+
+}
+
+void generateInteractiveUI() {
+	auto *testMenu = new MenuElement[N_MENU_OPTIONS];
+	for (int i = 0; i < N_MENU_OPTIONS; ++i) {
+		testMenu[i] = MenuElement{.id=i, .value=menuOptions[i]};
+	}
+
 	// Indexes
 	uint digits = nDigits(nPoints, 10);
 	char **indexes = new char *[nPoints];
 	for (int i = 0; i < nPoints; ++i) {
 		indexes[i] = numberToString(i, (int) (digits));
 	}
-	handleIndexes(indexes, DEFAULT, (int) (digits), boardSpace);
+//	handleIndexes(indexes, DEFAULT, (int) (digits), boardSpace);
 
-	attroff(COLOR_PAIR(FOREGROUND));
-
-	handleMenu(testMenu, N_MENU_OPTIONS, *menuSelected, boardCenter.x,
-			   boardSpace.max.y + MENU_TOP_SPACING);
-
-	// Refresh the screen to show changes
-	refresh();
+//	handleMenu(testMenu, N_MENU_OPTIONS, *menuSelected, boardCenter.x,
+//			   boardSpace.max.y + MENU_TOP_SPACING);
 
 	/// CLEAR MEMORY!!!
 	for (int i = 0; i < nPoints; ++i) {
@@ -73,6 +73,7 @@ void uiStaff(UserInterface *ui, const int *menuSelected, int *dice1, int *dice2)
 	}
 	delete[] indexes;
 	delete[] testMenu;
+
 }
 
 void handleBoardOutline(Placement space) {
@@ -134,7 +135,6 @@ void handleIndexes(char **indexes, MenuMode drawMode, int digits, Placement pos)
 	}
 }
 
-// TODO: DIVIDE
 void handleMenu(MenuElement *options, int length, int selected, int centerX, int offsetY) {
 	uint menuRealLen = OPTION_SPACING * (length - 1);
 	for (int i = 0; i < length; ++i) {
