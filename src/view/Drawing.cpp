@@ -9,9 +9,9 @@
 #include "Drawing.h"
 
 void printColor(UiColorsId color, int x, int y, const char *text) {
-	attron(COLOR_PAIR(FOREGROUND_LIGHT));
+	attron(COLOR_PAIR(color));
 	mvprintw(y, x, "%s", text);
-	attroff(COLOR_PAIR(FOREGROUND_LIGHT));
+	attroff(COLOR_PAIR(color));
 }
 
 void drawLine(const char *symbol, Placement pos) {
@@ -71,6 +71,7 @@ void drawPieces(int offsetX, int offsetY) {
 	drawPiece(piece2, offsetX, offsetY + PAWNS_PER_POINT + pieceSpacing);
 }
 
+// TODO: REwrite to use Placemnt
 void drawSpacedText(int minX, int maxX, int offsetY, int spacing, int len, char **text, int count) {
 	int center = minX + (maxX - minX) / 2;
 	int textWidth = count * (len) + spacing * (count - 1);
@@ -82,4 +83,21 @@ void drawSpacedText(int minX, int maxX, int offsetY, int spacing, int len, char 
 		mvprintw(offsetY, startPoint, "%s", text[i]);
 		startPoint += len + spacing;
 	}
+}
+
+void setColor(short colorName, short nRed, short nGreen, short nBlue, float diff) {
+	init_color(colorName,
+			   capAt(multiply(nRed, diff), 1000),
+			   capAt(multiply(nGreen, diff), 1000),
+			   capAt(multiply(nBlue, diff), 1000));
+}
+
+void setColourTheme(short baseRed, short baseGreen, short baseBlue) {
+	float nMultiplier = 1000.0 / 255.0;
+	short nRed = capAt(multiply(baseRed, nMultiplier), 1000),
+		nGreen = capAt(multiply(baseGreen, nMultiplier), 1000),
+		nBlue = capAt(multiply(baseBlue, nMultiplier), 1000);
+	setColor(COLOUR_MAIN, nRed, nGreen, nBlue, 1);
+	setColor(COLOUR_MAIN_DARK, nRed, nGreen, nBlue, (1 - colorDiff));
+	setColor(COLOUR_MAIN_LIGHT, nRed, nGreen, nBlue, (1 + colorDiff));
 }

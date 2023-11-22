@@ -16,9 +16,14 @@ char *reverseString(const char *str) {
 	return reversed;
 }
 
-short multiplyFloat(short baseColor, float multiplier, short max) {
-	short res = (short) ((float) baseColor * multiplier);
-	return res > max ? max : res;
+// TODO: REpair: remove max
+short multiply(short baseColor, float multiplier) {
+	auto res = (short) ((float) baseColor * multiplier);
+	return res;
+}
+
+short capAt(short value, short max) {
+	return value > max ? max : value;
 }
 
 int max(int a, int b) {

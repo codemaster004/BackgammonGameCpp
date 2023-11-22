@@ -8,8 +8,6 @@
 #include "../viewModel/UserInterface.h"
 #include "../Utility.h"
 
-void setColourTheme(short baseRed = 0, short baseGreen = 166, short baseBlue = 0);
-
 void handleBoardOutline(Placement space);
 
 void handlePieces(Placement space);

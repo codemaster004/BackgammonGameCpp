@@ -111,23 +111,6 @@ void handleDices(Placement space, Pos center) {
 	}
 }
 
-void setColourTheme(short baseRed, short baseGreen, short baseBlue) {
-	float nMultiplier = 1000.0 / 255.0;
-	short nRed = multiplyFloat(baseRed, nMultiplier, 1000.0),
-		nGreen = multiplyFloat(baseGreen, nMultiplier, 1000.0),
-		nBlue = multiplyFloat(baseBlue, nMultiplier, 1000.0);
-	init_color(COLOUR_MAIN, nRed, nGreen, nBlue);
-	// TODO: Conversion in a function
-	init_color(COLOUR_MAIN_DARK,
-			   multiplyFloat(nRed, (1 - colorDiff), 1000.0),
-			   multiplyFloat(nGreen, (1 - colorDiff), 1000.0),
-			   multiplyFloat(nBlue, (1 - colorDiff), 1000.0));
-	init_color(COLOUR_MAIN_LIGHT,
-			   multiplyFloat(nRed, (1 + colorDiff), 1000.0),
-			   multiplyFloat(nGreen, (1 + colorDiff), 1000.0),
-			   multiplyFloat(nBlue, (1 + colorDiff), 1000.0));
-}
-
 void drawBar(int offsetX, int offsetY, int height) {
 	mvprintw(offsetY, offsetX, borderCorner);
 	drawLine(borderVertical, Placement{offsetX, offsetY + 1,

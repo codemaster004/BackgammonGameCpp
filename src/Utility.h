@@ -19,7 +19,9 @@ typedef struct {
 
 char* reverseString(const char* str);
 
-short multiplyFloat(short baseColor, float multiplier, short max);
+short multiply(short baseColor, float multiplier);
+
+short capAt(short value, short max);
 
 int max(int a, int b);
 
