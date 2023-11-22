@@ -9,7 +9,7 @@
 
 void handleGame(Board *game);
 
-void inputController(int input, int *menu, bool *gameEnded, int *dice1, int *dice2);
+void inputController(int input, Board *game, int *menu, bool *gameEnded, int *dice1, int *dice2, int *inputtedNumber);
 
 void movePawn(Board *game, int fromIndex, int moveBy);
 
