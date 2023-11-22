@@ -8,6 +8,12 @@
 #include "../configs/UIConfigs.h"
 #include "Drawing.h"
 
+void printColor(UiColorsId color, int x, int y, const char *text) {
+	attron(COLOR_PAIR(FOREGROUND_LIGHT));
+	mvprintw(y, x, "%s", text);
+	attroff(COLOR_PAIR(FOREGROUND_LIGHT));
+}
+
 void drawLine(const char *symbol, Placement pos) {
 	int deltaX = pos.max.x - pos.min.x;
 	int deltaY = pos.max.y - pos.min.y;

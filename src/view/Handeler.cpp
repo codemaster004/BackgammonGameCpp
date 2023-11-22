@@ -9,21 +9,21 @@
 
 
 Placement initBoard() {
-	Placement space {.min={OFFSET_X, OFFSET_Y}};
-	space.max={space.min.x + N_BOARDS * (boardWidth + borders + BAR_WIDTH) - BAR_WIDTH - 1,
-			   space.min.y + boardHeight + borders - 1};
+	Placement space{.min={OFFSET_X, OFFSET_Y}};
+	space.max = {space.min.x + N_BOARDS * (boardWidth + borders + BAR_WIDTH) - BAR_WIDTH - 1,
+				 space.min.y + boardHeight + borders - 1};
 	return space;
 }
 
 Placement initDice(Placement board) {
-	return Placement {
+	return Placement{
 		.min={board.max.x, board.min.y},
 		.max={board.max.x + DICE_WIDTH + borders - 1, board.max.y},
 	};
 }
 
 Pos initCenter(Placement space) {
-	return Pos {
+	return Pos{
 		.x=space.min.x + (space.max.x - space.min.x) / 2,
 		.y=space.min.y + (space.max.y - space.min.y) / 2
 	};
@@ -128,10 +128,6 @@ void setColourTheme(short baseRed, short baseGreen, short baseBlue) {
 			   multiplyFloat(nBlue, (1 + colorDiff), 1000.0));
 }
 
-
-
-
-
 void drawBar(int offsetX, int offsetY, int height) {
 	mvprintw(offsetY, offsetX, borderCorner);
 	drawLine(borderVertical, Placement{offsetX, offsetY + 1,
@@ -142,7 +138,6 @@ void drawBar(int offsetX, int offsetY, int height) {
 }
 
 void handleIndexes(char **indexes, MenuMode drawMode, int digits, Placement pos) {
-
 	revertTable(indexes, indexes + nPoints / 2);
 
 	int start = pos.min.x + BORDER_WIDTH + pieceSpacing / 2;
@@ -156,8 +151,6 @@ void handleIndexes(char **indexes, MenuMode drawMode, int digits, Placement pos)
 	}
 }
 
-
-
 // TODO: DIVIDE
 void handleMenu(MenuElement *options, int length, int selected, int centerX, int offsetY) {
 	uint menuRealLen = OPTION_SPACING * (length - 1);
@@ -167,15 +160,10 @@ void handleMenu(MenuElement *options, int length, int selected, int centerX, int
 
 	int startingPoint = centerX - (int) (menuRealLen / 2);
 	for (int i = 0; i < length; ++i) {
-		// TODO: Maybe callback?
 		if (options[i].id == selected) {
-			attron(COLOR_PAIR(FOREGROUND_LIGHT));
-			mvprintw(offsetY, startingPoint, "%s", options[i].value);
-			attroff(COLOR_PAIR(FOREGROUND_LIGHT));
+			printColor(FOREGROUND_LIGHT, startingPoint, offsetY, options[i].value);
 		} else {
-			attron(COLOR_PAIR(FOREGROUND_DARK));
-			mvprintw(offsetY, startingPoint, "%s", options[i].value);
-			attroff(COLOR_PAIR(FOREGROUND_DARK));
+			printColor(FOREGROUND_DARK, startingPoint, offsetY, options[i].value);
 		}
 		startingPoint += (int) (len(options[i].value) - 1) + OPTION_SPACING;
 	}

@@ -7,6 +7,8 @@
 
 #include "../Utility.h"
 
+void printColor(UiColorsId color, int x, int y, const char *text);
+
 void drawLine(const char *symbol, Placement pos);
 
 void drawCorners(Placement pos);
