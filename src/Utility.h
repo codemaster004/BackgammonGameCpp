@@ -12,6 +12,11 @@ typedef struct {
 	int y;
 } Pos;
 
+typedef struct {
+	Pos min;
+	Pos max;
+} Placement;
+
 char* reverseString(const char* str);
 
 short multiplyFloat(short baseColor, float multiplier, short max);

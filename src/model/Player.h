@@ -5,6 +5,7 @@
 #ifndef BACKGAMMONGAME_PLAYER_H
 #define BACKGAMMONGAME_PLAYER_H
 
+// TODO: Use char
 #include "string"
 
 #include "../configs/GameConfigs.h"

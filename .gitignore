@@ -4,3 +4,6 @@ cmake-build-debug
 
 # Run .sh files
 *.sh
+
+# Local input file
+input.txt
