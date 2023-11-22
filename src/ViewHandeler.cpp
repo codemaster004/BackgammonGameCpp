@@ -11,6 +11,28 @@
 #include "Utility.h"
 #include "ViewModel.h"
 
+
+Placement initBoard() {
+	Placement space {.min={OFFSET_X, OFFSET_Y}};
+	space.max={space.min.x + N_BOARDS * (boardWidth + borders + BAR_WIDTH) - BAR_WIDTH - 1,
+			   space.min.y + boardHeight + borders - 1};
+	return space;
+}
+
+Placement initDice(Placement board) {
+	return Placement {
+		.min={board.max.x, board.min.y},
+		.max={board.max.x + DICE_WIDTH + borders - 1, board.max.y},
+	};
+}
+
+Pos initCenter(Placement space) {
+	return Pos {
+		.x=space.min.x + (space.max.x - space.min.x) / 2,
+		.y=space.min.y + (space.max.y - space.min.y) / 2
+	};
+}
+
 // TODO: Implement UI generating
 void uiStaff(UserInterface *ui, const int *menuSelected, int *dice1, int *dice2) {
 
@@ -30,20 +52,6 @@ void uiStaff(UserInterface *ui, const int *menuSelected, int *dice1, int *dice2)
 	Pos boardCenter = initCenter(boardSpace);
 
 	// Dies
-	int dicesHeight = DICE_HEIGHT * N_DICES + (N_DICES + 1) * BORDER_WIDTH;
-	Placement diceSpace = {
-		.min={boardSpace.max.x, boardSpace.min.y},
-		.max={boardSpace.max.x + DICE_WIDTH + borders - 1, boardSpace.max.y},
-	};
-	drawBorders(diceSpace);
-
-	diceSpace.min.y = boardCenter.y - dicesHeight / 2;
-	for (int i = 0; i < N_DICES; ++i) {
-		diceSpace.max.y=diceSpace.min.y + DICE_HEIGHT + 2 * BAR_WIDTH - 1;
-		drawBorders(diceSpace);
-		mvaddch(diceSpace.min.y + BORDER_WIDTH, diceSpace.min.x + BORDER_WIDTH + DICE_WIDTH / 2, *dice1 + 48);
-		diceSpace.min.y += DICE_HEIGHT + BORDER_WIDTH;
-	}
 	Placement diceSpace = initDice(boardSpace);
 	handleDices(diceSpace, boardCenter);
 
