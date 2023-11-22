@@ -26,19 +26,32 @@ void handleGame(Board *game) {
 	setupGame(game, white, black);
 
 	// TODO: SEPARATE
-	game->currentPlayer = &player1;
-	int dice1 = 2, dice2 = 5;
-	movePawn(game, 0, dice1);
-	movePawn(game, 0, dice1);
-	game->currentPlayer = &player2;
+//	game->currentPlayer = &player1;
+//	int dice1 = 2, dice2 = 5;
+//	movePawn(game, 0, dice1);
+//	movePawn(game, 0, dice1);
+//	game->currentPlayer = &player2;
 }
 
-void inputController(int input, int *menu, bool *gameEnded, int *dice1, int *dice2) {
+void numberInputController(int input, int *inputtedNumber) {
+	if (input >= '0' && input <= '9') {
+		*inputtedNumber *= 10;
+		*inputtedNumber += (int) (input - '0');
+	}
+}
+
+void inputController(int input, Board *game, int *menu, bool *gameEnded, int *dice1, int *dice2, int *inputtedNumber) {
+	numberInputController(input, inputtedNumber);
+	if (input == '\r' || input == '\n') {
+		movePawn(game, *inputtedNumber, *dice1);
+		*inputtedNumber = 0;
+	}
 	switch (input) {
 		// TODO: Probably rewrite for more options
 		case '\n':
 		case '\r':
-			inputController((int) (menuKeys[*menu]), menu, gameEnded, dice1, dice2);
+			*dice1 = 0; // TODO: RANDOM
+//			inputController((int) (menuKeys[*menu]), nullptr, menu, gameEnded, dice1, dice2, nullptr);
 			break;
 		case KEY_UP:
 			break;
@@ -59,7 +72,7 @@ void inputController(int input, int *menu, bool *gameEnded, int *dice1, int *dic
 		case 'u':
 			break;
 		case 'r':
-			*dice1 = rand() % 6 + 1;
+			*dice1 += 1; // TODO: RANDOM
 			*dice2 = rand() % 6 + 1;
 			break;
 		case 'q':

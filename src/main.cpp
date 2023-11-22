@@ -15,6 +15,8 @@
 
 void startScreen(int argc, char **argv);
 
+int getInput(int argc, char **argv);
+
 // TODO: Some main while loop for handling user interaction
 int main(int argc, char **argv) {
 	startScreen(argc, argv);
@@ -28,14 +30,16 @@ int main(int argc, char **argv) {
 	handleGame(&UI.board);
 
 	int dice1 = 0, dice2 = 0;
-	int menuSelected = 3;
+	int menuSelected = 0;
 
 	uiStaff(&UI, &menuSelected, &dice1, &dice2);
 
 	int ch;
 	bool gameEnded = false;
-	while((ch = getch()) != 'q') {
-		inputController(ch, &menuSelected, &gameEnded, &dice1, &dice2);
+	int pickedPiece = 0;
+	while((ch = getInput(argc, argv)) != 'q') {
+
+		inputController(ch, &UI.board, &menuSelected, &gameEnded, &dice1, &dice2, &pickedPiece);
 		if (gameEnded)
 			break;
 
@@ -46,6 +50,13 @@ int main(int argc, char **argv) {
 	endwin();
 
 	return 0;
+}
+
+int getInput(int argc, char **argv) {
+	if (argc > 1)
+		return getch();
+	else
+		return getchar();
 }
 
 void startScreen(int argc, char **argv) {
