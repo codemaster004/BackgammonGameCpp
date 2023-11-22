@@ -5,6 +5,8 @@
 #ifndef BACKGAMMONGAME_UICONFIGS_H
 #define BACKGAMMONGAME_UICONFIGS_H
 
+#include "GameConfigs.h"
+
 // ncurses does not allow creating custom colour names so let's redefine their colors to yours to standardize the code
 #define COLOUR_MAIN COLOR_GREEN
 #define COLOUR_MAIN_LIGHT COLOR_BLUE
@@ -17,7 +19,10 @@
 #define DICE_HEIGHT 1
 
 #define OPTION_SPACING 3
-#define MENU_TOP_SPACING 2
+#define MENU_TOP_SPACING 3
+
+#define OFFSET_X 3
+#define OFFSET_Y 1
 
 #define COLOR_THEME 00, 200, 00
 
@@ -35,9 +40,6 @@ const char borderCorner[] = { "+" };
 
 const char barLabel[] = {"[BAR]"};
 
-const int boardOffsetX = 3;
-const int boardOffsetY = 1;
-
 const char piece1[] = { "/\\" };
 const char piece2[] = { "''" };
 
@@ -45,5 +47,11 @@ const int pieceWidth = 2;
 const int pieceSpacing = 3;
 
 const float colorDiff = 0.25;
+
+// Calculations
+const int borders = BORDER_WIDTH * 2;
+
+const int boardWidth = POINTS_PER_BOARD * pieceWidth + pieceSpacing * (POINTS_PER_BOARD - 1) + pieceSpacing / 2 * 2;
+const int boardHeight = PAWNS_PER_POINT * 2 + pieceSpacing;
 
 #endif //BACKGAMMONGAME_UICONFIGS_H

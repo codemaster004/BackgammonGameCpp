@@ -14,6 +14,12 @@ enum MenuMode {
 };
 
 typedef struct {
+	Placement board;
+	Placement dice;
+	Pos boardCenter;
+} GameSpace;
+
+typedef struct {
 	std::string gameName;
 	std::string authorName;
 	int authorId;

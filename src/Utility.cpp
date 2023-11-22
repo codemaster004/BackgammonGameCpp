@@ -40,7 +40,7 @@ uint nDigits(int n, int base) {
 		count *= base;
 		i++;
 	}
-	return --i;;
+	return --i;
 }
 
 uint maxInBase(int n, int base) {

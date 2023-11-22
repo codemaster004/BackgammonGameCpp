@@ -4,7 +4,6 @@
 #include <ncurses.h>
 #include "cmath"
 #include "string"
-#include "cstdio"
 
 #include "configs/UIConfigs.h"
 #include "configs/GameConfigs.h"
@@ -21,32 +20,14 @@ void uiStaff(UserInterface *ui, const int *menuSelected, int *dice1, int *dice2)
 	}
 
 	// TODO: Separete functionS
-	Placement boardSpace = {.min=Pos{.x=boardOffsetX, .y=boardOffsetY}, .max=Pos{.x=boardOffsetX, .y=boardOffsetY}};
-	Pos boardStart = {.x=boardOffsetX, .y=boardOffsetY};
-	Pos boardEnd = {.x=boardOffsetX, .y=boardOffsetY};
+	Placement boardSpace = initBoard();
 	attron(COLOR_PAIR(FOREGROUND));
-	int boardWidth = POINTS_PER_BOARD * pieceWidth + pieceSpacing * (POINTS_PER_BOARD - 1) + pieceSpacing / 2 * 2;
-	int boardHeight = PAWNS_PER_POINT * 2 + pieceSpacing;
 
-	int borders = BORDER_WIDTH * 2;
-	boardEnd.y += boardHeight + borders;
-	boardSpace.max.y += boardHeight + borders - 1;
-	for (int _ = 0; _ < N_BOARDS; ++_) {
-		boardSpace.max.x = boardSpace.min.x + boardWidth + borders - 1;
-		drawBorders(boardSpace);
+	handleBoardOutline(boardSpace);
+	handleBar();
+	handlePieces(boardSpace);
 
-		drawPieces(boardEnd.x + BORDER_WIDTH, boardStart.y + BORDER_WIDTH);
-		boardEnd.x += (boardWidth + borders + BAR_WIDTH);
-		boardSpace.min.x += boardWidth + borders + BAR_WIDTH;
-	}
-	for (int i = N_BOARDS - 1; i > 0; --i)
-		drawBar(boardOffsetX + (boardWidth + borders) * i, boardOffsetY, boardHeight + borders);
-	boardEnd.x -= BAR_WIDTH;
-
-	Pos boardCenter = {
-		.x=boardStart.x + (boardEnd.x - boardStart.x) / 2,
-		.y=boardStart.y + (boardEnd.y - boardStart.y) / 2
-	};
+	Pos boardCenter = initCenter(boardSpace);
 
 	// Dies
 	int dicesHeight = DICE_HEIGHT * N_DICES + (N_DICES + 1) * BORDER_WIDTH;
@@ -63,6 +44,8 @@ void uiStaff(UserInterface *ui, const int *menuSelected, int *dice1, int *dice2)
 		mvaddch(diceSpace.min.y + BORDER_WIDTH, diceSpace.min.x + BORDER_WIDTH + DICE_WIDTH / 2, *dice1 + 48);
 		diceSpace.min.y += DICE_HEIGHT + BORDER_WIDTH;
 	}
+	Placement diceSpace = initDice(boardSpace);
+	handleDices(diceSpace, boardCenter);
 
 	// Indexes
 	uint digits = nDigits(nPoints, 10);
@@ -70,14 +53,13 @@ void uiStaff(UserInterface *ui, const int *menuSelected, int *dice1, int *dice2)
 	for (int i = 0; i < nPoints; ++i) {
 		indexes[i] = numberToString(i, (int) (digits));
 	}
-	drawIndexes(indexes, DEFAULT, (int) (digits), boardStart, boardEnd);
+	drawIndexes(indexes, DEFAULT, (int) (digits), boardSpace);
 
 	attroff(COLOR_PAIR(FOREGROUND));
 
 	drawMenu(testMenu, N_MENU_OPTIONS, *menuSelected, boardCenter.x,
-			 boardEnd.y + MENU_TOP_SPACING);
+			 boardSpace.max.y + MENU_TOP_SPACING);
 
-	move(0, 0);
 	// Refresh the screen to show changes
 	refresh();
 
@@ -87,6 +69,42 @@ void uiStaff(UserInterface *ui, const int *menuSelected, int *dice1, int *dice2)
 	}
 	delete[] indexes;
 	delete[] testMenu;
+}
+
+void handleBoardOutline(Placement space) {
+	space.max.y = space.min.y + boardHeight + borders - 1;
+	for (int i = 0; i < N_BOARDS; ++i) {
+		space.max.x = space.min.x + boardWidth + borders - 1;
+		drawBorders(space);
+
+		space.min.x += boardWidth + borders + BAR_WIDTH;
+	}
+}
+
+void handlePieces(Placement space) {
+	space.min.x += BORDER_WIDTH;
+	space.min.y += BORDER_WIDTH;
+	for (int i = 0; i < N_BOARDS; ++i) {
+		drawPieces(space.min.x + (boardWidth + borders + BAR_WIDTH) * i, space.min.y);
+	}
+}
+
+void handleBar() {
+	for (int i = N_BOARDS - 1; i > 0; --i)
+		drawBar(OFFSET_X + (boardWidth + borders) * i, OFFSET_Y, boardHeight + borders);
+}
+
+void handleDices(Placement space, Pos center) {
+	drawBorders(space);
+
+	int dicesHeight = DICE_HEIGHT * N_DICES + (N_DICES + 1) * BORDER_WIDTH;
+	space.min.y = center.y - dicesHeight / 2;
+	for (int i = 0; i < N_DICES; ++i) {
+		space.max.y = space.min.y + DICE_HEIGHT + 2 * BAR_WIDTH - 1;
+		drawBorders(space);
+		mvaddch(space.min.y + BORDER_WIDTH, space.min.x + BORDER_WIDTH + DICE_WIDTH / 2, 0 + 48);
+		space.min.y += DICE_HEIGHT + BORDER_WIDTH;
+	}
 }
 
 void setColourTheme(short baseRed, short baseGreen, short baseBlue) {
@@ -123,14 +141,12 @@ void drawBorders(Placement pos) {
 
 void drawPiece(const char *symbol, int offsetX, int offsetY) {
 	int totalOffset = offsetX + pieceSpacing / 2;
-//	int totalOffsetY = offsetY;
 	for (int i = 0; i < PAWNS_PER_POINT; i += 2) {
 		Placement offset = {
 			.min = Pos{.x = totalOffset, .y = offsetY},
 			.max = Pos{.x = totalOffset, .y = offsetY + PAWNS_PER_POINT}
 		};
 		// placement
-//		drawLine(symbol, totalOffsetX, totalOffsetX, totalOffsetY, totalOffsetY + PAWNS_PER_POINT);
 		drawLine(symbol, offset);
 		totalOffset += (pieceWidth + pieceSpacing) * 2;
 	}
@@ -174,16 +190,16 @@ void drawBar(int offsetX, int offsetY, int height) {
 	mvprintw(offsetY + (height) / 2, offsetX - (int) (sizeof(barLabel)) / 2 + 1, barLabel);
 }
 
-void drawIndexes(char **indexes, MenuMode drawMode, int digits, Pos boardStart, Pos boardEnd) {
+void drawIndexes(char **indexes, MenuMode drawMode, int digits, Placement pos) {
 
 	revertTable(indexes, indexes + nPoints / 2);
 
-	int start = boardStart.x + BORDER_WIDTH + pieceSpacing / 2;
+	int start = pos.min.x + BORDER_WIDTH + pieceSpacing / 2;
 	for (int i = 0; i < N_BOARDS; ++i) {
 		int change = pieceWidth * POINTS_PER_BOARD + pieceSpacing * (POINTS_PER_BOARD - 1);
-		drawSpacedText(start, start + change, boardEnd.y, pieceSpacing, (int) (digits),
+		drawSpacedText(start, start + change, pos.max.y + 1, pieceSpacing, (int) (digits),
 					   &indexes[i * POINTS_PER_BOARD], POINTS_PER_BOARD);
-		drawSpacedText(start, start + change, boardStart.y - 1, pieceSpacing, (int) (digits),
+		drawSpacedText(start, start + change, pos.min.y - 1, pieceSpacing, (int) (digits),
 					   &indexes[nPoints / 2 + i * POINTS_PER_BOARD], POINTS_PER_BOARD);
 		start += change + BORDER_WIDTH * 2 + BAR_WIDTH + pieceSpacing / 2 * 2;
 	}
