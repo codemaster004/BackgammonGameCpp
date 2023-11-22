@@ -2,11 +2,11 @@
 // Created by Filip Dabkowski on 18/11/2023.
 //
 
-#ifndef BACKGAMMONGAME_VIEWMODEL_H
-#define BACKGAMMONGAME_VIEWMODEL_H
+#ifndef BACKGAMMONGAME_USERINTERFACE_H
+#define BACKGAMMONGAME_USERINTERFACE_H
 
 #include "string"
-#include "model/Board.h"
+#include "../model/Board.h"
 
 enum MenuMode {
 	DEFAULT,
@@ -34,4 +34,4 @@ typedef struct {
 	const char *value;
 } MenuElement;
 
-#endif //BACKGAMMONGAME_VIEWMODEL_H
+#endif //BACKGAMMONGAME_USERINTERFACE_H

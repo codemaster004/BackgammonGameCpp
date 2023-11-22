@@ -5,10 +5,10 @@
 #include "ncurses.h"
 #include "cstdlib"
 
-#include "configs/GameConfigs.h"
-#include "model/Board.h"
-#include "Controller.h"
-#include "model/Pawn.h"
+#include "../configs/GameConfigs.h"
+#include "../model/Board.h"
+#include "InputControll.h"
+#include "../model/Pawn.h"
 
 
 void handleGame(Board *game) {

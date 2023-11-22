@@ -8,9 +8,9 @@
 #include "cstdlib"
 #include "ctime"
 
-#include "ViewHandeler.h"
+#include "view/Handeler.h"
 #include "configs/UIConfigs.h"
-#include "Controller.h"
+#include "controller/InputControll.h"
 #include "model/Board.h"
 
 void startScreen(int argc, char **argv);
