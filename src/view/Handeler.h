@@ -26,4 +26,6 @@ void generateBasicBoard(UserInterface *ui, const int *menuSelected, int *dice1, 
 
 void generateInteractiveUI(UserInterface *ui, const int *menuSelected);
 
+void handlePawnPlacement(Board *game, Placement space);
+
 #endif //BACKGAMMONGAME_HANDELER_H

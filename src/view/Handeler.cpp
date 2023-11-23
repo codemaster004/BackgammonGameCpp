@@ -54,6 +54,8 @@ void generateInteractiveUI(UserInterface *ui, const int *menuSelected) {
 	handleMenu(testMenu, N_MENU_OPTIONS, *menuSelected,
 			   Pos{ui->space.boardCenter.x, ui->space.board.max.y + MENU_TOP_SPACING});
 
+	handlePawnPlacement(&ui->board, ui->space.board);
+
 	/// CLEAR MEMORY!!!
 	for (int i = 0; i < nPoints; ++i) {
 		delete[] indexes[i];
@@ -135,5 +137,44 @@ void handleMenu(MenuElement *options, int optionCount, int selected, Pos center)
 			printColor(FOREGROUND_DARK, menuSpace.min.x, menuSpace.min.y, options[i].value);
 		}
 		menuSpace.min.x += (int) (len(options[i].value) - 1) + OPTION_SPACING;
+	}
+}
+
+void handlePawnPlacement(Board *game, Placement space) {
+	space.min.x += BORDER_WIDTH + pieceSpacing / 2;
+	space.min.y += BORDER_WIDTH;
+	space.max.x = space.min.x;
+	int change = pieceWidth + pieceSpacing;
+	for (int i = 0; i < N_BOARDS; ++i) {
+		for (int j = 0; j < POINTS_PER_BOARD; ++j) {
+			int indexTop = POINTS_PER_BOARD * N_BOARDS + i * POINTS_PER_BOARD + j;
+			int count = game->points[indexTop].pawnsInside;
+			if (count) {
+				space.max.y = space.min.y + count;
+				drawLine(*game->points[indexTop].pawns[0], space);
+			}
+
+			int indexBot = POINTS_PER_BOARD * N_BOARDS - (i * POINTS_PER_BOARD + j) - 1;
+			count = game->points[indexBot].pawnsInside;
+			if (count) {
+				moveSpace(&space, Pos {0, boardHeight - count});
+				drawLine(*game->points[indexBot].pawns[0], space);
+				moveSpace(&space, Pos {0, - boardHeight + count});
+			}
+
+//			drawLine(pawn1, space);
+			moveSpace(&space, Pos{change, 0});
+		}
+		moveSpace(&space, Pos{pieceSpacing / 2 * 2 + borders + BAR_WIDTH - pieceSpacing, 0});
+//		int totalOffset = offsetX + pieceSpacing / 2;
+//		for (int i = 0; i < PAWNS_PER_POINT; i += 2) {
+//			Placement offset = {
+//				.min = Pos{.x = totalOffset, .y = offsetY},
+//				.max = Pos{.x = totalOffset, .y = offsetY + PAWNS_PER_POINT}
+//			};
+//			// placement
+//			drawLine(symbol, offset);
+//			totalOffset += (pieceWidth + pieceSpacing) * 2;
+//		}
 	}
 }
