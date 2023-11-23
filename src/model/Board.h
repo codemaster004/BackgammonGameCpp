@@ -9,8 +9,8 @@
 
 
 enum PawnColor {
-	WHITE,
-	BLACK
+	PAWN_WHITE,
+	PAWN_BLACK,
 };
 
 typedef struct {
