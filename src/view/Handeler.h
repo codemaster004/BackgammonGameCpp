@@ -18,9 +18,9 @@ void handleDices(Placement space, Pos center);
 
 void drawBar(int offsetX, int offsetY, int height);
 
-void handleMenu(MenuElement *options, int length, int selected, int centerX, int offsetY);
+void handleMenu(MenuElement *options, int optionCount, int selected, Pos center);
 
-void handleIndexes(char **indexes, MenuMode drawMode, int digits, Placement pos1, Placement pos2);
+void handleIndexes(char **indexes, int digits, Placement pos1, Placement pos2);
 
 void generateBasicBoard(UserInterface *ui, const int *menuSelected, int *dice1, int *dice2);
 

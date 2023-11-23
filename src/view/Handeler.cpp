@@ -8,6 +8,20 @@
 #include "Drawing.h"
 
 
+Placement initMenu(Pos center, MenuElement *values, int nElements) {
+	uint realLen = OPTION_SPACING * (nElements - 1);
+	for (int i = 0; i < nElements; ++i) {
+		realLen += len(values[i].value) - 1;
+	}
+	return Placement{
+		.min={
+			.x=center.x - (int) (realLen / 2),
+			.y=center.y
+		},
+		.max {.x=center.x + (int) (realLen / 2)}
+	};
+}
+
 void generateBasicBoard(UserInterface *ui, const int *menuSelected, int *dice1, int *dice2) {
 	attron(COLOR_PAIR(FOREGROUND));
 
@@ -34,11 +48,11 @@ void generateInteractiveUI(UserInterface *ui, const int *menuSelected) {
 		indexes[i] = numberToString(i, (int) (digits));
 	}
 	attron(COLOR_PAIR(FOREGROUND));
-	handleIndexes(indexes, DEFAULT, (int) (digits), ui->space.indexesTop, ui->space.indexesBottom);
+	handleIndexes(indexes, (int) (digits), ui->space.indexesTop, ui->space.indexesBottom);
 	attroff(COLOR_PAIR(FOREGROUND));
 
-//	handleMenu(testMenu, N_MENU_OPTIONS, *menuSelected, boardCenter.x,
-//			   boardSpace.max.y + MENU_TOP_SPACING);
+	handleMenu(testMenu, N_MENU_OPTIONS, *menuSelected,
+			   Pos{ui->space.boardCenter.x, ui->space.board.max.y + MENU_TOP_SPACING});
 
 	/// CLEAR MEMORY!!!
 	for (int i = 0; i < nPoints; ++i) {
@@ -94,7 +108,7 @@ void drawBar(int offsetX, int offsetY, int height) {
 	mvprintw(offsetY + (height) / 2, offsetX - (int) (sizeof(barLabel)) / 2 + 1, barLabel);
 }
 
-void handleIndexes(char **indexes, MenuMode drawMode, int digits, Placement pos1, Placement pos2) {
+void handleIndexes(char **indexes, int digits, Placement pos1, Placement pos2) {
 	revertTable(indexes, indexes + nPoints / 2);
 
 	for (int i = 0; i < N_BOARDS; ++i) {
@@ -111,19 +125,15 @@ void handleIndexes(char **indexes, MenuMode drawMode, int digits, Placement pos1
 	}
 }
 
-void handleMenu(MenuElement *options, int length, int selected, int centerX, int offsetY) {
-	uint menuRealLen = OPTION_SPACING * (length - 1);
-	for (int i = 0; i < length; ++i) {
-		menuRealLen += len(options[i].value) - 1;
-	}
+void handleMenu(MenuElement *options, int optionCount, int selected, Pos center) {
+	Placement menuSpace = initMenu(center, options, optionCount);
 
-	int startingPoint = centerX - (int) (menuRealLen / 2);
-	for (int i = 0; i < length; ++i) {
+	for (int i = 0; i < optionCount; ++i) {
 		if (options[i].id == selected) {
-			printColor(FOREGROUND_LIGHT, startingPoint, offsetY, options[i].value);
+			printColor(FOREGROUND_LIGHT, menuSpace.min.x, menuSpace.min.y, options[i].value);
 		} else {
-			printColor(FOREGROUND_DARK, startingPoint, offsetY, options[i].value);
+			printColor(FOREGROUND_DARK, menuSpace.min.x, menuSpace.min.y, options[i].value);
 		}
-		startingPoint += (int) (len(options[i].value) - 1) + OPTION_SPACING;
+		menuSpace.min.x += (int) (len(options[i].value) - 1) + OPTION_SPACING;
 	}
 }
