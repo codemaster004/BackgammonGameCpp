@@ -17,6 +17,8 @@ typedef struct {
 	Placement board;
 	Placement dice;
 	Pos boardCenter;
+	Placement indexesTop;
+	Placement indexesBottom;
 } GameSpace;
 
 typedef struct {
@@ -27,6 +29,7 @@ typedef struct {
 	// TODO: create/implement structure for keeping currentPlayersScores
 	int currentScores[PLAYERS_PER_GAME];
 	MenuMode menuMode;
+	GameSpace space;
 } UserInterface;
 
 typedef struct {

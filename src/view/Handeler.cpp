@@ -8,49 +8,20 @@
 #include "Drawing.h"
 
 
-Placement initBoard() {
-	Placement space{.min={OFFSET_X, OFFSET_Y}};
-	space.max = {space.min.x + N_BOARDS * (boardWidth + borders + BAR_WIDTH) - BAR_WIDTH - 1,
-				 space.min.y + boardHeight + borders - 1};
-	return space;
-}
-
-Placement initDice(Placement board) {
-	return Placement{
-		.min={board.max.x, board.min.y},
-		.max={board.max.x + DICE_WIDTH + borders - 1, board.max.y},
-	};
-}
-
-Pos initCenter(Placement space) {
-	return Pos{
-		.x=space.min.x + (space.max.x - space.min.x) / 2,
-		.y=space.min.y + (space.max.y - space.min.y) / 2
-	};
-}
-
-// TODO: Implement UI generating
 void generateBasicBoard(UserInterface *ui, const int *menuSelected, int *dice1, int *dice2) {
-
-	// TODO: Separete functionS
-	Placement boardSpace = initBoard();
 	attron(COLOR_PAIR(FOREGROUND));
 
-	handleBoardOutline(boardSpace);
+	handleBoardOutline(ui->space.board);
 	handleBar();
-	handlePieces(boardSpace);
-
-	Pos boardCenter = initCenter(boardSpace);
+	handlePieces(ui->space.board);
 
 	// Dies
-	Placement diceSpace = initDice(boardSpace);
-	handleDices(diceSpace, boardCenter);
+	handleDices(ui->space.dice, ui->space.boardCenter);
 
 	attroff(COLOR_PAIR(FOREGROUND));
-
 }
 
-void generateInteractiveUI() {
+void generateInteractiveUI(UserInterface *ui, const int *menuSelected) {
 	auto *testMenu = new MenuElement[N_MENU_OPTIONS];
 	for (int i = 0; i < N_MENU_OPTIONS; ++i) {
 		testMenu[i] = MenuElement{.id=i, .value=menuOptions[i]};
@@ -62,7 +33,9 @@ void generateInteractiveUI() {
 	for (int i = 0; i < nPoints; ++i) {
 		indexes[i] = numberToString(i, (int) (digits));
 	}
-//	handleIndexes(indexes, DEFAULT, (int) (digits), boardSpace);
+	attron(COLOR_PAIR(FOREGROUND));
+	handleIndexes(indexes, DEFAULT, (int) (digits), ui->space.indexesTop, ui->space.indexesBottom);
+	attroff(COLOR_PAIR(FOREGROUND));
 
 //	handleMenu(testMenu, N_MENU_OPTIONS, *menuSelected, boardCenter.x,
 //			   boardSpace.max.y + MENU_TOP_SPACING);
@@ -121,17 +94,20 @@ void drawBar(int offsetX, int offsetY, int height) {
 	mvprintw(offsetY + (height) / 2, offsetX - (int) (sizeof(barLabel)) / 2 + 1, barLabel);
 }
 
-void handleIndexes(char **indexes, MenuMode drawMode, int digits, Placement pos) {
+void handleIndexes(char **indexes, MenuMode drawMode, int digits, Placement pos1, Placement pos2) {
 	revertTable(indexes, indexes + nPoints / 2);
 
-	int start = pos.min.x + BORDER_WIDTH + pieceSpacing / 2;
 	for (int i = 0; i < N_BOARDS; ++i) {
-		int change = pieceWidth * POINTS_PER_BOARD + pieceSpacing * (POINTS_PER_BOARD - 1);
-		drawSpacedText(start, start + change, pos.max.y + 1, pieceSpacing, (int) (digits),
+		// TODO: this value as default with for one
+		pos1.max.x = pos1.min.x + pieceWidth * POINTS_PER_BOARD + pieceSpacing * (POINTS_PER_BOARD - 1);
+		pos2.max.x = pos1.max.x;
+		drawSpacedText(pos2, pieceSpacing, (int) (digits),
 					   &indexes[i * POINTS_PER_BOARD], POINTS_PER_BOARD);
-		drawSpacedText(start, start + change, pos.min.y - 1, pieceSpacing, (int) (digits),
+		drawSpacedText(pos1, pieceSpacing, (int) (digits),
 					   &indexes[nPoints / 2 + i * POINTS_PER_BOARD], POINTS_PER_BOARD);
-		start += change + BORDER_WIDTH * 2 + BAR_WIDTH + pieceSpacing / 2 * 2;
+		// TODO: create a fucntion to handle moving by offset
+		pos1.min.x = pos1.max.x + BORDER_WIDTH * 2 + BAR_WIDTH + pieceSpacing / 2 * 2;
+		pos2.min.x = pos1.min.x;
 	}
 }
 

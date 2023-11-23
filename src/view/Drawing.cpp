@@ -72,15 +72,15 @@ void drawPieces(int offsetX, int offsetY) {
 }
 
 // TODO: REwrite to use Placemnt
-void drawSpacedText(int minX, int maxX, int offsetY, int spacing, int len, char **text, int count) {
-	int center = minX + (maxX - minX) / 2;
+void drawSpacedText(Placement pos, int spacing, int len, char **text, int count) {
+	int center = pos.min.x + (pos.max.x - pos.min.x) / 2;
 	int textWidth = count * (len) + spacing * (count - 1);
 	int startPoint = center - textWidth / 2;
-	if (startPoint < minX)
+	if (startPoint < pos.min.x)
 		return;
 
 	for (int i = 0; i < count; ++i) {
-		mvprintw(offsetY, startPoint, "%s", text[i]);
+		mvprintw(pos.min.y, startPoint, "%s", text[i]);
 		startPoint += len + spacing;
 	}
 }

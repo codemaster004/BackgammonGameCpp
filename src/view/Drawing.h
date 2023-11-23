@@ -19,7 +19,7 @@ void drawPiece(const char *symbol, int offsetX, int offsetY);
 
 void drawPieces(int offsetX, int offsetY);
 
-void drawSpacedText(int minX, int maxX, int offsetY, int spacing, int len, char **text, int count);
+void drawSpacedText(Placement pos, int spacing, int len, char **text, int count);
 
 void setColourTheme(short baseRed = 0, short baseGreen = 166, short baseBlue = 0);
 

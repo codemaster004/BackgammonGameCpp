@@ -18,14 +18,59 @@ void startScreen(int argc, char **argv);
 
 int getInput(int argc, char **argv);
 
+Placement initBoard() {
+	Placement space{.min={OFFSET_X, OFFSET_Y}};
+	space.max = {space.min.x + N_BOARDS * (boardWidth + borders + BAR_WIDTH) - BAR_WIDTH - 1,
+				 space.min.y + boardHeight + borders - 1};
+	return space;
+}
+
+Placement initDice(Placement board) {
+	return Placement{
+		.min={board.max.x, board.min.y},
+		.max={board.max.x + DICE_WIDTH + borders - 1, board.max.y},
+	};
+}
+
+Placement initIndex(Placement board, int offset) {
+	return Placement {
+		.min={
+			board.min.x + BORDER_WIDTH + pieceSpacing / 2,
+			offset,
+		},
+		.max={
+			board.max.x - BORDER_WIDTH - pieceSpacing / 2,
+		}
+	};
+}
+
+Pos initCenter(Placement space) {
+	return Pos{
+		.x=space.min.x + (space.max.x - space.min.x) / 2,
+		.y=space.min.y + (space.max.y - space.min.y) / 2
+	};
+}
+
+UserInterface initUI() {
+	UserInterface ui = UserInterface{
+		.authorId=197712,
+		.menuMode=DEFAULT,
+		.space=GameSpace{initBoard(),
+		}
+	};
+	Placement board = ui.space.board;
+	ui.space.boardCenter = initCenter(board);
+	ui.space.dice = initDice(board);
+	ui.space.indexesTop = initIndex(board, board.min.y - 1);
+	ui.space.indexesBottom = initIndex(board, board.max.y + 1);
+
+	return ui;
+}
+
 int main(int argc, char **argv) {
 	startScreen(argc, argv);
 
-	UserInterface UI = UserInterface{
-		.authorId=197712,
-		.menuMode=DEFAULT
-	};
-
+	UserInterface UI = initUI();
 	UI.board = Board{};
 	handleGame(&UI.board);
 
@@ -33,6 +78,7 @@ int main(int argc, char **argv) {
 	int menuSelected = 0;
 
 	generateBasicBoard(&UI, &menuSelected, &dice1, &dice2);
+	generateInteractiveUI(&UI, &menuSelected);
 
 	int ch;
 	bool gameEnded = false;
@@ -44,8 +90,7 @@ int main(int argc, char **argv) {
 			break;
 
 		generateBasicBoard(&UI, &menuSelected, &dice1, &dice2);
-
-		generateInteractiveUI();
+		generateInteractiveUI(&UI, &menuSelected);
 
 		// Refresh the screen to show changes
 		refresh();
