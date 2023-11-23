@@ -45,3 +45,11 @@ void moveSpace(Placement *space, Pos by) {
 	space->max.y += by.y;
 	space->max.x += by.x;
 }
+
+int width(Placement space) {
+	return 0;
+}
+
+int height(Placement space) {
+	return 0;
+}

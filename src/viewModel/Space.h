@@ -25,4 +25,8 @@ Pos initCenter(Placement space);
 
 void moveSpace(Placement *space, Pos by);
 
+int width(Placement space);
+
+int height(Placement space);
+
 #endif //BACKGAMMONGAME_SPACE_H
