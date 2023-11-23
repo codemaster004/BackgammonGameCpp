@@ -21,6 +21,8 @@ void drawPieces(int offsetX, int offsetY);
 
 void drawSpacedText(Placement pos, int spacing, int len, char **text, int count);
 
+void drawLine(Pawn pawn, Placement pos);
+
 void setColourTheme(short baseRed = 0, short baseGreen = 166, short baseBlue = 0);
 
 #endif //BACKGAMMONGAME_DRAWING_H

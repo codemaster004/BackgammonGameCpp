@@ -6,6 +6,7 @@
 #include "cmath"
 
 #include "../configs/UIConfigs.h"
+#include "../model/Board.h"
 #include "Drawing.h"
 
 void printColor(UiColorsId color, int x, int y, const char *text) {
@@ -30,6 +31,16 @@ void drawLine(const char *symbol, Placement pos) {
 		mvprintw((int) (y), (int) (x), "%s", symbol);
 		x += xIncrement;
 		y += yIncrement;
+	}
+}
+
+void drawLine(Pawn pawn, Placement pos) {
+	for (int y = pos.min.y; y < pos.max.y; y++) {
+		if (pawn.color == PAWN_WHITE) {
+			printColor(BACKGROUND_DARK, pos.min.x, y, pawn1);
+		} else if (pawn.color == PAWN_BLACK) {
+			printColor(BACKGROUND_LIGHT, pos.min.x, y, pawn2);
+		}
 	}
 }
 
@@ -64,8 +75,10 @@ void drawPiece(const char *symbol, int offsetX, int offsetY) {
 void drawPieces(int offsetX, int offsetY) {
 	char *reversePiece = reverseString(piece1);
 	drawPiece(reversePiece, offsetX, offsetY);
+
 	reversePiece = reverseString(piece2);
 	drawPiece(reversePiece, offsetX + pieceWidth + pieceSpacing, offsetY);
+
 	drawPiece(piece1, offsetX + pieceWidth + pieceSpacing,
 			  offsetY + PAWNS_PER_POINT + pieceSpacing);
 	drawPiece(piece2, offsetX, offsetY + PAWNS_PER_POINT + pieceSpacing);
