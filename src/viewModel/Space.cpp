@@ -21,7 +21,7 @@ Placement initDice(Placement board) {
 }
 
 Placement initIndex(Placement board, int offset) {
-	return Placement {
+	return Placement{
 		.min={
 			board.min.x + BORDER_WIDTH + pieceSpacing / 2,
 			offset,
