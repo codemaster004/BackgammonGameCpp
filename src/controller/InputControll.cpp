@@ -11,17 +11,16 @@
 #include "../model/Pawn.h"
 
 
-void handleGame(Board *game) {
+// TODO: REANME
+void handleGame(Board *game, Pawn white[], Pawn black[]) {
 	setClearBoard(game);
 
-	// TODO: move this somewhere where it makes sense
-	Pawn white[PAWNS_PER_PLAYER] = {};
-	Pawn black[PAWNS_PER_PLAYER] = {};
+	// TODO: Player struct here
 	int player1 = 1;
 	int player2 = 2;
 	for (int i = 0; i < PAWNS_PER_PLAYER; ++i) {
-		white[i] = Pawn{.owner=&player1, .id=i, .isHome=false, .isOnBar=false, .color=WHITE, .moveDirection=1};
-		black[i] = Pawn{.owner=&player2, .id=PAWNS_PER_PLAYER + i, .isHome=false, .isOnBar=false, .color=BLACK, .moveDirection=-1};
+		white[i] = Pawn{.owner=&player1, .id=i, .isHome=false, .isOnBar=false, .color=PAWN_WHITE, .moveDirection=1};
+		black[i] = Pawn{.owner=&player2, .id=PAWNS_PER_PLAYER + i, .isHome=false, .isOnBar=false, .color=PAWN_BLACK, .moveDirection=-1};
 	}
 	setupGame(game, white, black);
 

@@ -23,18 +23,21 @@ int main(int argc, char **argv) {
 
 	UserInterface UI = initUI();
 	UI.board = Board{};
-	handleGame(&UI.board);
+	Pawn white[PAWNS_PER_PLAYER] = {};
+	Pawn black[PAWNS_PER_PLAYER] = {};
+
+	handleGame(&UI.board, white, black);
 
 	int dice1 = 0, dice2 = 0;
 	int menuSelected = 0;
 
-	generateBasicBoard(&UI, &menuSelected, &dice1, &dice2);
+ 	generateBasicBoard(&UI, &menuSelected, &dice1, &dice2);
 	generateInteractiveUI(&UI, &menuSelected);
 
 	int ch;
 	bool gameEnded = false;
 	int pickedPiece = 0;
-	while((ch = getInput(argc, argv)) != 'q') {
+	while ((ch = getInput(argc, argv)) != 'q') {
 
 		inputController(ch, &UI.board, &menuSelected, &gameEnded, &dice1, &dice2, &pickedPiece);
 		if (gameEnded)
