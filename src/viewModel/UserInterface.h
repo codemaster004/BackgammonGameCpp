@@ -6,7 +6,9 @@
 #define BACKGAMMONGAME_USERINTERFACE_H
 
 #include "string"
+#include "../configs/GameConfigs.h"
 #include "../model/Board.h"
+#include "Space.h"
 
 enum MenuMode {
 	DEFAULT,
@@ -36,5 +38,7 @@ typedef struct {
 	int id;
 	const char *value;
 } MenuElement;
+
+UserInterface initUI();
 
 #endif //BACKGAMMONGAME_USERINTERFACE_H

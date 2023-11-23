@@ -71,7 +71,6 @@ void drawPieces(int offsetX, int offsetY) {
 	drawPiece(piece2, offsetX, offsetY + PAWNS_PER_POINT + pieceSpacing);
 }
 
-// TODO: REwrite to use Placemnt
 void drawSpacedText(Placement pos, int spacing, int len, char **text, int count) {
 	int center = pos.min.x + (pos.max.x - pos.min.x) / 2;
 	int textWidth = count * (len) + spacing * (count - 1);

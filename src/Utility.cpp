@@ -16,7 +16,6 @@ char *reverseString(const char *str) {
 	return reversed;
 }
 
-// TODO: REpair: remove max
 short multiply(short baseColor, float multiplier) {
 	auto res = (short) ((float) baseColor * multiplier);
 	return res;

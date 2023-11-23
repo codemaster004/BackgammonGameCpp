@@ -7,16 +7,6 @@
 
 typedef unsigned int uint;
 
-typedef struct {
-	int x;
-	int y;
-} Pos;
-
-typedef struct {
-	Pos min;
-	Pos max;
-} Placement;
-
 char* reverseString(const char* str);
 
 short multiply(short baseColor, float multiplier);
