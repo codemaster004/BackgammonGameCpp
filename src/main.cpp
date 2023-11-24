@@ -29,9 +29,8 @@ int main(int argc, char **argv) {
 	Pawn white[PAWNS_PER_PLAYER] = {};
 	Pawn black[PAWNS_PER_PLAYER] = {};
 
-	handleGame(&UI.board, white, black);
+	gameSetUp(&UI.board, white, black);
 
-	int dice1 = 0, dice2 = 0;
 	int menuSelected = 0;
 
 	generateBasicBoard(&UI);
