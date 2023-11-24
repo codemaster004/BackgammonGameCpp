@@ -7,9 +7,9 @@
 
 #include "../model/Board.h"
 
-void handleGame(Board *game, Pawn white[], Pawn black[]);
+void gameSetUp(Board *game, Pawn white[], Pawn black[]);
 
-void inputController(int input, Board *game, int *menu, bool *gameEnded, int *dice1, int *dice2, int *inputtedNumber);
+void inputController(int input, Board *game, int *menu, bool *gameEnded, int *inputtedNumber);
 
 void movePawn(Board *game, int fromIndex, int moveBy);
 

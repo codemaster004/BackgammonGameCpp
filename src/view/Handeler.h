@@ -14,7 +14,7 @@ void handlePieces(Placement space);
 
 void handleBar();
 
-void handleDices(Placement space, Pos center);
+void handleDices(Placement space, Pos center, const int *dices);
 
 void drawBar(int offsetX, int offsetY, int height);
 
