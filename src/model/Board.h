@@ -9,8 +9,8 @@
 
 
 enum PawnColor {
-	WHITE,
-	BLACK
+	PAWN_WHITE,
+	PAWN_BLACK,
 };
 
 typedef struct {
@@ -22,7 +22,6 @@ typedef struct {
 	short moveDirection;
 } Pawn;
 
-// TODO: add comments
 typedef struct {
 	int pawnsInside;
 	Pawn *pawns[PAWNS_PER_POINT];

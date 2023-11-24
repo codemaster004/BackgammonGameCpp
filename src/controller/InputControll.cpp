@@ -5,23 +5,22 @@
 #include "ncurses.h"
 #include "cstdlib"
 
-#include "configs/GameConfigs.h"
-#include "model/Board.h"
-#include "Controller.h"
-#include "model/Pawn.h"
+#include "../configs/GameConfigs.h"
+#include "../model/Board.h"
+#include "InputControll.h"
+#include "../model/Pawn.h"
 
 
-void handleGame(Board *game) {
+// TODO: REANME
+void handleGame(Board *game, Pawn white[], Pawn black[]) {
 	setClearBoard(game);
 
-	// TODO: move this somewhere where it makes sense
-	Pawn white[PAWNS_PER_PLAYER] = {};
-	Pawn black[PAWNS_PER_PLAYER] = {};
+	// TODO: Player struct here
 	int player1 = 1;
 	int player2 = 2;
 	for (int i = 0; i < PAWNS_PER_PLAYER; ++i) {
-		white[i] = Pawn{.owner=&player1, .id=i, .isHome=false, .isOnBar=false, .color=WHITE, .moveDirection=1};
-		black[i] = Pawn{.owner=&player2, .id=PAWNS_PER_PLAYER + i, .isHome=false, .isOnBar=false, .color=BLACK, .moveDirection=-1};
+		white[i] = Pawn{.owner=&player1, .id=i, .isHome=false, .isOnBar=false, .color=PAWN_WHITE, .moveDirection=1};
+		black[i] = Pawn{.owner=&player2, .id=PAWNS_PER_PLAYER + i, .isHome=false, .isOnBar=false, .color=PAWN_BLACK, .moveDirection=-1};
 	}
 	setupGame(game, white, black);
 
@@ -41,17 +40,17 @@ void numberInputController(int input, int *inputtedNumber) {
 }
 
 void inputController(int input, Board *game, int *menu, bool *gameEnded, int *dice1, int *dice2, int *inputtedNumber) {
-	numberInputController(input, inputtedNumber);
-	if (input == '\r' || input == '\n') {
-		movePawn(game, *inputtedNumber, *dice1);
-		*inputtedNumber = 0;
-	}
+//	numberInputController(input, inputtedNumber);
+//	if (input == '\r' || input == '\n') {
+//		movePawn(game, *inputtedNumber, *dice1);
+//		*inputtedNumber = 0;
+//	}
 	switch (input) {
 		// TODO: Probably rewrite for more options
 		case '\n':
 		case '\r':
 			*dice1 = 0; // TODO: RANDOM
-//			inputController((int) (menuKeys[*menu]), nullptr, menu, gameEnded, dice1, dice2, nullptr);
+			inputController((int) (menuKeys[*menu]), nullptr, menu, gameEnded, dice1, dice2, nullptr);
 			break;
 		case KEY_UP:
 			break;

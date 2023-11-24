@@ -7,22 +7,26 @@ include_directories(/opt/homebrew/opt/ncurses/include)
 link_directories(/opt/homebrew/opt/ncurses/lib)
 
 add_executable(BackgammonGame src/main.cpp
-        src/ViewHandeler.cpp
+        src/view/Handeler.cpp
         src/model/Player.cpp
         src/model/Pawn.cpp
         src/model/Board.cpp
         src/model/Pawn.h
         src/model/Board.h
         src/model/Player.h
-        src/ViewHandeler.h
+        src/view/Handeler.h
         src/configs/GameConfigs.h
         src/configs/UIConfigs.h
         src/Utility.h
         src/Utility.cpp
-        src/ViewModel.cpp
-        src/ViewModel.h
-        src/Controller.cpp
-        src/Controller.h
+        src/viewModel/UserInterface.cpp
+        src/viewModel/UserInterface.h
+        src/controller/InputControll.cpp
+        src/controller/InputControll.h
+        src/view/Drawing.cpp
+        src/view/Drawing.h
+        src/viewModel/Space.cpp
+        src/viewModel/Space.h
 )
 
 target_link_libraries(BackgammonGame ncurses)
