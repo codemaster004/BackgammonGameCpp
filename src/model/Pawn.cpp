@@ -5,6 +5,30 @@
 
 #include "Pawn.h"
 
+int getOwner(Board *game, int pawnId) {
+	for (PlayerPawns &group : game->pawnGroups)
+		for (Pawn &pawn : group.pawns)
+			if (pawn.id == pawnId)
+				return pawn.ownerId;
+	return -1;
+}
+
+short getMvDir(Board *game, int pawnId) {
+	for (PlayerPawns &group : game->pawnGroups)
+		for (Pawn &pawn : group.pawns)
+			if (pawn.id == pawnId)
+				return pawn.moveDirection;
+	return 0;
+}
+
+Pawn getPawn(Board *game, int pawnId) {
+	for (PlayerPawns &group : game->pawnGroups)
+		for (Pawn &pawn : group.pawns)
+			if (pawn.id == pawnId)
+				return pawn;
+	return {};
+}
+
 bool canBeMoved(Board *game, int pieceIndex, int moveBy) {
 	// Index out of range
 	if (pieceIndex >= nPoints || pieceIndex < 0)
@@ -13,11 +37,11 @@ bool canBeMoved(Board *game, int pieceIndex, int moveBy) {
 	if (game->points[pieceIndex].pawnsInside == 0)
 		return false;
 	// Moving not your Pawn
-	if (game->points[pieceIndex].pawns[0]->ownerId != game->currentPlayerId)
+	if (getOwner(game, game->points[pieceIndex].pawnsId[0]) != game->currentPlayerId)
 		return false;
 
 	// Handle move in both direction based on Pawn "Color"
-	short direction = game->points[pieceIndex].pawns[0]->moveDirection;
+	short direction = getMvDir(game, game->points[pieceIndex].pawnsId[0]);
 	int destinationIndex = pieceIndex + moveBy * direction;
 	// Moving outside of range
 	if (destinationIndex >= nPoints || destinationIndex < 0)
@@ -42,7 +66,7 @@ moveToPoint canMoveTo(Board *game, int fromIndex, int toIndex) {
 	if (destinationSize == 0)
 		return POSSIBLE;
 	// Check if Point is occupied by same player, by now we know the point has at least one empty slot
-	if (game->points[toIndex].pawns[0]->ownerId == game->points[fromIndex].pawns[0]->ownerId)
+	if (getOwner(game, game->points[toIndex].pawnsId[0]) == getOwner(game, game->points[fromIndex].pawnsId[0]))
 		return POSSIBLE;
 	// Check if Point is blocked by opponent
 	if (destinationSize > CAPTURE_THRESHOLD)

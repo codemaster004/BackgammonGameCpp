@@ -12,7 +12,7 @@ typedef struct {
 	int id;
 	char name[MAX_NAME_LENGTH];
 	bool isHisTurn;
-	uint points;
+	int points;
 } Player;
 
 #endif //BACKGAMMONGAME_PLAYER_H

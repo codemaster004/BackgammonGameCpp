@@ -6,6 +6,7 @@
 #include "../configs/UIConfigs.h"
 #include "Handeler.h"
 #include "Drawing.h"
+#include "../model/Pawn.h"
 
 
 Placement initMenu(Pos center, MenuElement *values, int nElements) {
@@ -151,14 +152,14 @@ void handlePawnPlacement(Board *game, Placement space) {
 			int count = game->points[indexTop].pawnsInside;
 			if (count) {
 				space.max.y = space.min.y + count;
-				drawLine(*game->points[indexTop].pawns[0], space);
+				drawLine(getPawn(game, game->points[indexTop].pawnsId[0]), space);
 			}
 
 			int indexBot = POINTS_PER_BOARD * N_BOARDS - (i * POINTS_PER_BOARD + j) - 1;
 			count = game->points[indexBot].pawnsInside;
 			if (count) {
 				moveSpace(&space, Pos {0, boardHeight - count});
-				drawLine(*game->points[indexBot].pawns[0], space);
+				drawLine(getPawn(game, game->points[indexBot].pawnsId[0]), space);
 				moveSpace(&space, Pos {0, - boardHeight + count});
 			}
 

@@ -19,7 +19,7 @@ void gameSetUp(Board *game, Pawn white[], Pawn black[]) {
 		white[i] = Pawn{.ownerId=game->players[0].id, .id=i, .isHome=false, .isOnBar=false, .color=PAWN_WHITE, .moveDirection=1};
 		black[i] = Pawn{.ownerId=game->players[1].id, .id=PAWNS_PER_PLAYER + i, .isHome=false, .isOnBar=false, .color=PAWN_BLACK, .moveDirection=-1};
 	}
-	palcePawns(game, white, black);
+	placePawns(game);
 
 	// TODO: SEPARATE
 //	game->currentPlayerId = &player1;
@@ -79,7 +79,7 @@ void inputController(int input, Board *game, int *menu, bool *gameEnded, int *in
 	}
 }
 
-// TODO: N pawns to move
+// TODO: N pawnsId to move
 // TODO: maybe return 0 and 1 for eero check
 void movePawn(Board *game, int fromIndex, int moveBy) {
 	// TODO: Separate
@@ -96,10 +96,10 @@ void movePawn(Board *game, int fromIndex, int moveBy) {
 	// TODO: Separate
 	if (moveType == CAPTURE) {
 		for (int i = 0; i < CAPTURE_THRESHOLD; ++i) {
-			game->bar.pawns[game->bar.pawnsInside++] = toPoint->pawns[i];
+			game->bar.pawnsId[game->bar.pawnsInside++] = toPoint->pawnsId[i];
 		}
 		toPoint->pawnsInside -= CAPTURE_THRESHOLD;
 	}
-	toPoint->pawns[toPoint->pawnsInside++] = fromPoint->pawns[--fromPoint->pawnsInside];
-	fromPoint->pawns[fromPoint->pawnsInside] = nullptr;
+	toPoint->pawnsId[toPoint->pawnsInside++] = fromPoint->pawnsId[--fromPoint->pawnsInside];
+	fromPoint->pawnsId[fromPoint->pawnsInside] = -1;
 }

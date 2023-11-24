@@ -25,22 +25,27 @@ typedef struct {
 
 typedef struct {
 	int pawnsInside;
-	Pawn *pawns[PAWNS_PER_POINT];
+	int pawnsId[PAWNS_PER_POINT];
 } Point;
 
 typedef struct {
 	int pawnsInside;
-	Pawn *pawns[totalPawns];
+	int pawnsId[totalPawns];
 } Bar;
 
 typedef struct {
 	int pawnsInside;
-	Pawn *pawns[PAWNS_PER_PLAYER];
-	int *ownerId;
+	int pawnsId[PAWNS_PER_PLAYER];
+	int ownerId;
 } Court;
 
 typedef struct {
+	Pawn pawns[PAWNS_PER_PLAYER];
+} PlayerPawns;
+
+typedef struct {
 	Point points[nPoints];
+	PlayerPawns pawnGroups[N_PLAYERS];
 	Bar bar;
 	Court courts[N_PLAYERS];
 	int dices[N_DICES];
@@ -50,7 +55,7 @@ typedef struct {
 
 void setClearBoard(Board *gameBoard);
 
-void palcePawns(Board *gameBoard, Pawn player1[], Pawn player2[]);
+void placePawns(Board *gameBoard);
 
 
 #endif //BACKGAMMONGAME_BOARD_H

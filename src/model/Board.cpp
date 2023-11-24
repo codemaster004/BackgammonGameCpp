@@ -38,12 +38,12 @@ void setClearBoard(Board *gameBoard) {
 }
 
 // TODO: rename
-void palcePawns(Board *gameBoard, Pawn player1[], Pawn player2[]) {
+void placePawns(Board *gameBoard) {
 	int pawnIndex = 0;
 	for (auto pos: startingPos) {
 		gameBoard->points[pos->x].pawnsInside = pos->y;
 		for (int j = 0; j < pos->y; ++j) {
-			gameBoard->points[pos->x].pawns[j] = &player1[pawnIndex++];
+			gameBoard->points[pos->x].pawnsId[j] = gameBoard->pawnGroups[0].pawns[pawnIndex++].id;
 		}
 	}
 
@@ -52,7 +52,7 @@ void palcePawns(Board *gameBoard, Pawn player1[], Pawn player2[]) {
 	for (auto pos: startingPos) {
 		gameBoard->points[endIndex - pos->x].pawnsInside = pos->y;
 		for (int j = 0; j < pos->y; ++j) {
-			gameBoard->points[endIndex - pos->x].pawns[j] = &player2[pawnIndex++];
+			gameBoard->points[endIndex - pos->x].pawnsId[j] = gameBoard->pawnGroups[1].pawns[pawnIndex++].id;
 		}
 	}
 }

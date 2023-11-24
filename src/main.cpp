@@ -22,9 +22,9 @@ int getInput(int argc, char **argv);
 int main(int argc, char **argv) {
 	startScreen(argc, argv);
 
-	char fName[10] = {"game0.txt"};
-	serializeToFile(fName);
-	return 0;
+//	char fName[10] = {"game0.txt"};
+//	serializeToFile(fName);
+//	return 0;
 
 	UserInterface UI = initUI();
 	UI.board = Board{};
@@ -106,8 +106,8 @@ void startScreen(int argc, char **argv) {
  * TODO: [x] Visualisation of game state (1pt)
  * TODO: [ ] Saving game state to a file (2pt)
  * TODO: [ ] Loading game state from file + ?next move? (2pt)
- * TODO: [ ] Ability to capture pawns (1pt)
- * TODO: [ ] Removing pawns ?bar or court? (1pt)
+ * TODO: [ ] Ability to capture pawnsId (1pt)
+ * TODO: [ ] Removing pawnsId ?bar or court? (1pt)
  * TODO: [ ] ?Game simulation from any point till the end? (2pt)
  * TODO: [ ] Remember and save game past moves (1pt)
  * TODO: [ ] Visualisation of game play (backwards) from loaded state (2pt)
