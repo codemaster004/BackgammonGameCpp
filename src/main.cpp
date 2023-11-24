@@ -13,6 +13,7 @@
 #include "controller/InputControll.h"
 #include "view/Handeler.h"
 #include "view/Drawing.h"
+#include "model/SerializeToFile.h"
 
 void startScreen(int argc, char **argv);
 
@@ -20,6 +21,10 @@ int getInput(int argc, char **argv);
 
 int main(int argc, char **argv) {
 	startScreen(argc, argv);
+
+	char fName[10] = {"game0.txt"};
+	serializeToFile(fName);
+	return 0;
 
 	UserInterface UI = initUI();
 	UI.board = Board{};

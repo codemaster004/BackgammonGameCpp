@@ -6,7 +6,6 @@
 #define BACKGAMMONGAME_PLAYER_H
 
 #include "../configs/GameConfigs.h"
-#include "../configs/UIConfigs.h"
 
 
 typedef struct {

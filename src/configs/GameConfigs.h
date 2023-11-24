@@ -12,10 +12,17 @@
 #define POINTS_PER_BOARD 6
 #define PAWNS_PER_POINT 6
 #define PAWNS_PER_PLAYER 15
+#define N_DICES 2
+/// Magical Line of PAIN & SUFFERING
+/// Do NOT change any settings under this line
+/// If you do the world as we know it will cease to exist
+/////////////////////////////////////////////////////////
+
 #define N_PLAYERS 2
 #define PLAYERS_PER_GAME 2
-#define N_DICES 2
 #define N_STARTING_POS 4
+
+#define MAX_NAME_LENGTH 16
 
 #define N_MENU_OPTIONS 4
 #define MENU_ELEMENT_LEN 7
