@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
 	int dice1 = 0, dice2 = 0;
 	int menuSelected = 0;
 
- 	generateBasicBoard(&UI, &menuSelected, &dice1, &dice2);
+	generateBasicBoard(&UI);
 	generateInteractiveUI(&UI, &menuSelected);
 
 	int ch;
@@ -43,7 +43,7 @@ int main(int argc, char **argv) {
 		if (gameEnded)
 			break;
 
-		generateBasicBoard(&UI, &menuSelected, &dice1, &dice2);
+		generateBasicBoard(&UI);
 		generateInteractiveUI(&UI, &menuSelected);
 
 		// Refresh the screen to show changes
