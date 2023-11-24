@@ -23,6 +23,9 @@ int main(int argc, char **argv) {
 
 	UserInterface UI = initUI();
 	UI.board = Board{};
+	for (int & dice : UI.board.dices) {
+		dice = 0;
+	}
 	Pawn white[PAWNS_PER_PLAYER] = {};
 	Pawn black[PAWNS_PER_PLAYER] = {};
 
@@ -39,7 +42,7 @@ int main(int argc, char **argv) {
 	int pickedPiece = 0;
 	while ((ch = getInput(argc, argv)) != 'q') {
 
-		inputController(ch, &UI.board, &menuSelected, &gameEnded, &dice1, &dice2, &pickedPiece);
+		inputController(ch, &UI.board, &menuSelected, &gameEnded, &pickedPiece);
 		if (gameEnded)
 			break;
 
@@ -88,7 +91,7 @@ void startScreen(int argc, char **argv) {
 
 /**
  * TODO: [x] Basic Board UI (1pt)
- * TODO: [ ] Visualisation of game state (1pt)
+ * TODO: [x] Visualisation of game state (1pt)
  * TODO: [ ] Saving game state to a file (2pt)
  * TODO: [ ] Loading game state from file + ?next move? (2pt)
  * TODO: [ ] Ability to capture pawns (1pt)
