@@ -29,7 +29,7 @@ int main(int argc, char **argv) {
 	Pawn white[PAWNS_PER_PLAYER] = {};
 	Pawn black[PAWNS_PER_PLAYER] = {};
 
-	handleGame(&UI.board, white, black);
+	gameSetUp(&UI.board, white, black);
 
 	int menuSelected = 0;
 

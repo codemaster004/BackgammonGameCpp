@@ -51,7 +51,7 @@ typedef struct {
 
 void setClearBoard(Board *gameBoard);
 
-void setupGame(Board *gameBoard, Pawn player1[], Pawn player2[]);
+void palcePawns(Board *gameBoard, Pawn player1[], Pawn player2[]);
 
 
 
