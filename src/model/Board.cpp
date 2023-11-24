@@ -21,9 +21,9 @@
 void setClearBoard(Board *gameBoard) {
 	gameBoard->bar = Bar{0};
 
-	gameBoard->currentPlayer = 0;
+	gameBoard->currentPlayerId = 0;
 	for (auto &player: gameBoard->players) {
-		player = 0;
+		player = Player{};
 	}
 
 	// set Points to keep 0 Pawns

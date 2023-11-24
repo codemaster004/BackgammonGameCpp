@@ -23,6 +23,13 @@ int main(int argc, char **argv) {
 
 	UserInterface UI = initUI();
 	UI.board = Board{};
+	UI.board.players[0] = Player {
+		0, {"Me"}, true, 0
+	};
+	UI.board.players[0] = Player {
+		1, {"You"}, false, 0
+	};
+	UI.board.currentPlayerId = 0;
 	Pawn white[PAWNS_PER_PLAYER] = {};
 	Pawn black[PAWNS_PER_PLAYER] = {};
 

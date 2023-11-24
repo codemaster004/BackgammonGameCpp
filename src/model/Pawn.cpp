@@ -13,7 +13,7 @@ bool canBeMoved(Board *game, int pieceIndex, int moveBy) {
 	if (game->points[pieceIndex].pawnsInside == 0)
 		return false;
 	// Moving not your Pawn
-	if (*game->points[pieceIndex].pawns[0]->owner != *game->currentPlayer)
+	if (game->points[pieceIndex].pawns[0]->ownerId != game->currentPlayerId)
 		return false;
 
 	// Handle move in both direction based on Pawn "Color"
@@ -42,7 +42,7 @@ moveToPoint canMoveTo(Board *game, int fromIndex, int toIndex) {
 	if (destinationSize == 0)
 		return POSSIBLE;
 	// Check if Point is occupied by same player, by now we know the point has at least one empty slot
-	if (*game->points[toIndex].pawns[0]->owner == *game->points[fromIndex].pawns[0]->owner)
+	if (game->points[toIndex].pawns[0]->ownerId == game->points[fromIndex].pawns[0]->ownerId)
 		return POSSIBLE;
 	// Check if Point is blocked by opponent
 	if (destinationSize > CAPTURE_THRESHOLD)
