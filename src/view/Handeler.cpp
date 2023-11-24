@@ -22,7 +22,7 @@ Placement initMenu(Pos center, MenuElement *values, int nElements) {
 	};
 }
 
-void generateBasicBoard(UserInterface *ui, const int *menuSelected, int *dice1, int *dice2) {
+void generateBasicBoard(UserInterface *ui) {
 	attron(COLOR_PAIR(FOREGROUND));
 
 	handleBoardOutline(ui->space.board);
