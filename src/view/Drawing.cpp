@@ -6,7 +6,14 @@
 #include "cmath"
 
 #include "../configs/UIConfigs.h"
+#include "../model/Board.h"
 #include "Drawing.h"
+
+void printColor(UiColorsId color, int x, int y, const char *text) {
+	attron(COLOR_PAIR(color));
+	mvprintw(y, x, "%s", text);
+	attroff(COLOR_PAIR(color));
+}
 
 void drawLine(const char *symbol, Placement pos) {
 	int deltaX = pos.max.x - pos.min.x;
@@ -24,6 +31,16 @@ void drawLine(const char *symbol, Placement pos) {
 		mvprintw((int) (y), (int) (x), "%s", symbol);
 		x += xIncrement;
 		y += yIncrement;
+	}
+}
+
+void drawLine(Pawn pawn, Placement pos) {
+	for (int y = pos.min.y; y < pos.max.y; y++) {
+		if (pawn.color == PAWN_WHITE) {
+			printColor(BACKGROUND_DARK, pos.min.x, y, pawn1);
+		} else if (pawn.color == PAWN_BLACK) {
+			printColor(BACKGROUND_LIGHT, pos.min.x, y, pawn2);
+		}
 	}
 }
 
@@ -58,22 +75,41 @@ void drawPiece(const char *symbol, int offsetX, int offsetY) {
 void drawPieces(int offsetX, int offsetY) {
 	char *reversePiece = reverseString(piece1);
 	drawPiece(reversePiece, offsetX, offsetY);
+
 	reversePiece = reverseString(piece2);
 	drawPiece(reversePiece, offsetX + pieceWidth + pieceSpacing, offsetY);
+
 	drawPiece(piece1, offsetX + pieceWidth + pieceSpacing,
 			  offsetY + PAWNS_PER_POINT + pieceSpacing);
 	drawPiece(piece2, offsetX, offsetY + PAWNS_PER_POINT + pieceSpacing);
 }
 
-void drawSpacedText(int minX, int maxX, int offsetY, int spacing, int len, char **text, int count) {
-	int center = minX + (maxX - minX) / 2;
+void drawSpacedText(Placement pos, int spacing, int len, char **text, int count) {
+	int center = pos.min.x + (pos.max.x - pos.min.x) / 2;
 	int textWidth = count * (len) + spacing * (count - 1);
 	int startPoint = center - textWidth / 2;
-	if (startPoint < minX)
+	if (startPoint < pos.min.x)
 		return;
 
 	for (int i = 0; i < count; ++i) {
-		mvprintw(offsetY, startPoint, "%s", text[i]);
+		mvprintw(pos.min.y, startPoint, "%s", text[i]);
 		startPoint += len + spacing;
 	}
+}
+
+void setColor(short colorName, short nRed, short nGreen, short nBlue, float diff) {
+	init_color(colorName,
+			   capAt(multiply(nRed, diff), 1000),
+			   capAt(multiply(nGreen, diff), 1000),
+			   capAt(multiply(nBlue, diff), 1000));
+}
+
+void setColourTheme(short baseRed, short baseGreen, short baseBlue) {
+	float nMultiplier = 1000.0 / 255.0;
+	short nRed = capAt(multiply(baseRed, nMultiplier), 1000),
+		nGreen = capAt(multiply(baseGreen, nMultiplier), 1000),
+		nBlue = capAt(multiply(baseBlue, nMultiplier), 1000);
+	setColor(COLOUR_MAIN, nRed, nGreen, nBlue, 1);
+	setColor(COLOUR_MAIN_DARK, nRed, nGreen, nBlue, (1 - colorDiff));
+	setColor(COLOUR_MAIN_LIGHT, nRed, nGreen, nBlue, (1 + colorDiff));
 }

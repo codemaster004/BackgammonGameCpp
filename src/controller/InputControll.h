@@ -7,7 +7,7 @@
 
 #include "../model/Board.h"
 
-void handleGame(Board *game);
+void handleGame(Board *game, Pawn white[], Pawn black[]);
 
 void inputController(int input, Board *game, int *menu, bool *gameEnded, int *dice1, int *dice2, int *inputtedNumber);
 

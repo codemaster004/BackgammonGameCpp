@@ -7,8 +7,6 @@
 
 #include "Board.h"
 
-// TODO: Create functions for checks if points are valid to be moved & to be moved to
-
 enum moveToPoint {
 	BLOCKED,
 	POSSIBLE,

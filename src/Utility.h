@@ -7,19 +7,11 @@
 
 typedef unsigned int uint;
 
-typedef struct {
-	int x;
-	int y;
-} Pos;
-
-typedef struct {
-	Pos min;
-	Pos max;
-} Placement;
-
 char* reverseString(const char* str);
 
-short multiplyFloat(short baseColor, float multiplier, short max);
+short multiply(short baseColor, float multiplier);
+
+short capAt(short value, short max);
 
 int max(int a, int b);
 

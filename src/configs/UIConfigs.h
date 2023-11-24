@@ -22,9 +22,9 @@
 #define MENU_TOP_SPACING 3
 
 #define OFFSET_X 3
-#define OFFSET_Y 1
+#define OFFSET_Y 2
 
-#define COLOR_THEME 00, 200, 00
+#define COLOR_THEME 230, 150, 230
 
 enum UiColorsId {
 	FOREGROUND = 1,
@@ -42,6 +42,8 @@ const char barLabel[] = {"[BAR]"};
 
 const char piece1[] = { "/\\" };
 const char piece2[] = { "''" };
+const char pawn1[] = { ")(" };
+const char pawn2[] = { "[]" };
 
 const int pieceWidth = 2;
 const int pieceSpacing = 3;

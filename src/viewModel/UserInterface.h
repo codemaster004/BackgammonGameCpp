@@ -6,7 +6,9 @@
 #define BACKGAMMONGAME_USERINTERFACE_H
 
 #include "string"
+#include "../configs/GameConfigs.h"
 #include "../model/Board.h"
+#include "Space.h"
 
 enum MenuMode {
 	DEFAULT,
@@ -17,6 +19,8 @@ typedef struct {
 	Placement board;
 	Placement dice;
 	Pos boardCenter;
+	Placement indexesTop;
+	Placement indexesBottom;
 } GameSpace;
 
 typedef struct {
@@ -27,11 +31,14 @@ typedef struct {
 	// TODO: create/implement structure for keeping currentPlayersScores
 	int currentScores[PLAYERS_PER_GAME];
 	MenuMode menuMode;
+	GameSpace space;
 } UserInterface;
 
 typedef struct {
 	int id;
 	const char *value;
 } MenuElement;
+
+UserInterface initUI();
 
 #endif //BACKGAMMONGAME_USERINTERFACE_H

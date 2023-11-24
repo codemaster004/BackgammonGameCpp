@@ -8,8 +8,6 @@
 #include "../viewModel/UserInterface.h"
 #include "../Utility.h"
 
-void setColourTheme(short baseRed = 0, short baseGreen = 166, short baseBlue = 0);
-
 void handleBoardOutline(Placement space);
 
 void handlePieces(Placement space);
@@ -20,10 +18,14 @@ void handleDices(Placement space, Pos center);
 
 void drawBar(int offsetX, int offsetY, int height);
 
-void handleMenu(MenuElement *options, int length, int selected, int centerX, int offsetY);
+void handleMenu(MenuElement *options, int optionCount, int selected, Pos center);
 
-void handleIndexes(char **indexes, MenuMode drawMode, int digits, Placement pos);
+void handleIndexes(char **indexes, int digits, Placement pos1, Placement pos2);
 
-void uiStaff(UserInterface *ui, const int *menuSelected, int *dice1, int *dice2);
+void generateBasicBoard(UserInterface *ui, const int *menuSelected, int *dice1, int *dice2);
+
+void generateInteractiveUI(UserInterface *ui, const int *menuSelected);
+
+void handlePawnPlacement(Board *game, Placement space);
 
 #endif //BACKGAMMONGAME_HANDELER_H

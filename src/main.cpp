@@ -8,42 +8,46 @@
 #include "cstdlib"
 #include "ctime"
 
-#include "view/Handeler.h"
 #include "configs/UIConfigs.h"
-#include "controller/InputControll.h"
 #include "model/Board.h"
+#include "controller/InputControll.h"
+#include "view/Handeler.h"
+#include "view/Drawing.h"
 
 void startScreen(int argc, char **argv);
 
 int getInput(int argc, char **argv);
 
-// TODO: Some main while loop for handling user interaction
 int main(int argc, char **argv) {
 	startScreen(argc, argv);
 
-	UserInterface UI = UserInterface{
-		.authorId=197712,
-		.menuMode=DEFAULT
-	};
-
+	UserInterface UI = initUI();
 	UI.board = Board{};
-	handleGame(&UI.board);
+	Pawn white[PAWNS_PER_PLAYER] = {};
+	Pawn black[PAWNS_PER_PLAYER] = {};
+
+	handleGame(&UI.board, white, black);
 
 	int dice1 = 0, dice2 = 0;
 	int menuSelected = 0;
 
-	uiStaff(&UI, &menuSelected, &dice1, &dice2);
+ 	generateBasicBoard(&UI, &menuSelected, &dice1, &dice2);
+	generateInteractiveUI(&UI, &menuSelected);
 
 	int ch;
 	bool gameEnded = false;
 	int pickedPiece = 0;
-	while((ch = getInput(argc, argv)) != 'q') {
+	while ((ch = getInput(argc, argv)) != 'q') {
 
 		inputController(ch, &UI.board, &menuSelected, &gameEnded, &dice1, &dice2, &pickedPiece);
 		if (gameEnded)
 			break;
 
-		uiStaff(&UI, &menuSelected, &dice1, &dice2);
+		generateBasicBoard(&UI, &menuSelected, &dice1, &dice2);
+		generateInteractiveUI(&UI, &menuSelected);
+
+		// Refresh the screen to show changes
+		refresh();
 	}
 
 	// Finish curses mode
