@@ -39,7 +39,7 @@ void numberInputController(int input, int *inputtedNumber) {
 	}
 }
 
-void inputController(int input, Board *game, int *menu, bool *gameEnded, int *dice1, int *dice2, int *inputtedNumber) {
+void inputController(int input, Board *game, int *menu, bool *gameEnded, int *inputtedNumber) {
 //	numberInputController(input, inputtedNumber);
 //	if (input == '\r' || input == '\n') {
 //		movePawn(game, *inputtedNumber, *dice1);
@@ -49,8 +49,7 @@ void inputController(int input, Board *game, int *menu, bool *gameEnded, int *di
 		// TODO: Probably rewrite for more options
 		case '\n':
 		case '\r':
-			*dice1 = 0; // TODO: RANDOM
-			inputController((int) (menuKeys[*menu]), nullptr, menu, gameEnded, dice1, dice2, nullptr);
+			inputController((int) (menuKeys[*menu]), game, menu, gameEnded, nullptr);
 			break;
 		case KEY_UP:
 			break;
@@ -71,8 +70,9 @@ void inputController(int input, Board *game, int *menu, bool *gameEnded, int *di
 		case 'u':
 			break;
 		case 'r':
-			*dice1 += 1; // TODO: RANDOM
-			*dice2 = rand() % 6 + 1;
+			for (int i = 0; i < N_DICES; i++) {
+				game->dices[i] = rand() % 6 + 1;
+			}
 			break;
 		case 'q':
 			*gameEnded = true;

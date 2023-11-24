@@ -14,7 +14,7 @@ void handlePieces(Placement space);
 
 void handleBar();
 
-void handleDices(Placement space, Pos center);
+void handleDices(Placement space, Pos center, const int *dices);
 
 void drawBar(int offsetX, int offsetY, int height);
 
@@ -22,7 +22,7 @@ void handleMenu(MenuElement *options, int optionCount, int selected, Pos center)
 
 void handleIndexes(char **indexes, int digits, Placement pos1, Placement pos2);
 
-void generateBasicBoard(UserInterface *ui, const int *menuSelected, int *dice1, int *dice2);
+void generateBasicBoard(UserInterface *ui);
 
 void generateInteractiveUI(UserInterface *ui, const int *menuSelected);
 
