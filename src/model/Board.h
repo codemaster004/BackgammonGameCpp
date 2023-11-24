@@ -44,6 +44,7 @@ typedef struct {
 	Bar bar;
 	Court courts[N_PLAYERS];
 	// TODO: implement player structure
+	int dices[N_DICES];
 	int players[N_PLAYERS];
 	int *currentPlayer;
 } Board;

@@ -30,7 +30,7 @@ void generateBasicBoard(UserInterface *ui) {
 	handlePieces(ui->space.board);
 
 	// Dies
-	handleDices(ui->space.dice, ui->space.boardCenter);
+	handleDices(ui->space.dice, ui->space.boardCenter, ui->board.dices);
 
 	attroff(COLOR_PAIR(FOREGROUND));
 }
@@ -88,7 +88,7 @@ void handleBar() {
 		drawBar(OFFSET_X + (boardWidth + borders) * i, OFFSET_Y, boardHeight + borders);
 }
 
-void handleDices(Placement space, Pos center) {
+void handleDices(Placement space, Pos center, const int *dices) {
 	drawBorders(space);
 
 	int dicesHeight = DICE_HEIGHT * N_DICES + (N_DICES + 1) * BORDER_WIDTH;
@@ -96,7 +96,7 @@ void handleDices(Placement space, Pos center) {
 	for (int i = 0; i < N_DICES; ++i) {
 		space.max.y = space.min.y + DICE_HEIGHT + 2 * BAR_WIDTH - 1;
 		drawBorders(space);
-		mvaddch(space.min.y + BORDER_WIDTH, space.min.x + BORDER_WIDTH + DICE_WIDTH / 2, 0 + 48);
+		mvaddch(space.min.y + BORDER_WIDTH, space.min.x + BORDER_WIDTH + DICE_WIDTH / 2, dices[i] + 48);
 		space.min.y += DICE_HEIGHT + BORDER_WIDTH;
 	}
 }
