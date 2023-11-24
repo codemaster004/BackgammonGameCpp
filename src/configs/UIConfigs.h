@@ -26,6 +26,8 @@
 
 #define COLOR_THEME 230, 150, 230
 
+#define MAX_NAME_LENGTH 16
+
 enum UiColorsId {
 	FOREGROUND = 1,
 	FOREGROUND_LIGHT,

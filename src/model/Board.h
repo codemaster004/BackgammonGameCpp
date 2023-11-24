@@ -6,6 +6,7 @@
 #define BACKGAMMONGAME_BOARD_H
 
 #include "../configs/GameConfigs.h"
+#include "Player.h"
 
 
 enum PawnColor {
@@ -14,7 +15,7 @@ enum PawnColor {
 };
 
 typedef struct {
-	int *owner;
+	int ownerId;
 	int id;
 	bool isHome;
 	bool isOnBar;
@@ -35,18 +36,16 @@ typedef struct {
 typedef struct {
 	int pawnsInside;
 	Pawn *pawns[PAWNS_PER_PLAYER];
-	// TODO: Use player structure here
-	int *owner;
+	int *ownerId;
 } Court;
 
 typedef struct {
 	Point points[nPoints];
 	Bar bar;
 	Court courts[N_PLAYERS];
-	// TODO: implement player structure
-	int dices[N_DICES];
-	int players[N_PLAYERS];
-	int *currentPlayer;
+  int dices[N_DICES];
+	Player players[N_PLAYERS];
+	int currentPlayerId;
 } Board;
 
 void setClearBoard(Board *gameBoard);
