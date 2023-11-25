@@ -6,7 +6,6 @@
 #include "../configs/UIConfigs.h"
 #include "Handeler.h"
 #include "Drawing.h"
-#include "../model/Pawn.h"
 
 
 Placement initMenu(Pos center, MenuElement values[], int nElements) {
