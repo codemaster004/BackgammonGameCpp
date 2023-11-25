@@ -7,21 +7,8 @@
 
 #include "../configs/GameConfigs.h"
 #include "Player.h"
+#include "Pawn.h"
 
-
-enum PawnColor {
-	PAWN_WHITE,
-	PAWN_BLACK,
-};
-
-typedef struct {
-	int ownerId;
-	int id;
-	bool isHome;
-	bool isOnBar;
-	PawnColor color;
-	short moveDirection;
-} Pawn;
 
 typedef struct {
 	int pawnsInside;
@@ -43,7 +30,7 @@ typedef struct {
 	Pawn pawns[PAWNS_PER_PLAYER];
 } PlayerPawns;
 
-typedef struct {
+typedef struct Board {
 	Point points[nPoints];
 	PlayerPawns pawnGroups[N_PLAYERS];
 	Bar bar;

@@ -4,6 +4,7 @@
 // Maybe keep pawn color as enum?
 
 #include "Pawn.h"
+#include "Board.h"
 
 int getOwner(Board *game, int pawnId) {
 	for (PlayerPawns &group : game->pawnGroups)

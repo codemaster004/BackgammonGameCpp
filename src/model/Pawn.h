@@ -5,13 +5,27 @@
 #ifndef BACKGAMMONGAME_PAWN_H
 #define BACKGAMMONGAME_PAWN_H
 
-#include "Board.h"
+typedef struct Board Board;
 
 enum moveToPoint {
 	BLOCKED,
 	POSSIBLE,
 	CAPTURE
 };
+
+enum PawnColor {
+	PAWN_WHITE,
+	PAWN_BLACK,
+};
+
+typedef struct {
+	int ownerId;
+	int id;
+	bool isHome;
+	bool isOnBar;
+	PawnColor color;
+	short moveDirection;
+} Pawn;
 
 int getOwner(Board *game, int pawnId);
 

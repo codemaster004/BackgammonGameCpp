@@ -4,7 +4,6 @@
 // TODO: Create a structure for keeping moves already mad in the game?
 // Use enum for color pallet
 
-#include "Pawn.h"
 #include "Board.h"
 
 
