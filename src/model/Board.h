@@ -8,23 +8,7 @@
 #include "../configs/GameConfigs.h"
 #include "Player.h"
 #include "Pawn.h"
-
-
-typedef struct {
-	int pawnsInside;
-	Pawn *pawns[PAWNS_PER_POINT];
-} Point;
-
-typedef struct {
-	int pawnsInside;
-	Pawn *pawns[totalPawns];
-} Bar;
-
-typedef struct {
-	int pawnsInside;
-	Pawn *pawns[PAWNS_PER_PLAYER];
-	Player *owner;
-} Court;
+#include "Storage.h"
 
 typedef struct Board {
 	Player players[N_PLAYERS];
@@ -39,6 +23,10 @@ typedef struct Board {
 void setClearBoard(Board &gameBoard);
 
 void placePawns(Board &gameBoard);
+
+void serialiseBoard(Board &board, uint8_t *buffer, size_t &offset);
+
+Board deserializeBoard(const uint8_t *buffer, size_t &offset);
 
 
 #endif //BACKGAMMONGAME_BOARD_H

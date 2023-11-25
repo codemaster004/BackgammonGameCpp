@@ -4,7 +4,11 @@
 // TODO: Create a structure for keeping moves already mad in the game?
 // Use enum for color pallet
 
+#include "cstring"
+#include "cstdint"
+
 #include "Board.h"
+#include "SerializeToFile.h"
 
 
 /*
@@ -56,4 +60,44 @@ void placePawns(Board &gameBoard) {
 	}
 }
 
+void serialiseBoard(Board &board, uint8_t *buffer, size_t &offset) {
+	for (auto &player: board.players) {
+		serialisePlayer(player, buffer, offset);
+	}
+	for (Pawn &pawn : board.pawns) {
+		serialisePawn(pawn, buffer, offset);
+	}
+	serializeInt(board.currentPlayerId, buffer, offset);
+	for (auto &point: board.points) {
+		serialisePoint(point, buffer, offset);
+	}
+	for (auto &court: board.courts) {
+		serialiseCourt(court, buffer, offset);
+	}
+	serialiseBar(board.bar, buffer, offset);
+	for (auto &dice: board.dices) {
+		serializeInt(dice, buffer, offset);
+	}
+}
 
+Board deserializeBoard(const uint8_t *buffer, size_t &offset) {
+	Board board;
+	for (auto &player : board.players) {
+		player = deserializePlayer(buffer, offset);
+	}
+	for (Pawn &pawn : board.pawns) {
+		pawn = deserializePawn(buffer, offset);
+	}
+	board.currentPlayerId = deserializeInt(buffer, offset);
+	for (auto &point:board.points) {
+		point = deserializePoint(board, buffer, offset);
+	}
+	for (auto &court : board.courts) {
+		court = deserializeCourt(board, buffer, offset);
+	}
+	board.bar = deserializeBar(board, buffer, offset);
+	for (auto &dice : board.dices) {
+		dice = deserializeInt(buffer, offset);
+	}
+	return board;
+}

@@ -3,8 +3,12 @@
 //
 // Maybe keep pawn color as enum?
 
+#include "cstring"
+#include "cstdint"
+
 #include "Pawn.h"
 #include "Board.h"
+#include "SerializeToFile.h"
 
 
 bool canBeMoved(Board &game, int pointIndex, int moveBy) {
@@ -15,7 +19,7 @@ bool canBeMoved(Board &game, int pointIndex, int moveBy) {
 	if (game.points[pointIndex].pawnsInside == 0)
 		return false;
 	// Moving not your Pawn
-	if (game.points[pointIndex].pawns[0]->owner->id != game.currentPlayerId)
+	if (game.points[pointIndex].pawns[0]->ownerId != game.currentPlayerId)
 		return false;
 
 	// Handle move in both direction based on Pawn "Color"
@@ -44,7 +48,7 @@ moveToPoint canMoveTo(Board &game, int fromIndex, int toIndex) {
 	if (destinationSize == 0)
 		return POSSIBLE;
 	// Check if Point is occupied by same player, by now we know the point has at least one empty slot
-	if (game.points[toIndex].pawns[0]->owner->id == game.points[fromIndex].pawns[0]->owner->id)
+	if (game.points[toIndex].pawns[0]->ownerId == game.points[fromIndex].pawns[0]->ownerId)
 		return POSSIBLE;
 	// Check if Point is blocked by opponent
 	if (destinationSize > CAPTURE_THRESHOLD)
@@ -54,4 +58,36 @@ moveToPoint canMoveTo(Board &game, int fromIndex, int toIndex) {
 
 bool enumToBool(moveToPoint value) {
 	return value != BLOCKED;
+}
+
+/// Handle Serialization of Pawn object
+void serialisePawn(Pawn pawn, uint8_t *buffer, size_t &offset) {
+	std::memcpy(buffer + offset, &pawn, sizeof(Pawn));
+	offset += sizeof(Pawn);
+}
+
+Pawn deserializePawn(const uint8_t *buffer, size_t &index) {
+	Pawn pawn;
+	std::memcpy(&pawn, buffer + index, sizeof(Pawn));
+	index += sizeof(Pawn);
+	return pawn;
+}
+
+/// Handle POINTER serialization to a Pawn object
+void serialisePawnPointer(Pawn *pawn, uint8_t* buffer, size_t &offset) {
+	if (pawn == nullptr){
+		serializeInt(-1, buffer, offset);
+	} else {
+		serializeInt(pawn->id, buffer, offset);
+	}
+}
+
+Pawn *deserializePawnPointer(Board &board, const uint8_t *buffer, size_t &offset) {
+	int id = deserializeInt(buffer, offset);
+	if (id == -1)
+		return nullptr;
+	for (Pawn &pawn : board.pawns)
+		if (pawn.id == id)
+			return &pawn;
+	return nullptr;
 }
