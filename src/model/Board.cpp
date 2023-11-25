@@ -17,41 +17,41 @@
  *   11 10 09 08 07 06   05 04 03 02 01 00
  */
 
-void setClearBoard(Board *gameBoard) {
-	gameBoard->bar = Bar{0};
+void setClearBoard(Board &gameBoard) {
+	gameBoard.bar = Bar{0};
 
-	gameBoard->currentPlayerId = 0;
-	for (auto &player: gameBoard->players) {
+	gameBoard.currentPlayerId = 0;
+	for (auto &player: gameBoard.players) {
 		player = Player{};
 	}
 
 	// set Points to keep 0 Pawns
-	for (auto &point: gameBoard->points) {
+	for (auto &point: gameBoard.points) {
 		point = Point{0};
 	}
 
 	// set Courts to hold 0 Pawns
-	for (auto &court: gameBoard->courts) {
+	for (auto &court: gameBoard.courts) {
 		court = Court{0};
 	}
 }
 
 // TODO: rename
-void placePawns(Board *gameBoard) {
+void placePawns(Board &gameBoard) {
 	int pawnIndex = 0;
 	for (auto pos: startingPos) {
-		gameBoard->points[pos->x].pawnsInside = pos->y;
+		gameBoard.points[pos->x].pawnsInside = pos->y;
 		for (int j = 0; j < pos->y; ++j) {
-			gameBoard->points[pos->x].pawns[j] = &gameBoard->pawns[pawnIndex++];
+			gameBoard.points[pos->x].pawns[j] = &gameBoard.pawns[pawnIndex++];
 		}
 	}
 
 	pawnIndex = 0;
 	int endIndex = nPoints - 1;
 	for (auto pos: startingPos) {
-		gameBoard->points[endIndex - pos->x].pawnsInside = pos->y;
+		gameBoard.points[endIndex - pos->x].pawnsInside = pos->y;
 		for (int j = 0; j < pos->y; ++j) {
-			gameBoard->points[endIndex - pos->x].pawns[j] = &gameBoard->pawns[pawnIndex++];
+			gameBoard.points[endIndex - pos->x].pawns[j] = &gameBoard.pawns[pawnIndex++];
 		}
 	}
 }

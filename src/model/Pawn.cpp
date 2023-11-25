@@ -7,20 +7,20 @@
 #include "Board.h"
 
 
-bool canBeMoved(Board *game, int pieceIndex, int moveBy) {
+bool canBeMoved(Board &game, int pointIndex, int moveBy) {
 	// Index out of range
-	if (pieceIndex >= nPoints || pieceIndex < 0)
+	if (pointIndex >= nPoints || pointIndex < 0)
 		return false;
 	// Moving Pawn from an empty Point
-	if (game->points[pieceIndex].pawnsInside == 0)
+	if (game.points[pointIndex].pawnsInside == 0)
 		return false;
 	// Moving not your Pawn
-	if (game->points[pieceIndex].pawns[0]->owner->id != game->currentPlayerId)
+	if (game.points[pointIndex].pawns[0]->owner->id != game.currentPlayerId)
 		return false;
 
 	// Handle move in both direction based on Pawn "Color"
-	short direction = game->points[pieceIndex].pawns[0]->moveDirection;
-	int destinationIndex = pieceIndex + moveBy * direction;
+	short direction = game.points[pointIndex].pawns[0]->moveDirection;
+	int destinationIndex = pointIndex + moveBy * direction;
 	// Moving outside of range
 	if (destinationIndex >= nPoints || destinationIndex < 0)
 		return false;
@@ -34,9 +34,9 @@ bool canBeMoved(Board *game, int pieceIndex, int moveBy) {
  * 	POSSIBLE - can move to this Point
  * 	CAPTURE - can move and a Capture will happen
  */
-moveToPoint canMoveTo(Board *game, int fromIndex, int toIndex) {
+moveToPoint canMoveTo(Board &game, int fromIndex, int toIndex) {
 	// Consider the destination indexes are already check
-	int destinationSize = game->points[toIndex].pawnsInside;
+	int destinationSize = game.points[toIndex].pawnsInside;
 	// Moving to full Point
 	if (destinationSize == PAWNS_PER_POINT)
 		return BLOCKED;
@@ -44,7 +44,7 @@ moveToPoint canMoveTo(Board *game, int fromIndex, int toIndex) {
 	if (destinationSize == 0)
 		return POSSIBLE;
 	// Check if Point is occupied by same player, by now we know the point has at least one empty slot
-	if (game->points[toIndex].pawns[0]->owner->id == game->points[fromIndex].pawns[0]->owner->id)
+	if (game.points[toIndex].pawns[0]->owner->id == game.points[fromIndex].pawns[0]->owner->id)
 		return POSSIBLE;
 	// Check if Point is blocked by opponent
 	if (destinationSize > CAPTURE_THRESHOLD)

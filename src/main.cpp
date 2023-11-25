@@ -42,24 +42,24 @@ int main(int argc, char **argv) {
 	Pawn white[PAWNS_PER_PLAYER] = {};
 	Pawn black[PAWNS_PER_PLAYER] = {};
 
-	gameSetUp(&UI.board, white, black);
+	gameSetUp(UI.board, white, black);
 
 	int menuSelected = 0;
 
-	generateBasicBoard(&UI);
-	generateInteractiveUI(&UI, &menuSelected);
+	generateBasicBoard(UI);
+	generateInteractiveUI(UI, menuSelected);
 
 	int ch;
 	bool gameEnded = false;
 	int pickedPiece = 0;
 	while ((ch = getInput(argc, argv)) != 'q') {
 
-		inputController(ch, &UI.board, &menuSelected, &gameEnded, &pickedPiece);
+		inputController(ch, UI.board, menuSelected, gameEnded, pickedPiece);
 		if (gameEnded)
 			break;
 
-		generateBasicBoard(&UI);
-		generateInteractiveUI(&UI, &menuSelected);
+		generateBasicBoard(UI);
+		generateInteractiveUI(UI, menuSelected);
 
 		// Refresh the screen to show changes
 		refresh();

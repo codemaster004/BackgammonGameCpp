@@ -29,9 +29,9 @@ typedef struct {
 	short moveDirection;
 } Pawn;
 
-bool canBeMoved(Board *game, int pointIndex, int moveBy);
+bool canBeMoved(Board &game, int pointIndex, int moveBy);
 
-moveToPoint canMoveTo(Board *game, int fromIndex, int toIndex);
+moveToPoint canMoveTo(Board &game, int fromIndex, int toIndex);
 
 bool enumToBool(moveToPoint value);
 

@@ -36,9 +36,9 @@ typedef struct Board {
 	int currentPlayerId;
 } Board;
 
-void setClearBoard(Board *gameBoard);
+void setClearBoard(Board &gameBoard);
 
-void placePawns(Board *gameBoard);
+void placePawns(Board &gameBoard);
 
 
 #endif //BACKGAMMONGAME_BOARD_H
