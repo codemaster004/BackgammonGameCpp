@@ -5,6 +5,8 @@
 #ifndef BACKGAMMONGAME_PAWN_H
 #define BACKGAMMONGAME_PAWN_H
 
+#include "Player.h"
+
 typedef struct Board Board;
 
 enum moveToPoint {
@@ -19,19 +21,13 @@ enum PawnColor {
 };
 
 typedef struct {
-	int ownerId;
+	Player *owner;
 	int id;
 	bool isHome;
 	bool isOnBar;
 	PawnColor color;
 	short moveDirection;
 } Pawn;
-
-int getOwner(Board *game, int pawnId);
-
-short getMvDir(Board *game, int pawnId);
-
-Pawn getPawn(Board *game, int pawnId);
 
 bool canBeMoved(Board *game, int pointIndex, int moveBy);
 

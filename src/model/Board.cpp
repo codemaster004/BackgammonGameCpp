@@ -42,7 +42,7 @@ void placePawns(Board *gameBoard) {
 	for (auto pos: startingPos) {
 		gameBoard->points[pos->x].pawnsInside = pos->y;
 		for (int j = 0; j < pos->y; ++j) {
-			gameBoard->points[pos->x].pawnsId[j] = gameBoard->pawnGroups[0].pawns[pawnIndex++].id;
+			gameBoard->points[pos->x].pawns[j] = &gameBoard->pawns[pawnIndex++];
 		}
 	}
 
@@ -51,7 +51,7 @@ void placePawns(Board *gameBoard) {
 	for (auto pos: startingPos) {
 		gameBoard->points[endIndex - pos->x].pawnsInside = pos->y;
 		for (int j = 0; j < pos->y; ++j) {
-			gameBoard->points[endIndex - pos->x].pawnsId[j] = gameBoard->pawnGroups[1].pawns[pawnIndex++].id;
+			gameBoard->points[endIndex - pos->x].pawns[j] = &gameBoard->pawns[pawnIndex++];
 		}
 	}
 }

@@ -16,8 +16,8 @@ void gameSetUp(Board *game, Pawn white[], Pawn black[]) {
 	setClearBoard(game);
 
 	for (int i = 0; i < PAWNS_PER_PLAYER; ++i) {
-		white[i] = Pawn{.ownerId=game->players[0].id, .id=i, .isHome=false, .isOnBar=false, .color=PAWN_WHITE, .moveDirection=1};
-		black[i] = Pawn{.ownerId=game->players[1].id, .id=PAWNS_PER_PLAYER + i, .isHome=false, .isOnBar=false, .color=PAWN_BLACK, .moveDirection=-1};
+		white[i] = Pawn{.owner=&game->players[0], .id=i, .isHome=false, .isOnBar=false, .color=PAWN_WHITE, .moveDirection=1};
+		black[i] = Pawn{.owner=&game->players[1], .id=PAWNS_PER_PLAYER + i, .isHome=false, .isOnBar=false, .color=PAWN_BLACK, .moveDirection=-1};
 	}
 	placePawns(game);
 
@@ -96,10 +96,10 @@ void movePawn(Board *game, int fromIndex, int moveBy) {
 	// TODO: Separate
 	if (moveType == CAPTURE) {
 		for (int i = 0; i < CAPTURE_THRESHOLD; ++i) {
-			game->bar.pawnsId[game->bar.pawnsInside++] = toPoint->pawnsId[i];
+			game->bar.pawns[game->bar.pawnsInside++] = toPoint->pawns[i];
 		}
 		toPoint->pawnsInside -= CAPTURE_THRESHOLD;
 	}
-	toPoint->pawnsId[toPoint->pawnsInside++] = fromPoint->pawnsId[--fromPoint->pawnsInside];
-	fromPoint->pawnsId[fromPoint->pawnsInside] = -1;
+	toPoint->pawns[toPoint->pawnsInside++] = fromPoint->pawns[--fromPoint->pawnsInside];
+	fromPoint->pawns[fromPoint->pawnsInside] = nullptr;
 }

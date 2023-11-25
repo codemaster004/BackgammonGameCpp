@@ -12,31 +12,27 @@
 
 typedef struct {
 	int pawnsInside;
-	int pawnsId[PAWNS_PER_POINT];
+	Pawn *pawns[PAWNS_PER_POINT];
 } Point;
 
 typedef struct {
 	int pawnsInside;
-	int pawnsId[totalPawns];
+	Pawn *pawns[totalPawns];
 } Bar;
 
 typedef struct {
 	int pawnsInside;
-	int pawnsId[PAWNS_PER_PLAYER];
-	int ownerId;
+	Pawn *pawns[PAWNS_PER_PLAYER];
+	Player *owner;
 } Court;
 
-typedef struct {
-	Pawn pawns[PAWNS_PER_PLAYER];
-} PlayerPawns;
-
 typedef struct Board {
-	Point points[nPoints];
-	PlayerPawns pawnGroups[N_PLAYERS];
-	Bar bar;
-	Court courts[N_PLAYERS];
-	int dices[N_DICES];
 	Player players[N_PLAYERS];
+	Pawn pawns[totalPawns];
+	Point points[nPoints];
+	Court courts[N_PLAYERS];
+	Bar bar;
+	int dices[N_DICES];
 	int currentPlayerId;
 } Board;
 
