@@ -8,6 +8,7 @@
 
 #include "../configs/GameConfigs.h"
 #include "SerializeToFile.h"
+#include "../Base64.h"
 
 void serializeInt(int value, uint8_t *buffer, size_t &offset) {
 	std::memcpy(buffer + offset, &value, sizeof(int));
