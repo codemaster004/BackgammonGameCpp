@@ -7,3 +7,6 @@ cmake-build-debug
 
 # Local input file
 input.txt
+
+# Game Saves
+games
