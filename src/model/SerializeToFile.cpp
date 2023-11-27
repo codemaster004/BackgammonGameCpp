@@ -15,7 +15,7 @@
 #define PAWNS_SIZE sizeof(Pawn) * totalPawns
 #define INT_SIZE sizeof(int)
 #define POINT_SIZE (INT_SIZE * PAWNS_PER_POINT + INT_SIZE)
-#define COURT_SIZE (INT_SIZE * PAWNS_PER_PLAYER + INT_SIZE)
+#define COURT_SIZE (INT_SIZE * PAWNS_PER_PLAYER + INT_SIZE * 2)
 #define BAR_SIZE (INT_SIZE * totalPawns + INT_SIZE)
 #define DICES_SIZE INT_SIZE * N_DICES
 
@@ -36,13 +36,15 @@ int deserializeInt(const uint8_t *buffer, size_t &index) {
 
 void serializeToFile(char filename[], Board &game) {
 	auto *bufferTable = new uint8_t[boardSize];
+
 	size_t index = 0;
 	serialiseBoard(game, bufferTable, index);
 	char *encodedFile = encodeBase64(bufferTable, index);
+	delete[] bufferTable;
 
-	char dir[] = "../games/"; // TODO: maybe const?
-	char *path = joinStrings(dir, sizeof(dir) - 1, filename, 9);
+	char *path = joinStrings((char *)(savesDir), sizeof(savesDir) - 1, filename, 9);
 	FILE *file = fopen(path, "w");
+	delete[] path;
 
 	int encodedLen = finalEncodedDataLen((int) (index));
 	if (file != nullptr) {
@@ -53,7 +55,32 @@ void serializeToFile(char filename[], Board &game) {
 		fclose(file);
 	}
 
-	delete[] path;
 	delete[] encodedFile;
 }
 
+Board loadFromFile(char filename[]) {
+	int encodedLen = finalEncodedDataLen((int) (boardSize));
+	auto *bufferTable = new char[encodedLen];
+	size_t index = 0;
+
+	char *path = joinStrings((char *)(savesDir), sizeof(savesDir) - 1, filename, 9);
+	FILE *file = fopen(path, "w");
+	delete[] path;
+
+	int ch;
+	while ((ch = fgetc(file)) != EOF) {
+		bufferTable[index++] = (char) (ch);
+	}
+	if (index != encodedLen) {
+		// TODO: Generate some error for the user to see
+	}
+	uint8_t *decodedBoard = decodeBase64(bufferTable, encodedLen);
+	delete[] bufferTable;
+
+	index = 0;
+	Board savedGame = deserializeBoard(decodedBoard, index);
+
+	delete[] decodedBoard;
+
+	return savedGame;
+}

@@ -37,4 +37,6 @@ const char menuKeys[N_MENU_OPTIONS] = {'m', 'r', 'u', 'q'};
 
 const Pos startingPos[N_STARTING_POS][2] = {{0, 2}, {11, 5}, {16, 3}, {18, 5}};
 
+const char savesDir[] = "../games/";
+
 #endif //BACKGAMMONGAME_GAMECONFIGS_H
