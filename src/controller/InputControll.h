@@ -7,7 +7,7 @@
 
 #include "../model/Board.h"
 
-void gameSetUp(Board &game, Pawn white[], Pawn black[]);
+void gameSetUp(Board &game);
 
 void inputController(int input, Board &game, int &menuSelected, bool &gameEnded, int &inputtedNumber);
 

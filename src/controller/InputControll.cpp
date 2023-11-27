@@ -12,12 +12,11 @@
 
 
 // TODO: REANME
-void gameSetUp(Board &game, Pawn white[], Pawn black[]) {
-	setClearBoard(game);
+void gameSetUp(Board &game) {
 
 	for (int i = 0; i < PAWNS_PER_PLAYER; ++i) {
-		white[i] = Pawn{.ownerId=game.players[0].id, .id=i, .isHome=false, .isOnBar=false, .color=PAWN_WHITE, .moveDirection=1};
-		black[i] = Pawn{.ownerId=game.players[1].id, .id=PAWNS_PER_PLAYER + i, .isHome=false, .isOnBar=false, .color=PAWN_BLACK, .moveDirection=-1};
+		game.pawns[i] = Pawn{.ownerId=game.players[0].id, .id=i, .isHome=false, .isOnBar=false, .color=PAWN_WHITE, .moveDirection=1};
+		game.pawns[i + PAWNS_PER_PLAYER] = Pawn{.ownerId=game.players[1].id, .id=PAWNS_PER_PLAYER + i, .isHome=false, .isOnBar=false, .color=PAWN_BLACK, .moveDirection=-1};
 	}
 	placePawns(game);
 
