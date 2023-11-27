@@ -13,6 +13,7 @@
 #include "controller/InputControll.h"
 #include "view/Handeler.h"
 #include "view/Drawing.h"
+#include "model/SerializeToFile.h"
 
 void startScreen(int argc, char **argv);
 
@@ -21,40 +22,45 @@ int getInput(int argc, char **argv);
 int main(int argc, char **argv) {
 	startScreen(argc, argv);
 
+//	char fName[10] = {"game0.txt"};
+//	serializeToFile(fName);
+//	return 0;
+
 	UserInterface UI = initUI();
 	UI.board = Board{};
+	setClearBoard(UI.board);
 	UI.board.players[0] = Player {
 		0, {"Me"}, true, 0
 	};
-	UI.board.players[0] = Player {
+	UI.board.players[1] = Player {
 		1, {"You"}, false, 0
 	};
 	UI.board.currentPlayerId = 0;
 	for (int & dice : UI.board.dices) {
-		dice = 0;
+		dice = 7;
 	}
 
-	Pawn white[PAWNS_PER_PLAYER] = {};
-	Pawn black[PAWNS_PER_PLAYER] = {};
+	gameSetUp(UI.board);
 
-	gameSetUp(&UI.board, white, black);
+	char name[] = "game0.txt";
+	serializeToFile(name, UI.board);
 
 	int menuSelected = 0;
 
-	generateBasicBoard(&UI);
-	generateInteractiveUI(&UI, &menuSelected);
+	generateBasicBoard(UI);
+	generateInteractiveUI(UI, menuSelected);
 
 	int ch;
 	bool gameEnded = false;
 	int pickedPiece = 0;
 	while ((ch = getInput(argc, argv)) != 'q') {
 
-		inputController(ch, &UI.board, &menuSelected, &gameEnded, &pickedPiece);
+		inputController(ch, UI.board, menuSelected, gameEnded, pickedPiece);
 		if (gameEnded)
 			break;
 
-		generateBasicBoard(&UI);
-		generateInteractiveUI(&UI, &menuSelected);
+		generateBasicBoard(UI);
+		generateInteractiveUI(UI, menuSelected);
 
 		// Refresh the screen to show changes
 		refresh();
@@ -99,10 +105,10 @@ void startScreen(int argc, char **argv) {
 /**
  * TODO: [x] Basic Board UI (1pt)
  * TODO: [x] Visualisation of game state (1pt)
- * TODO: [ ] Saving game state to a file (2pt)
- * TODO: [ ] Loading game state from file + ?next move? (2pt)
- * TODO: [ ] Ability to capture pawns (1pt)
- * TODO: [ ] Removing pawns ?bar or court? (1pt)
+ * TODO: [x] Saving game state to a file (2pt)
+ * TODO: [x] Loading game state from file + ?next move? (2pt)
+ * TODO: [ ] Ability to capture pawnsId (1pt)
+ * TODO: [ ] Removing pawnsId ?bar or court? (1pt)
  * TODO: [ ] ?Game simulation from any point till the end? (2pt)
  * TODO: [ ] Remember and save game past moves (1pt)
  * TODO: [ ] Visualisation of game play (backwards) from loaded state (2pt)

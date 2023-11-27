@@ -8,7 +8,7 @@
 #include "Drawing.h"
 
 
-Placement initMenu(Pos center, MenuElement *values, int nElements) {
+Placement initMenu(Pos center, MenuElement values[], int nElements) {
 	uint realLen = OPTION_SPACING * (nElements - 1);
 	for (int i = 0; i < nElements; ++i) {
 		realLen += len(values[i].value) - 1;
@@ -22,20 +22,20 @@ Placement initMenu(Pos center, MenuElement *values, int nElements) {
 	};
 }
 
-void generateBasicBoard(UserInterface *ui) {
+void generateBasicBoard(UserInterface &ui) {
 	attron(COLOR_PAIR(FOREGROUND));
 
-	handleBoardOutline(ui->space.board);
+	handleBoardOutline(ui.space.board);
 	handleBar();
-	handlePieces(ui->space.board);
+	handlePieces(ui.space.board);
 
 	// Dies
-	handleDices(ui->space.dice, ui->space.boardCenter, ui->board.dices);
+	handleDices(ui.space.dice, ui.space.boardCenter, ui.board.dices);
 
 	attroff(COLOR_PAIR(FOREGROUND));
 }
 
-void generateInteractiveUI(UserInterface *ui, const int *menuSelected) {
+void generateInteractiveUI(UserInterface &ui, int &menuSelected) {
 	auto *testMenu = new MenuElement[N_MENU_OPTIONS];
 	for (int i = 0; i < N_MENU_OPTIONS; ++i) {
 		testMenu[i] = MenuElement{.id=i, .value=menuOptions[i]};
@@ -48,13 +48,13 @@ void generateInteractiveUI(UserInterface *ui, const int *menuSelected) {
 		indexes[i] = numberToString(i, (int) (digits));
 	}
 	attron(COLOR_PAIR(FOREGROUND));
-	handleIndexes(indexes, (int) (digits), ui->space.indexesTop, ui->space.indexesBottom);
+	handleIndexes(indexes, (int) (digits), ui.space.indexesTop, ui.space.indexesBottom);
 	attroff(COLOR_PAIR(FOREGROUND));
 
-	handleMenu(testMenu, N_MENU_OPTIONS, *menuSelected,
-			   Pos{ui->space.boardCenter.x, ui->space.board.max.y + MENU_TOP_SPACING});
+	handleMenu(testMenu, N_MENU_OPTIONS, menuSelected,
+			   Pos{ui.space.boardCenter.x, ui.space.board.max.y + MENU_TOP_SPACING});
 
-	handlePawnPlacement(&ui->board, ui->space.board);
+	handlePawnPlacement(ui.board, ui.space.board);
 
 	/// CLEAR MEMORY!!!
 	for (int i = 0; i < nPoints; ++i) {
@@ -88,7 +88,7 @@ void handleBar() {
 		drawBar(OFFSET_X + (boardWidth + borders) * i, OFFSET_Y, boardHeight + borders);
 }
 
-void handleDices(Placement space, Pos center, const int *dices) {
+void handleDices(Placement space, Pos center, int *dices) {
 	drawBorders(space);
 
 	int dicesHeight = DICE_HEIGHT * N_DICES + (N_DICES + 1) * BORDER_WIDTH;
@@ -127,7 +127,7 @@ void handleIndexes(char **indexes, int digits, Placement pos1, Placement pos2) {
 	}
 }
 
-void handleMenu(MenuElement *options, int optionCount, int selected, Pos center) {
+void handleMenu(MenuElement options[], int optionCount, int selected, Pos center) {
 	Placement menuSpace = initMenu(center, options, optionCount);
 
 	for (int i = 0; i < optionCount; ++i) {
@@ -140,7 +140,7 @@ void handleMenu(MenuElement *options, int optionCount, int selected, Pos center)
 	}
 }
 
-void handlePawnPlacement(Board *game, Placement space) {
+void handlePawnPlacement(Board &game, Placement space) {
 	space.min.x += BORDER_WIDTH + pieceSpacing / 2;
 	space.min.y += BORDER_WIDTH;
 	space.max.x = space.min.x;
@@ -148,17 +148,17 @@ void handlePawnPlacement(Board *game, Placement space) {
 	for (int i = 0; i < N_BOARDS; ++i) {
 		for (int j = 0; j < POINTS_PER_BOARD; ++j) {
 			int indexTop = POINTS_PER_BOARD * N_BOARDS + i * POINTS_PER_BOARD + j;
-			int count = game->points[indexTop].pawnsInside;
+			int count = game.points[indexTop].pawnsInside;
 			if (count) {
 				space.max.y = space.min.y + count;
-				drawLine(*game->points[indexTop].pawns[0], space);
+				drawLine(*game.points[indexTop].pawns[0], space);
 			}
 
 			int indexBot = POINTS_PER_BOARD * N_BOARDS - (i * POINTS_PER_BOARD + j) - 1;
-			count = game->points[indexBot].pawnsInside;
+			count = game.points[indexBot].pawnsInside;
 			if (count) {
 				moveSpace(&space, Pos {0, boardHeight - count});
-				drawLine(*game->points[indexBot].pawns[0], space);
+				drawLine(*game.points[indexBot].pawns[0], space);
 				moveSpace(&space, Pos {0, - boardHeight + count});
 			}
 

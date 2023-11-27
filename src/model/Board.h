@@ -7,51 +7,26 @@
 
 #include "../configs/GameConfigs.h"
 #include "Player.h"
+#include "Pawn.h"
+#include "Storage.h"
 
-
-enum PawnColor {
-	PAWN_WHITE,
-	PAWN_BLACK,
-};
-
-typedef struct {
-	int ownerId;
-	int id;
-	bool isHome;
-	bool isOnBar;
-	PawnColor color;
-	short moveDirection;
-} Pawn;
-
-typedef struct {
-	int pawnsInside;
-	Pawn *pawns[PAWNS_PER_POINT];
-} Point;
-
-typedef struct {
-	int pawnsInside;
-	Pawn *pawns[totalPawns];
-} Bar;
-
-typedef struct {
-	int pawnsInside;
-	Pawn *pawns[PAWNS_PER_PLAYER];
-	int *ownerId;
-} Court;
-
-typedef struct {
-	Point points[nPoints];
-	Bar bar;
-	Court courts[N_PLAYERS];
-  int dices[N_DICES];
+typedef struct Board {
 	Player players[N_PLAYERS];
+	Pawn pawns[totalPawns];
+	Point points[nPoints];
+	Court courts[N_PLAYERS];
+	Bar bar;
+	int dices[N_DICES];
 	int currentPlayerId;
 } Board;
 
-void setClearBoard(Board *gameBoard);
+void setClearBoard(Board &gameBoard);
 
-void palcePawns(Board *gameBoard, Pawn player1[], Pawn player2[]);
+void placePawns(Board &gameBoard);
 
+void serialiseBoard(Board &board, uint8_t *buffer, size_t &offset);
+
+Board deserializeBoard(const uint8_t *buffer, size_t &offset);
 
 
 #endif //BACKGAMMONGAME_BOARD_H
