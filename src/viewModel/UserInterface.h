@@ -41,4 +41,8 @@ typedef struct {
 
 UserInterface initUI();
 
+void starterScreen(UserInterface &ui);
+
+void titleArt(int offsetX, int offsetY);
+
 #endif //BACKGAMMONGAME_USERINTERFACE_H
