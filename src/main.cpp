@@ -29,16 +29,6 @@ int main(int argc, char **argv) {
 	UserInterface UI = initUI();
 	UI.board = Board{};
 	setClearBoard(UI.board);
-	UI.board.players[0] = Player {
-		0, {"Me"}, true, 0
-	};
-	UI.board.players[1] = Player {
-		1, {"You"}, false, 0
-	};
-	UI.board.currentPlayerId = 0;
-	for (int & dice : UI.board.dices) {
-		dice = 7;
-	}
 
 	gameSetUp(UI.board);
 

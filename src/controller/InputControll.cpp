@@ -13,6 +13,16 @@
 
 // TODO: REANME
 void gameSetUp(Board &game) {
+	game.players[0] = Player {
+		0, {"Me"}, true, 0
+	};
+	game.players[1] = Player {
+		1, {"You"}, false, 0
+	};
+	game.currentPlayerId = 0;
+	for (int & dice : game.dices) {
+		dice = 0;
+	}
 
 	for (int i = 0; i < PAWNS_PER_PLAYER; ++i) {
 		game.pawns[i] = Pawn{.ownerId=game.players[0].id, .id=i, .isHome=false, .isOnBar=false, .color=PAWN_WHITE, .moveDirection=1};
