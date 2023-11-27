@@ -24,7 +24,7 @@
 #define OFFSET_X 3
 #define OFFSET_Y 2
 
-#define COLOR_THEME 230, 150, 230
+#define COLOR_THEME 230, 120, 220
 
 enum UiColorsId {
 	FOREGROUND = 1,
@@ -48,7 +48,7 @@ const char pawn2[] = { "[]" };
 const int pieceWidth = 2;
 const int pieceSpacing = 3;
 
-const float colorDiff = 0.25;
+const float colorDiff = 0.3;
 
 // Calculations
 const int borders = BORDER_WIDTH * 2;
