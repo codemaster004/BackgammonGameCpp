@@ -25,4 +25,6 @@ char* numberToString(int number, int width);
 
 void revertTable(char **from, char **to);
 
+char *joinStrings(char *string1, int len1, char *string2, int len2);
+
 #endif //BACKGAMMONGAME_UTILITY_H

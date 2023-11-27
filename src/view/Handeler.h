@@ -14,18 +14,18 @@ void handlePieces(Placement space);
 
 void handleBar();
 
-void handleDices(Placement space, Pos center, const int *dices);
+void handleDices(Placement space, Pos center, int *dices);
 
 void drawBar(int offsetX, int offsetY, int height);
 
-void handleMenu(MenuElement *options, int optionCount, int selected, Pos center);
+void handleMenu(MenuElement options[], int optionCount, int selected, Pos center);
 
 void handleIndexes(char **indexes, int digits, Placement pos1, Placement pos2);
 
-void generateBasicBoard(UserInterface *ui);
+void generateBasicBoard(UserInterface &ui);
 
-void generateInteractiveUI(UserInterface *ui, const int *menuSelected);
+void generateInteractiveUI(UserInterface &ui, int &menuSelected);
 
-void handlePawnPlacement(Board *game, Placement space);
+void handlePawnPlacement(Board &game, Placement space);
 
 #endif //BACKGAMMONGAME_HANDELER_H
