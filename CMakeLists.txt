@@ -27,6 +27,12 @@ add_executable(BackgammonGame src/main.cpp
         src/view/Drawing.h
         src/viewModel/Space.cpp
         src/viewModel/Space.h
+        src/model/SerializeToFile.cpp
+        src/model/SerializeToFile.h
+        src/model/Storage.cpp
+        src/model/Storage.h
+        src/Base64.cpp
+        src/Base64.h
 )
 
 target_link_libraries(BackgammonGame ncurses)

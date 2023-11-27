@@ -73,3 +73,14 @@ void revertTable(char **from, char **to) {
 		*(to - i - 1) = temp;
 	}
 }
+
+char *joinStrings(char *string1, int len1, char *string2, int len2) {
+	char *fullString = new char [len1 + len2];
+	for (int i = 0; i < len1; ++i) {
+		fullString[i] = string1[i];
+	}
+	for (int i = 0; i < len2; ++i) {
+		fullString[len1 + i] = string2[i];
+	}
+	return fullString;
+}
