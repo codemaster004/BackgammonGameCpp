@@ -7,10 +7,10 @@
 
 #include "../model/Board.h"
 
-void gameSetUp(Board *game, Pawn white[], Pawn black[]);
+void gameSetUp(Board &game);
 
-void inputController(int input, Board *game, int *menu, bool *gameEnded, int *inputtedNumber);
+void inputController(int input, Board &game, int &menuSelected, bool &gameEnded, int &inputtedNumber);
 
-void movePawn(Board *game, int fromIndex, int moveBy);
+void movePawn(Board &game, int fromIndex, int moveBy);
 
 #endif //BACKGAMMONGAME_INPUTCONTROLL_H
