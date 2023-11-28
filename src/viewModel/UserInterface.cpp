@@ -37,8 +37,7 @@ void titleArt(int offsetX, int offsetY) {
 }
 
 void starterScreen(UserInterface &ui) {
-	// TODO: Const
-	titleArt(35, 12);
+	titleArt(OFFSET_X, OFFSET_Y + boardHeight / 2);
 	handleMenu(ui.menu, Pos{ui.space.boardCenter.x, ui.space.board.max.y + MENU_TOP_SPACING});
 }
 

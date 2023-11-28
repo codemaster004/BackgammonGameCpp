@@ -21,8 +21,8 @@
 #define OPTION_SPACING 3
 #define MENU_TOP_SPACING 3
 
-#define OFFSET_X 3
-#define OFFSET_Y 2
+#define OFFSET_X 16
+#define OFFSET_Y 3
 
 #define COLOR_THEME 230, 120, 220
 
