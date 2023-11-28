@@ -5,6 +5,7 @@
 #include "ncurses.h"
 
 #include "../configs/UIConfigs.h"
+#include "../configs/MenuConfigs.h"
 #include "UserInterface.h"
 #include "../view/Handeler.h"
 
@@ -41,36 +42,26 @@ void starterScreen(UserInterface &ui) {
 	handleMenu(ui.menu, Pos{ui.space.boardCenter.x, ui.space.board.max.y + MENU_TOP_SPACING});
 }
 
-// TODO: new config
-void createStarterMenu(Menu &menu) {
-	menu.elementsCount = 3;
-	menu.selected = 0;
-	menu.elements = new MenuElement [menu.elementsCount];
-	menu.elements[0] = MenuElement {.id=0, .key='n', .value="(N)ew Game"};
-	menu.elements[1] = MenuElement {.id=1, .key='l', .value="(L)oad Game"};
-	menu.elements[2] = MenuElement {.id=2, .key='q', .value="(Q)uit"};
-}
-
-void createGameMenu(Menu &menu) {
-	menu.elementsCount = 5;
-	menu.selected = 0;
-	menu.elements = new MenuElement [menu.elementsCount];
-	menu.elements[0] = MenuElement {.id=0, .key='m', .value="(M)ove"};
-	menu.elements[1] = MenuElement {.id=1, .key='r', .value="(R)oll"};
-	menu.elements[2] = MenuElement {.id=2, .key='u', .value="(U)ndo"};
-	menu.elements[3] = MenuElement {.id=3, .key='s', .value="(S)ave"};
-	menu.elements[4] = MenuElement {.id=4, .key='q', .value="(Q)uit"};
-}
-
 void redefineMenu(Menu &menu) {
+	menu.selected = 0;
+	char **options;
+	char *keys;
 	switch (menu.mode) {
 		case DEFAULT:
-			createGameMenu(menu);
+			menu.elementsCount = N_GAME_MENU_OPTIONS;
+			options = (char **)(menuGameOptions);
+			keys = (char *) (menuGameKeys);
 			break;
 		case STARTING_GAME:
-			createStarterMenu(menu);
+			menu.elementsCount = N_STARTER_MENU_OPTIONS;
+			options = (char **)(menuStarterOptions);
+			keys = (char *) (menuStarterKeys);
 			break;
 		case PICK_POINT:
 			break;
+	}
+	menu.elements = new MenuElement [menu.elementsCount];
+	for (int i = 0; i < menu.elementsCount; ++i) {
+		menu.elements[i] = MenuElement {.id=i, .key=keys[i], .value=options[i]};
 	}
 }
