@@ -13,6 +13,13 @@
 enum MenuMode {
 	DEFAULT,
 	PICK_POINT,
+	STARTING_GAME,
+};
+
+enum UiState {
+	WELCOME_SCREEN,
+	PICK_SAVE,
+	GAME_PLAY
 };
 
 typedef struct {
@@ -24,25 +31,40 @@ typedef struct {
 } GameSpace;
 
 typedef struct {
+	int id;
+	char key;
+	const char *value;
+} MenuElement;
+
+typedef struct Menu {
+	MenuMode mode;
+	MenuElement *elements;
+	int elementsCount;
+	int selected;
+} Menu;
+
+typedef struct {
 	std::string gameName;
 	std::string authorName;
 	int authorId;
 	Board board;
 	// TODO: create/implement structure for keeping currentPlayersScores
 	int currentScores[PLAYERS_PER_GAME];
-	MenuMode menuMode;
+	Menu menu;
 	GameSpace space;
+	bool needToRefresh;
+	bool gameEnded;
+	UiState state;
 } UserInterface;
-
-typedef struct {
-	int id;
-	const char *value;
-} MenuElement;
 
 UserInterface initUI();
 
 void starterScreen(UserInterface &ui);
 
 void titleArt(int offsetX, int offsetY);
+
+void createStarterMenu(Menu &menu);
+
+void redefineMenu(Menu &menu);
 
 #endif //BACKGAMMONGAME_USERINTERFACE_H

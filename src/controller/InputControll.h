@@ -6,10 +6,15 @@
 #define BACKGAMMONGAME_INPUTCONTROLL_H
 
 #include "../model/Board.h"
+#include "../viewModel/UserInterface.h"
 
 void gameSetUp(Board &game);
 
-void inputController(int input, Board &game, int &menuSelected, bool &gameEnded, int &inputtedNumber);
+void newGameController(int input, UserInterface &ui);
+
+void gamePlayController(int input, UserInterface &ui);
+
+void inputController(int input, UserInterface &ui, int &inputtedNumber);
 
 void movePawn(Board &game, int fromIndex, int moveBy);
 

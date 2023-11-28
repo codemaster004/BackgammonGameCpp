@@ -32,29 +32,44 @@ int main(int argc, char **argv) {
 
 	gameSetUp(UI.board);
 
-	char name[] = "game0.txt";
-	serializeToFile(name, UI.board);
+//	char name[] = "game0.txt";
+//	serializeToFile(name, UI.board);
 
-	int menuSelected = 0;
+	if (DEBUG_MODE) {
+		UI.state = GAME_PLAY;
+		UI.menu.mode = DEFAULT;
+	} else {
+		UI.state = WELCOME_SCREEN;
+		UI.menu.mode = STARTING_GAME;
+	}
+	redefineMenu(UI.menu);
 
-	generateBasicBoard(UI);
-	generateInteractiveUI(UI, menuSelected);
-
-	int ch;
-	bool gameEnded = false;
+	int ch = 0;
+	UI.gameEnded = false;
 	int pickedPiece = 0;
-	while ((ch = getInput(argc, argv)) != 'q') {
-
-		inputController(ch, UI.board, menuSelected, gameEnded, pickedPiece);
-		if (gameEnded)
+	do {
+		inputController(ch, UI, pickedPiece);
+		if (UI.gameEnded)
 			break;
 
-		generateBasicBoard(UI);
-		generateInteractiveUI(UI, menuSelected);
+		if (UI.needToRefresh) {
+			delete[] UI.menu.elements;
+			clear();
+			redefineMenu(UI.menu);
+			UI.needToRefresh = false;
+		}
+
+		if (UI.state == GAME_PLAY) {
+			generateBasicBoard(UI);
+			generateInteractiveUI(UI);
+		} else if (UI.state == WELCOME_SCREEN) {
+			starterScreen(UI);
+		}
 
 		// Refresh the screen to show changes
 		refresh();
-	}
+	} while ((ch = getInput(argc, argv)) != 'q');
+	 delete[] UI.menu.elements;
 
 	// Finish curses mode
 	endwin();

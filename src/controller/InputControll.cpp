@@ -9,6 +9,7 @@
 #include "../model/Board.h"
 #include "InputControll.h"
 #include "../model/Pawn.h"
+#include "../viewModel/UserInterface.h"
 
 
 // TODO: REANME
@@ -45,47 +46,83 @@ void numberInputController(int input, int &inputtedNumber) {
 	}
 }
 
-void inputController(int input, Board &game, int &menuSelected, bool &gameEnded, int &inputtedNumber) {
+void newGameController(int input, UserInterface &ui) {
+	switch (input) {
+		case 'n':
+			ui.state = GAME_PLAY;
+			ui.menu.mode = DEFAULT;
+			ui.needToRefresh = true;
+			break;
+		case 'l':
+			break;
+		default:
+			break;
+	}
+}
+
+void gamePlayController(int input, UserInterface &ui) {
+	switch (input) {
+		case 'm':
+			break;
+		case 'u':
+			break;
+		case 'r':
+			for (int & dice : ui.board.dices) {
+				dice = rand() % 6 + 1;
+			}
+			break;
+		default:
+			break;
+	}
+}
+
+void handleMenuModes(int input, UserInterface &ui) {
+	switch (ui.menu.mode) {
+		case DEFAULT:
+			gamePlayController(input, ui);
+			break;
+		case PICK_POINT:
+			break;
+		case STARTING_GAME:
+			newGameController(input, ui);
+			break;
+	}
+}
+
+void inputController(int input, UserInterface &ui, int &inputtedNumber) {
 //	numberInputController(input, inputtedNumber);
 //	if (input == '\r' || input == '\n') {
 //		movePawn(game, *inputtedNumber, *dice1);
 //		*inputtedNumber = 0;
 //	}
 	switch (input) {
-		// TODO: Probably rewrite for more options
 		case '\n':
 		case '\r':
-			inputController((int) (menuKeys[menuSelected]), game, menuSelected, gameEnded, inputtedNumber);
+			inputController(ui.menu.elements[ui.menu.selected].key, ui, inputtedNumber);
 			break;
 		case KEY_UP:
 			break;
 		case KEY_DOWN:
 			break;
 		case KEY_LEFT:
-			menuSelected = menuSelected - 1;
-			if (menuSelected < 0)
-				menuSelected = N_MENU_OPTIONS - 1;
-			menuSelected = menuSelected % N_MENU_OPTIONS;
+			ui.menu.selected = ui.menu.selected - 1;
+			if (ui.menu.selected < 0)
+				ui.menu.selected = ui.menu.elementsCount - 1;
+			ui.menu.selected = ui.menu.selected % ui.menu.elementsCount;
 			break;
 		case KEY_RIGHT:
-			menuSelected = menuSelected + 1;
-			menuSelected = menuSelected % N_MENU_OPTIONS;
-			break;
-		case 'm':
-			break;
-		case 'u':
-			break;
-		case 'r':
-			for (int i = 0; i < N_DICES; i++) {
-				game.dices[i] = rand() % 6 + 1;
-			}
-			break;
-		case 'q':
-			gameEnded = true;
+			ui.menu.selected = ui.menu.selected + 1;
+			ui.menu.selected = ui.menu.selected % ui.menu.elementsCount;
 			break;
 		default:
+			if (ui.menu.elements[ui.menu.selected].key == 'q') {
+				ui.gameEnded = true;
+			} else {
+				handleMenuModes(input, ui);
+			}
 			break;
 	}
+
 }
 
 // TODO: N pawnsId to move

@@ -35,11 +35,11 @@ void generateBasicBoard(UserInterface &ui) {
 	attroff(COLOR_PAIR(FOREGROUND));
 }
 
-void generateInteractiveUI(UserInterface &ui, int &menuSelected) {
-	auto *testMenu = new MenuElement[N_MENU_OPTIONS];
-	for (int i = 0; i < N_MENU_OPTIONS; ++i) {
-		testMenu[i] = MenuElement{.id=i, .value=menuOptions[i]};
-	}
+void generateInteractiveUI(UserInterface &ui) {
+//	auto *testMenu = new MenuElement[N_MENU_OPTIONS];
+//	for (int i = 0; i < N_MENU_OPTIONS; ++i) {
+//		testMenu[i] = MenuElement{.id=i, .value=menuOptions[i]};
+//	}
 
 	// Indexes
 	uint digits = nDigits(nPoints, 10);
@@ -51,8 +51,7 @@ void generateInteractiveUI(UserInterface &ui, int &menuSelected) {
 	handleIndexes(indexes, (int) (digits), ui.space.indexesTop, ui.space.indexesBottom);
 	attroff(COLOR_PAIR(FOREGROUND));
 
-	handleMenu(testMenu, N_MENU_OPTIONS, menuSelected,
-			   Pos{ui.space.boardCenter.x, ui.space.board.max.y + MENU_TOP_SPACING});
+	handleMenu(ui.menu, Pos{ui.space.boardCenter.x, ui.space.board.max.y + MENU_TOP_SPACING});
 
 	handlePawnPlacement(ui.board, ui.space.board);
 
@@ -61,7 +60,7 @@ void generateInteractiveUI(UserInterface &ui, int &menuSelected) {
 		delete[] indexes[i];
 	}
 	delete[] indexes;
-	delete[] testMenu;
+//	delete[] testMenu;
 
 }
 
@@ -127,16 +126,16 @@ void handleIndexes(char **indexes, int digits, Placement pos1, Placement pos2) {
 	}
 }
 
-void handleMenu(MenuElement options[], int optionCount, int selected, Pos center) {
-	Placement menuSpace = initMenu(center, options, optionCount);
+void handleMenu(Menu menu, Pos center) {
+	Placement menuSpace = initMenu(center, menu.elements, menu.elementsCount);
 
-	for (int i = 0; i < optionCount; ++i) {
-		if (options[i].id == selected) {
-			printColor(FOREGROUND_LIGHT, menuSpace.min.x, menuSpace.min.y, options[i].value);
+	for (int i = 0; i < menu.elementsCount; ++i) {
+		if (menu.elements[i].id == menu.selected) {
+			printColor(FOREGROUND_LIGHT, menuSpace.min.x, menuSpace.min.y, menu.elements[i].value);
 		} else {
-			printColor(FOREGROUND_DARK, menuSpace.min.x, menuSpace.min.y, options[i].value);
+			printColor(FOREGROUND_DARK, menuSpace.min.x, menuSpace.min.y, menu.elements[i].value);
 		}
-		menuSpace.min.x += (int) (len(options[i].value) - 1) + OPTION_SPACING;
+		menuSpace.min.x += (int) (len(menu.elements[i].value) - 1) + OPTION_SPACING;
 	}
 }
 
