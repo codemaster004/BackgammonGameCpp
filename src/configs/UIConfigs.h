@@ -27,7 +27,7 @@
 #define COLOR_THEME 230, 120, 220
 
 const char gameName[] = "Backgammon";
-const char creatorId[] = "197712";
+const char creatorId[] = "s197712";
 const char creatorName[] = "Filip Dabkowski";
 
 

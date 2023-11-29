@@ -4,6 +4,7 @@
 
 #include "ncurses.h"
 #include "cstdlib"
+#include "ctime"
 
 #include "../configs/GameConfigs.h"
 #include "../model/Board.h"

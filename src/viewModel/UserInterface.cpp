@@ -10,11 +10,11 @@
 #include "../view/Handeler.h"
 
 UserInterface initUI() {
-	UserInterface ui = UserInterface{
-		.authorId=197712,
-//		.menuMode=DEFAULT,
-		.space=GameSpace{initBoard(),
-		}
+	auto ui = UserInterface{
+		.gameName=gameName,
+		.authorId=creatorId,
+		.authorName=creatorName,
+		.space=GameSpace{initBoard()}
 	};
 	Placement board = ui.space.board;
 	ui.space.boardCenter = initCenter(board);

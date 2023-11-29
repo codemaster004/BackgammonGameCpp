@@ -39,11 +39,11 @@ Pos initCenter(Placement space) {
 	};
 }
 
-void moveSpace(Placement *space, Pos by) {
-	space->min.x += by.x;
-	space->min.y += by.y;
-	space->max.y += by.y;
-	space->max.x += by.x;
+void moveSpace(Placement &space, Pos by) {
+	space.min.x += by.x;
+	space.min.y += by.y;
+	space.max.y += by.y;
+	space.max.x += by.x;
 }
 
 int width(Placement space) {

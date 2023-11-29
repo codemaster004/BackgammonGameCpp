@@ -5,7 +5,6 @@
 #ifndef BACKGAMMONGAME_USERINTERFACE_H
 #define BACKGAMMONGAME_USERINTERFACE_H
 
-#include "string"
 #include "../configs/GameConfigs.h"
 #include "../model/Board.h"
 #include "Space.h"
@@ -44,9 +43,9 @@ typedef struct Menu {
 } Menu;
 
 typedef struct {
-	std::string gameName;
-	std::string authorName;
-	int authorId;
+	const char *gameName;
+	const char *authorId;
+	const char *authorName;
 	Board board;
 	// TODO: create/implement structure for keeping currentPlayersScores
 	int currentScores[PLAYERS_PER_GAME];

@@ -8,7 +8,7 @@
 #include "Drawing.h"
 
 
-Placement initMenu(Pos center, MenuElement values[], int nElements) {
+Placement initMenuSpace(Pos center, MenuElement values[], int nElements) {
 	uint realLen = OPTION_SPACING * (nElements - 1);
 	for (int i = 0; i < nElements; ++i) {
 		realLen += len(values[i].value) - 1;
@@ -22,8 +22,33 @@ Placement initMenu(Pos center, MenuElement values[], int nElements) {
 	};
 }
 
+Placement initTextSpace(Pos center, char **values, int nElements) {
+	uint realLen = OPTION_SPACING * (nElements - 1);
+	for (int i = 0; i < nElements; ++i) {
+		realLen += len(values[i]) - 1;
+	}
+	return Placement{
+		.min={
+			.x=center.x - (int) (realLen / 2),
+			.y=center.y
+		},
+		.max {.x=center.x + (int) (realLen / 2)}
+	};
+}
+
+void generateHeader(UserInterface &ui) {
+	const char *title[3] = {ui.gameName, ui.authorName, ui.authorId};
+
+	Placement textSpace = ui.space.board;
+	textSpace.min.y = ui.space.board.min.y - 3;
+	textSpace.max.x += DICE_WIDTH + borders;
+	drawSpreadText(textSpace, (char **) (title), 3);
+}
+
 void generateBasicBoard(UserInterface &ui) {
 	attron(COLOR_PAIR(FOREGROUND));
+
+	generateHeader(ui);
 
 	handleBoardOutline(ui.space.board);
 	handleBar();
@@ -116,10 +141,10 @@ void handleIndexes(char **indexes, int digits, Placement pos1, Placement pos2) {
 		// TODO: this value as default with for one
 		pos1.max.x = pos1.min.x + pieceWidth * POINTS_PER_BOARD + pieceSpacing * (POINTS_PER_BOARD - 1);
 		pos2.max.x = pos1.max.x;
-		drawSpacedText(pos2, pieceSpacing, (int) (digits),
-					   &indexes[i * POINTS_PER_BOARD], POINTS_PER_BOARD);
-		drawSpacedText(pos1, pieceSpacing, (int) (digits),
-					   &indexes[nPoints / 2 + i * POINTS_PER_BOARD], POINTS_PER_BOARD);
+		drawCenteredText(pos2, pieceSpacing, (int) (digits),
+						 &indexes[i * POINTS_PER_BOARD], POINTS_PER_BOARD);
+		drawCenteredText(pos1, pieceSpacing, (int) (digits),
+						 &indexes[nPoints / 2 + i * POINTS_PER_BOARD], POINTS_PER_BOARD);
 		// TODO: create a fucntion to handle moving by offset
 		pos1.min.x = pos1.max.x + BORDER_WIDTH * 2 + BAR_WIDTH + pieceSpacing / 2 * 2;
 		pos2.min.x = pos1.min.x;
@@ -127,7 +152,7 @@ void handleIndexes(char **indexes, int digits, Placement pos1, Placement pos2) {
 }
 
 void handleMenu(Menu menu, Pos center) {
-	Placement menuSpace = initMenu(center, menu.elements, menu.elementsCount);
+	Placement menuSpace = initMenuSpace(center, menu.elements, menu.elementsCount);
 
 	for (int i = 0; i < menu.elementsCount; ++i) {
 		if (menu.elements[i].id == menu.selected) {
@@ -156,15 +181,15 @@ void handlePawnPlacement(Board &game, Placement space) {
 			int indexBot = POINTS_PER_BOARD * N_BOARDS - (i * POINTS_PER_BOARD + j) - 1;
 			count = game.points[indexBot].pawnsInside;
 			if (count) {
-				moveSpace(&space, Pos {0, boardHeight - count});
+				moveSpace(space, Pos {0, boardHeight - count});
 				drawLine(*game.points[indexBot].pawns[0], space);
-				moveSpace(&space, Pos {0, - boardHeight + count});
+				moveSpace(space, Pos {0, - boardHeight + count});
 			}
 
 //			drawLine(pawn1, space);
-			moveSpace(&space, Pos{change, 0});
+			moveSpace(space, Pos{change, 0});
 		}
-		moveSpace(&space, Pos{pieceSpacing / 2 * 2 + borders + BAR_WIDTH - pieceSpacing, 0});
+		moveSpace(space, Pos{pieceSpacing / 2 * 2 + borders + BAR_WIDTH - pieceSpacing, 0});
 //		int totalOffset = offsetX + pieceSpacing / 2;
 //		for (int i = 0; i < PAWNS_PER_POINT; i += 2) {
 //			Placement offset = {
