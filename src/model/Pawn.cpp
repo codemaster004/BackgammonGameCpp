@@ -57,8 +57,16 @@ moveToPoint canMoveTo(Board &game, int fromIndex, int toIndex) {
 	return CAPTURE; // We know Point has an opponents Pawn, but we can Capture it
 }
 
+moveToPoint determineMoveType(Board &game, int pointIndex, int moveBy) {
+	int destination = canBeMoved(game, pointIndex, moveBy);
+	if (destination < 0) {
+		return NOT_ALLOWED;
+	}
+	return canMoveTo(game, pointIndex, destination);
+}
+
 bool enumToBool(moveToPoint value) {
-	return value != BLOCKED;
+	return !(value == BLOCKED || value == NOT_ALLOWED);
 }
 
 /// Handle Serialization of Pawn object

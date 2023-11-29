@@ -13,7 +13,6 @@
 #include "../viewModel/UserInterface.h"
 
 
-// TODO: REANME
 void gameSetUp(Board &game) {
 	game.players[0] = Player {
 		0, {"Me"}, true, 0
@@ -129,15 +128,11 @@ void inputController(int input, UserInterface &ui, int &inputtedNumber) {
 // TODO: N pawnsId to move
 // TODO: maybe return 0 and 1 for eero check
 void movePawn(Board &game, int fromIndex, int moveBy) {
-	// TODO: Separate
-	if (!canBeMoved(game, fromIndex, moveBy)) {
-		return;
-	}
-	int toIndex = fromIndex + moveBy;
-	moveToPoint moveType = canMoveTo(game, fromIndex, toIndex);
+	moveToPoint moveType = determineMoveType(game, fromIndex, moveBy);
 	if (!enumToBool(moveType)) {
 		return;
 	}
+	int toIndex = fromIndex + moveBy;
 	Point *toPoint = &game.points[toIndex];
 	Point *fromPoint = &game.points[fromIndex];
 	// TODO: Separate

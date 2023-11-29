@@ -33,6 +33,8 @@ int canBeMoved(Board &game, int pointIndex, int moveBy);
 
 moveToPoint canMoveTo(Board &game, int fromIndex, int toIndex);
 
+moveToPoint determineMoveType(Board &game, int pointIndex, int moveBy);
+
 bool enumToBool(moveToPoint value);
 
 /// Handle Serialization of Pawn object
