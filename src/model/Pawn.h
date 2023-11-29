@@ -11,7 +11,8 @@ typedef struct Board Board;
 enum moveToPoint {
 	BLOCKED,
 	POSSIBLE,
-	CAPTURE
+	CAPTURE,
+	NOT_ALLOWED,
 };
 
 enum PawnColor {
@@ -28,7 +29,7 @@ typedef struct {
 	short moveDirection;
 } Pawn;
 
-bool canBeMoved(Board &game, int pointIndex, int moveBy);
+int canBeMoved(Board &game, int pointIndex, int moveBy);
 
 moveToPoint canMoveTo(Board &game, int fromIndex, int toIndex);
 

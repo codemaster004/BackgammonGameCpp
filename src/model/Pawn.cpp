@@ -11,25 +11,26 @@
 #include "SerializeToFile.h"
 
 
-bool canBeMoved(Board &game, int pointIndex, int moveBy) {
+int canBeMoved(Board &game, int pointIndex, int moveBy) {
 	// Index out of range
 	if (pointIndex >= nPoints || pointIndex < 0)
-		return false;
+		return -1;
 	// Moving Pawn from an empty Point
 	if (game.points[pointIndex].pawnsInside == 0)
-		return false;
+		return -1;
 	// Moving not your Pawn
 	if (game.points[pointIndex].pawns[0]->ownerId != game.currentPlayerId)
-		return false;
+		return -1;
 
 	// Handle move in both direction based on Pawn "Color"
 	short direction = game.points[pointIndex].pawns[0]->moveDirection;
 	int destinationIndex = pointIndex + moveBy * direction;
 	// Moving outside of range
 	if (destinationIndex >= nPoints || destinationIndex < 0)
-		return false;
+		return -1;
 
-	return true; // We check all the index Pawn can be moved by player from pos A to B
+	// We check all the index Pawn can be moved by player from pos A to B
+	return destinationIndex;
 }
 
 /*
