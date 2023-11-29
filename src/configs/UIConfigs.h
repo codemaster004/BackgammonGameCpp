@@ -22,9 +22,14 @@
 #define MENU_TOP_SPACING 3
 
 #define OFFSET_X 16
-#define OFFSET_Y 3
+#define OFFSET_Y 4
 
 #define COLOR_THEME 230, 120, 220
+
+const char gameName[] = "Backgammon";
+const char creatorId[] = "197712";
+const char creatorName[] = "Filip Dabkowski";
+
 
 enum UiColorsId {
 	FOREGROUND = 1,
