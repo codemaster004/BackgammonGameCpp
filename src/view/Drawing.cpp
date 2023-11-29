@@ -84,7 +84,7 @@ void drawPieces(int offsetX, int offsetY) {
 	drawPiece(piece2, offsetX, offsetY + PAWNS_PER_POINT + pieceSpacing);
 }
 
-void drawSpacedText(Placement pos, int spacing, int len, char **text, int count) {
+void drawCenteredText(Placement pos, int spacing, int len, char **text, int count) {
 	int center = pos.min.x + (pos.max.x - pos.min.x) / 2;
 	int textWidth = count * (len) + spacing * (count - 1);
 	int startPoint = center - textWidth / 2;
@@ -94,6 +94,18 @@ void drawSpacedText(Placement pos, int spacing, int len, char **text, int count)
 	for (int i = 0; i < count; ++i) {
 		mvprintw(pos.min.y, startPoint, "%s", text[i]);
 		startPoint += len + spacing;
+	}
+}
+
+void drawSpreadText(Placement pos, char **text, int count) {
+	int textSpace = (pos.max.x - pos.min.x) / count;
+	Placement tempPos = pos;
+	tempPos.max.x = tempPos.min.x + textSpace;
+
+	for (int i = 0; i < count; ++i) {
+		uint textLen = len(text[i]);
+		drawCenteredText(tempPos, 0, (int) (textLen), text + i, 1);
+		moveSpace(tempPos, Pos{textSpace});
 	}
 }
 
