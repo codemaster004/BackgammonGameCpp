@@ -41,12 +41,6 @@ void starterScreen(UserInterface &ui) {
 	handleMenu(ui.menu, Pos{ui.space.boardCenter.x, ui.space.board.max.y + MENU_TOP_SPACING});
 }
 
-void addDiceValue(char *option, int dice) {
-	int length = len(option);
-	option[4] = (char)('0' + (char) (dice));
-
-}
-
 void redefineMenu(UserInterface &ui) {
 	ui.menu.selected = 0;
 	char **options;
