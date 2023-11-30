@@ -43,6 +43,11 @@ typedef struct Menu {
 	int selected;
 } Menu;
 
+typedef struct Move {
+	int from;
+	int by;
+} Move;
+
 typedef struct {
 	const char *gameName;
 	const char *authorId;
@@ -55,9 +60,12 @@ typedef struct {
 	bool needToRefresh;
 	bool gameEnded;
 	UiState state;
+	Move currentMove;
 } UserInterface;
 
 UserInterface initUI();
+
+Move initMove();
 
 void starterScreen(UserInterface &ui);
 

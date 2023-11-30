@@ -70,3 +70,7 @@ void redefineMenu(UserInterface &ui) {
 		ui.menu.elements[i] = MenuElement {.id=i, .key=keys[i], .value=options[i]};
 	}
 }
+
+Move initMove() {
+	return Move{0, 0};
+}
