@@ -67,6 +67,9 @@ void gamePlayController(int input, UserInterface &ui) {
 			for (int & dice : ui.board.dices) {
 				dice = rand() % 6 + 1;
 			}
+			ui.menu.mode = PICK_DICE;
+			ui.menu.selected = 0;
+			ui.needToRefresh = true;
 			break;
 		default:
 			break;
@@ -79,6 +82,8 @@ void handleMenuModes(int input, UserInterface &ui) {
 			gamePlayController(input, ui);
 			break;
 		case PICK_POINT:
+			break;
+		case PICK_DICE:
 			break;
 		case STARTING_GAME:
 			newGameController(input, ui);

@@ -42,7 +42,7 @@ int main(int argc, char **argv) {
 		UI.state = WELCOME_SCREEN;
 		UI.menu.mode = STARTING_GAME;
 	}
-	redefineMenu(UI.menu);
+	redefineMenu(UI);
 
 	int ch = 0;
 	UI.gameEnded = false;
@@ -55,7 +55,7 @@ int main(int argc, char **argv) {
 		if (UI.needToRefresh) {
 			delete[] UI.menu.elements;
 			clear();
-			redefineMenu(UI.menu);
+			redefineMenu(UI);
 			UI.needToRefresh = false;
 		}
 

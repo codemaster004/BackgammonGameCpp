@@ -41,26 +41,38 @@ void starterScreen(UserInterface &ui) {
 	handleMenu(ui.menu, Pos{ui.space.boardCenter.x, ui.space.board.max.y + MENU_TOP_SPACING});
 }
 
-void redefineMenu(Menu &menu) {
-	menu.selected = 0;
+void addDiceValue(char *option, int dice) {
+	int length = len(option);
+	option[4] = (char)('0' + (char) (dice));
+
+}
+
+void redefineMenu(UserInterface &ui) {
+	ui.menu.selected = 0;
 	char **options;
 	char *keys;
-	switch (menu.mode) {
+	switch (ui.menu.mode) {
 		case DEFAULT:
-			menu.elementsCount = N_GAME_MENU_OPTIONS;
+			ui.menu.elementsCount = N_GAME_MENU_OPTIONS;
 			options = (char **)(menuGameOptions);
 			keys = (char *) (menuGameKeys);
 			break;
 		case STARTING_GAME:
-			menu.elementsCount = N_STARTER_MENU_OPTIONS;
+			ui.menu.elementsCount = N_STARTER_MENU_OPTIONS;
 			options = (char **)(menuStarterOptions);
 			keys = (char *) (menuStarterKeys);
 			break;
 		case PICK_POINT:
 			break;
+		case PICK_DICE:
+			ui.menu.elementsCount = N_DICE_MENU_OPTIONS;
+			options = (char **)(menuDiceOptions);
+			keys = (char *) (menuDiceKeys);
+			break;
 	}
-	menu.elements = new MenuElement [menu.elementsCount];
-	for (int i = 0; i < menu.elementsCount; ++i) {
-		menu.elements[i] = MenuElement {.id=i, .key=keys[i], .value=options[i]};
+	// Convert to objects
+	ui.menu.elements = new MenuElement [ui.menu.elementsCount];
+	for (int i = 0; i < ui.menu.elementsCount; ++i) {
+		ui.menu.elements[i] = MenuElement {.id=i, .key=keys[i], .value=options[i]};
 	}
 }

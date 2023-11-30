@@ -12,6 +12,7 @@
 enum MenuMode {
 	DEFAULT,
 	PICK_POINT,
+	PICK_DICE,
 	STARTING_GAME,
 };
 
@@ -64,6 +65,6 @@ void titleArt(int offsetX, int offsetY);
 
 void createStarterMenu(Menu &menu);
 
-void redefineMenu(Menu &menu);
+void redefineMenu(UserInterface &ui);
 
 #endif //BACKGAMMONGAME_USERINTERFACE_H
