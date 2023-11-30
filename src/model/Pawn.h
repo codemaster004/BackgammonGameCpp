@@ -5,10 +5,9 @@
 #ifndef BACKGAMMONGAME_PAWN_H
 #define BACKGAMMONGAME_PAWN_H
 
-#include "Storage.h"
-
 typedef struct Player Player;
 typedef struct Board Board;
+typedef struct Point Point;
 
 enum moveToPoint {
 	BLOCKED,
