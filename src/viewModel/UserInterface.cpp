@@ -14,7 +14,8 @@ UserInterface initUI() {
 		.gameName=gameName,
 		.authorId=creatorId,
 		.authorName=creatorName,
-		.space=GameSpace{initBoard()}
+		.space=GameSpace{initBoard()},
+		.currentMove=initMove(),
 	};
 	Placement board = ui.space.board;
 	ui.space.boardCenter = initCenter(board);

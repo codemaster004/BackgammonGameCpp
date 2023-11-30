@@ -10,9 +10,13 @@
 
 void gameSetUp(Board &game);
 
+void resetMenuTo(UserInterface &ui, MenuMode mode);
+
 void newGameController(int input, UserInterface &ui);
 
 void gamePlayController(int input, UserInterface &ui);
+
+void pickDiceController(int input, UserInterface &ui);
 
 void inputController(int input, UserInterface &ui, int &inputtedNumber);
 

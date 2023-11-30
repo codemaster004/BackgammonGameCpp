@@ -43,12 +43,19 @@ void numberInputController(int input, int &inputtedNumber) {
 	}
 }
 
+
+void resetMenuTo(UserInterface &ui, MenuMode mode) {
+	ui.menu.mode = mode;
+	ui.needToRefresh = true;
+	ui.menu.selected = 0;
+}
+
+
 void newGameController(int input, UserInterface &ui) {
 	switch (input) {
 		case 'n':
 			ui.state = GAME_PLAY;
-			ui.menu.mode = DEFAULT;
-			ui.needToRefresh = true;
+			resetMenuTo(ui, DEFAULT);
 			break;
 		case 'l':
 			break;
@@ -67,9 +74,33 @@ void gamePlayController(int input, UserInterface &ui) {
 			for (int & dice : ui.board.dices) {
 				dice = rand() % 6 + 1;
 			}
-			ui.menu.mode = PICK_DICE;
-			ui.menu.selected = 0;
-			ui.needToRefresh = true;
+			resetMenuTo(ui, PICK_DICE);
+			break;
+		default:
+			break;
+	}
+}
+
+void pickDiceController(int input, UserInterface &ui) {
+	// TODO: rewrite for N dices
+	switch (input) {
+		case '1':
+			ui.currentMove.by = ui.board.dices[0];
+			ui.board.dices[0] = 0;
+			resetMenuTo(ui, PICK_POINT);
+			break;
+		case '2':
+			ui.currentMove.by = ui.board.dices[1];
+			ui.board.dices[1] = 0;
+			resetMenuTo(ui, PICK_POINT);
+			break;
+		case '3':
+			ui.currentMove.by = ui.board.dices[0] + ui.board.dices[1];
+			ui.board.dices[0] = 0;
+			ui.board.dices[1] = 0;
+			resetMenuTo(ui, PICK_POINT);
+			break;
+		case '0':
 			break;
 		default:
 			break;
@@ -84,6 +115,7 @@ void handleMenuModes(int input, UserInterface &ui) {
 		case PICK_POINT:
 			break;
 		case PICK_DICE:
+			pickDiceController(input, ui);
 			break;
 		case STARTING_GAME:
 			newGameController(input, ui);
