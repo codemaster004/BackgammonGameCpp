@@ -145,7 +145,7 @@ void handleIndexes(char **indexes, int digits, Placement pos1, Placement pos2) {
 						 &indexes[i * POINTS_PER_BOARD], POINTS_PER_BOARD);
 		drawCenteredText(pos1, pieceSpacing, (int) (digits),
 						 &indexes[nPoints / 2 + i * POINTS_PER_BOARD], POINTS_PER_BOARD);
-		// TODO: create a fucntion to handle moving by offset
+
 		pos1.min.x = pos1.max.x + BORDER_WIDTH * 2 + BAR_WIDTH + pieceSpacing / 2 * 2;
 		pos2.min.x = pos1.min.x;
 	}
