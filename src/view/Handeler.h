@@ -20,7 +20,7 @@ void drawBar(int offsetX, int offsetY, int height);
 
 void handleMenu(Menu menu, Pos center);
 
-void handleIndexes(char **indexes, int digits, Placement pos1, Placement pos2);
+void handleIndexes(char **indexes, int digits, Placement posTop, Placement posBot);
 
 void generateBasicBoard(UserInterface &ui);
 

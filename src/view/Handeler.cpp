@@ -61,10 +61,6 @@ void generateBasicBoard(UserInterface &ui) {
 }
 
 void generateInteractiveUI(UserInterface &ui) {
-//	auto *testMenu = new MenuElement[N_MENU_OPTIONS];
-//	for (int i = 0; i < N_MENU_OPTIONS; ++i) {
-//		testMenu[i] = MenuElement{.id=i, .value=menuOptions[i]};
-//	}
 
 	// Indexes
 	uint digits = nDigits(nPoints, 10);
@@ -72,6 +68,7 @@ void generateInteractiveUI(UserInterface &ui) {
 	for (int i = 0; i < nPoints; ++i) {
 		indexes[i] = numberToString(i, (int) (digits));
 	}
+
 	attron(COLOR_PAIR(FOREGROUND));
 	handleIndexes(indexes, (int) (digits), ui.space.indexesTop, ui.space.indexesBottom);
 	attroff(COLOR_PAIR(FOREGROUND));
@@ -134,20 +131,20 @@ void drawBar(int offsetX, int offsetY, int height) {
 	mvprintw(offsetY + (height) / 2, offsetX - (int) (sizeof(barLabel)) / 2 + 1, barLabel);
 }
 
-void handleIndexes(char **indexes, int digits, Placement pos1, Placement pos2) {
+void handleIndexes(char **indexes, int digits, Placement posTop, Placement posBot) {
 	revertTable(indexes, indexes + nPoints / 2);
 
 	for (int i = 0; i < N_BOARDS; ++i) {
 		// TODO: this value as default with for one
-		pos1.max.x = pos1.min.x + pieceWidth * POINTS_PER_BOARD + pieceSpacing * (POINTS_PER_BOARD - 1);
-		pos2.max.x = pos1.max.x;
-		drawCenteredText(pos2, pieceSpacing, (int) (digits),
+		posTop.max.x = posTop.min.x + pieceWidth * POINTS_PER_BOARD + pieceSpacing * (POINTS_PER_BOARD - 1);
+		posBot.max.x = posTop.max.x;
+		drawCenteredText(posBot, pieceSpacing, (int) (digits),
 						 &indexes[i * POINTS_PER_BOARD], POINTS_PER_BOARD);
-		drawCenteredText(pos1, pieceSpacing, (int) (digits),
+		drawCenteredText(posTop, pieceSpacing, (int) (digits),
 						 &indexes[nPoints / 2 + i * POINTS_PER_BOARD], POINTS_PER_BOARD);
 
-		pos1.min.x = pos1.max.x + BORDER_WIDTH * 2 + BAR_WIDTH + pieceSpacing / 2 * 2;
-		pos2.min.x = pos1.min.x;
+		posTop.min.x = posTop.max.x + BORDER_WIDTH * 2 + BAR_WIDTH + pieceSpacing / 2 * 2;
+		posBot.min.x = posTop.min.x;
 	}
 }
 
