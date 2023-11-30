@@ -69,6 +69,13 @@ bool enumToBool(moveToPoint value) {
 	return !(value == BLOCKED || value == NOT_ALLOWED);
 }
 
+void pawnCapture(Board &game, Point *point) {
+	for (int i = 0; i < CAPTURE_THRESHOLD; ++i) {
+		game.bar.pawns[game.bar.pawnsInside++] = point->pawns[i];
+	}
+	point->pawnsInside -= CAPTURE_THRESHOLD;
+}
+
 /// Handle Serialization of Pawn object
 void serialisePawn(Pawn pawn, uint8_t *buffer, size_t &offset) {
 	std::memcpy(buffer + offset, &pawn, sizeof(Pawn));

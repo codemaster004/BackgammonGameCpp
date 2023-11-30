@@ -5,6 +5,8 @@
 #ifndef BACKGAMMONGAME_PAWN_H
 #define BACKGAMMONGAME_PAWN_H
 
+#include "Storage.h"
+
 typedef struct Player Player;
 typedef struct Board Board;
 
@@ -36,6 +38,8 @@ moveToPoint canMoveTo(Board &game, int fromIndex, int toIndex);
 moveToPoint determineMoveType(Board &game, int pointIndex, int moveBy);
 
 bool enumToBool(moveToPoint value);
+
+void pawnCapture(Board &game, Point *point);
 
 /// Handle Serialization of Pawn object
 void serialisePawn(Pawn pawn, uint8_t *buffer, size_t &offset);

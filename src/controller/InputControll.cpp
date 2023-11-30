@@ -4,13 +4,10 @@
 
 #include "ncurses.h"
 #include "cstdlib"
-#include "ctime"
 
 #include "../configs/GameConfigs.h"
 #include "../model/Board.h"
 #include "InputControll.h"
-#include "../model/Pawn.h"
-#include "../viewModel/UserInterface.h"
 
 
 void gameSetUp(Board &game) {
@@ -135,12 +132,8 @@ void movePawn(Board &game, int fromIndex, int moveBy) {
 	int toIndex = fromIndex + moveBy;
 	Point *toPoint = &game.points[toIndex];
 	Point *fromPoint = &game.points[fromIndex];
-	// TODO: Separate
 	if (moveType == CAPTURE) {
-		for (int i = 0; i < CAPTURE_THRESHOLD; ++i) {
-			game.bar.pawns[game.bar.pawnsInside++] = toPoint->pawns[i];
-		}
-		toPoint->pawnsInside -= CAPTURE_THRESHOLD;
+		pawnCapture(game, toPoint);
 	}
 	toPoint->pawns[toPoint->pawnsInside++] = fromPoint->pawns[--fromPoint->pawnsInside];
 	fromPoint->pawns[fromPoint->pawnsInside] = nullptr;
