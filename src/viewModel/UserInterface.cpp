@@ -85,13 +85,15 @@ Move initMove() {
 	return Move{0, 0};
 }
 
+void resetMessage(char message[MAX_MESSAGE_LEN]) {
+	for (int i = 0; i < MAX_MESSAGE_LEN; ++i) {
+		message[i] = ' ';
+	}
+}
+
 void resetMessages(UserInterface &ui)  {
-	for (char ch: ui.errorMess) {
-		ch = 0;
-	}
-	for (char ch: ui.infoMess) {
-		ch = 0;
-	}
+	resetMessage(ui.infoMess);
+	resetMessage(ui.errorMess);
 }
 
 void messageSet(char message[MAX_MESSAGE_LEN], const char *newMessage) {

@@ -14,11 +14,11 @@ const char *menuStarterOptions[N_STARTER_MENU_OPTIONS] = {"(N)ew Game", "(L)oad 
 const char menuStarterKeys[N_STARTER_MENU_OPTIONS] = {'n', 'l', 'q'};
 
 #define N_DICE_MENU_OPTIONS 4
-const char *menuDiceOptions[N_DICE_MENU_OPTIONS] = {"Use Dice (1)", "Use Dice (2)", "Use Both Dices (0)", "Give up Turn (-)"};
+const char *menuDiceOptions[N_DICE_MENU_OPTIONS] = {"Use Dice (1)", "Use Dice (2)", "Use Both Dices (0)", "End Turn (-)"};
 const char menuDiceKeys[N_DICE_MENU_OPTIONS] = {'1', '2', '0', '-'};
 
 #define N_PIECE_MENU_OPTIONS 2
-const char *menuPieceOptions[N_PIECE_MENU_OPTIONS] = {"Pick Piece (Space)", "Give up Turn (-)"};
+const char *menuPieceOptions[N_PIECE_MENU_OPTIONS] = {"Pick Piece (Space)", "End Turn (-)"};
 const char menuPieceKeys[N_PIECE_MENU_OPTIONS] = {' ', '-'};
 
 #endif //BACKGAMMONGAME_MENUCONFIGS_H

@@ -81,7 +81,7 @@ void gamePlayController(int input, UserInterface &ui) {
 	}
 }
 
-void createDiceMessage(UserInterface ui) {
+void createDiceMessage(UserInterface &ui) {
 	int digits = (int)(nDigits(ui.currentMove.by, 10));
 	const char *moveBy = numberToString(ui.currentMove.by, digits);
 	const char *str = joinStrings("Move by: ", 9, moveBy, digits);
@@ -168,6 +168,7 @@ int newSelected(int selected, int change, int count) {
 }
 
 void inputController(int input, UserInterface &ui) {
+	resetMessage(ui.errorMess);
 	switch (input) {
 		case '\n':
 		case '\r':

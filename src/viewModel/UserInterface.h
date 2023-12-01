@@ -80,6 +80,8 @@ void createStarterMenu(Menu &menu);
 
 void redefineMenu(UserInterface &ui);
 
+void resetMessage(char message[MAX_MESSAGE_LEN]);
+
 void resetMessages(UserInterface &ui);
 
 void messageSet(char message[25], const char *newMessage);
