@@ -24,7 +24,7 @@
 #define OFFSET_X 16
 #define OFFSET_Y 4
 
-#define COLOR_THEME 255, 120, 0
+#define COLOR_THEME 230, 120, 220
 
 const char gameName[] = "Backgammon";
 const char creatorId[] = "s197712";
