@@ -86,12 +86,9 @@ void generateInteractiveUI(UserInterface &ui) {
 }
 
 void handleBoardOutline(Placement space) {
-	space.max.y = space.min.y + boardHeight + borders - 1;
 	for (int i = 0; i < N_BOARDS; ++i) {
-		space.max.x = space.min.x + boardWidth + borders - 1;
 		drawBorders(space);
-
-		space.min.x += boardWidth + borders + BAR_WIDTH;
+		moveSpace(space, {boardWidth + borders + BAR_WIDTH, 0});
 	}
 }
 

@@ -18,7 +18,7 @@ Placement initBoard(Placement game) {
 	Placement space = game;
 	space.min = {space.min.x + BOARD_OFFSET_X,
 				 space.min.y + BOARD_OFFSET_Y + HEADER_OFFSET + INDEX_OFFSET + TEXT_HEIGHT * 2};
-	space.max = {space.min.x + boardWidth + borders + BAR_WIDTH - 1,
+	space.max = {space.min.x + boardWidth + borders - 1,
 				 space.min.y + boardHeight + borders - 1};
 	return space;
 }
