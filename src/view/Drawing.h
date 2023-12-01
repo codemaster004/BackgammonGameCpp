@@ -19,7 +19,7 @@ void drawPiece(const char *symbol, int offsetX, int offsetY);
 
 void drawPieces(int offsetX, int offsetY);
 
-void drawCenteredText(Placement pos, int spacing, int len, char **text, int count);
+void drawCenteredText(Placement pos, int spacing, int len, char **text, int count, UiColorsId *colors, int nColors);
 
 void drawSpreadText(Placement pos, char **text, int count);
 

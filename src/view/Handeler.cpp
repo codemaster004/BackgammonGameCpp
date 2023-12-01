@@ -46,9 +46,9 @@ void generateHeader(UserInterface &ui) {
 }
 
 void generateBasicBoard(UserInterface &ui) {
-	attron(COLOR_PAIR(FOREGROUND));
-
 	generateHeader(ui);
+
+	attron(COLOR_PAIR(FOREGROUND));
 
 	handleBoardOutline(ui.space.board);
 	handleBar();
@@ -69,9 +69,7 @@ void generateInteractiveUI(UserInterface &ui) {
 		indexes[i] = numberToString(i, (int) (digits));
 	}
 
-	attron(COLOR_PAIR(FOREGROUND));
 	handleIndexes(indexes, (int) (digits), ui.space.indexesTop, ui.space.indexesBottom);
-	attroff(COLOR_PAIR(FOREGROUND));
 
 	handleMenu(ui.menu, Pos{ui.space.boardCenter.x, ui.space.board.max.y + MENU_TOP_SPACING});
 
@@ -138,10 +136,12 @@ void handleIndexes(char **indexes, int digits, Placement posTop, Placement posBo
 		// TODO: this value as default with for one
 		posTop.max.x = posTop.min.x + pieceWidth * POINTS_PER_BOARD + pieceSpacing * (POINTS_PER_BOARD - 1);
 		posBot.max.x = posTop.max.x;
+
+		UiColorsId colors = {FOREGROUND};
 		drawCenteredText(posBot, pieceSpacing, (int) (digits),
-						 &indexes[i * POINTS_PER_BOARD], POINTS_PER_BOARD);
+						 &indexes[i * POINTS_PER_BOARD], POINTS_PER_BOARD, &colors, 1);
 		drawCenteredText(posTop, pieceSpacing, (int) (digits),
-						 &indexes[nPoints / 2 + i * POINTS_PER_BOARD], POINTS_PER_BOARD);
+						 &indexes[nPoints / 2 + i * POINTS_PER_BOARD], POINTS_PER_BOARD, &colors, 1);
 
 		posTop.min.x = posTop.max.x + BORDER_WIDTH * 2 + BAR_WIDTH + pieceSpacing / 2 * 2;
 		posBot.min.x = posTop.min.x;

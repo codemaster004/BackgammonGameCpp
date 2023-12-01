@@ -84,7 +84,7 @@ void drawPieces(int offsetX, int offsetY) {
 	drawPiece(piece2, offsetX, offsetY + PAWNS_PER_POINT + pieceSpacing);
 }
 
-void drawCenteredText(Placement pos, int spacing, int len, char **text, int count) {
+void drawCenteredText(Placement pos, int spacing, int len, char **text, int count, UiColorsId *colors, int nColors) {
 	int center = pos.min.x + (pos.max.x - pos.min.x) / 2;
 	int textWidth = count * (len) + spacing * (count - 1);
 	int startPoint = center - textWidth / 2;
@@ -92,7 +92,7 @@ void drawCenteredText(Placement pos, int spacing, int len, char **text, int coun
 		return;
 
 	for (int i = 0; i < count; ++i) {
-		mvprintw(pos.min.y, startPoint, "%s", text[i]);
+		printColor(colors[i % nColors], startPoint, pos.min.y, text[i]);
 		startPoint += len + spacing;
 	}
 }
@@ -102,9 +102,10 @@ void drawSpreadText(Placement pos, char **text, int count) {
 	Placement tempPos = pos;
 	tempPos.max.x = tempPos.min.x + textSpace;
 
+	UiColorsId colors = {FOREGROUND};
 	for (int i = 0; i < count; ++i) {
 		uint textLen = len(text[i]);
-		drawCenteredText(tempPos, 0, (int) (textLen), text + i, 1);
+		drawCenteredText(tempPos, 0, (int) (textLen), text + i, 1, &colors, 1);
 		moveSpace(tempPos, Pos{textSpace});
 	}
 }
