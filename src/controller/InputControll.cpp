@@ -94,13 +94,13 @@ void pickDiceController(int input, UserInterface &ui) {
 			ui.board.dices[1] = 0;
 			resetMenuTo(ui, PICK_POINT);
 			break;
-		case '3':
+		case '0':
 			ui.currentMove.by = ui.board.dices[0] + ui.board.dices[1];
 			ui.board.dices[0] = 0;
 			ui.board.dices[1] = 0;
 			resetMenuTo(ui, PICK_POINT);
 			break;
-		case '0':
+		case '-':
 			break;
 		default:
 			break;

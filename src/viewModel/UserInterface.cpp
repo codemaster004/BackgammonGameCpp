@@ -58,6 +58,10 @@ void redefineMenu(UserInterface &ui) {
 			keys = (char *) (menuStarterKeys);
 			break;
 		case PICK_POINT:
+			ui.menu.elementsCount = N_PIECE_MENU_OPTIONS;
+			options = (char **)(menuPieceOptions);
+			keys = (char *) (menuPieceKeys);
+			ui.menu.selected = -1;
 			break;
 		case PICK_DICE:
 			ui.menu.elementsCount = N_DICE_MENU_OPTIONS;

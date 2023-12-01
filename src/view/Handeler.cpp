@@ -152,11 +152,16 @@ void handleMenu(Menu menu, Pos center) {
 	Placement menuSpace = initMenuSpace(center, menu.elements, menu.elementsCount);
 
 	for (int i = 0; i < menu.elementsCount; ++i) {
-		if (menu.elements[i].id == menu.selected) {
-			printColor(FOREGROUND_LIGHT, menuSpace.min.x, menuSpace.min.y, menu.elements[i].value);
+		if (menu.selected == -1) {
+			printColor(FOREGROUND, menuSpace.min.x, menuSpace.min.y, menu.elements[i].value);
 		} else {
-			printColor(FOREGROUND_DARK, menuSpace.min.x, menuSpace.min.y, menu.elements[i].value);
+			if (menu.elements[i].id == menu.selected) {
+				printColor(FOREGROUND_LIGHT, menuSpace.min.x, menuSpace.min.y, menu.elements[i].value);
+			} else {
+				printColor(FOREGROUND_DARK, menuSpace.min.x, menuSpace.min.y, menu.elements[i].value);
+			}
 		}
+
 		menuSpace.min.x += (int) (len(menu.elements[i].value) - 1) + OPTION_SPACING;
 	}
 }
