@@ -29,6 +29,10 @@ int max(int a, int b) {
 	return a > b ? a : b;
 }
 
+int min(int a, int b) {
+	return a < b ? a : b;
+}
+
 uint len(const char *text) {
 	uint length = 0;
 	while (true)
@@ -85,7 +89,7 @@ void revertTable(char **from, char **to) {
 	}
 }
 
-char *joinStrings(char *string1, int len1, char *string2, int len2) {
+char *joinStrings(const char *string1, int len1, const char *string2, int len2) {
 	char *fullString = new char [len1 + len2];
 	for (int i = 0; i < len1; ++i) {
 		fullString[i] = string1[i];

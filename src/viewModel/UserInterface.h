@@ -80,4 +80,8 @@ void createStarterMenu(Menu &menu);
 
 void redefineMenu(UserInterface &ui);
 
+void resetMessages(UserInterface &ui);
+
+void messageSet(char message[25], const char *newMessage);
+
 #endif //BACKGAMMONGAME_USERINTERFACE_H

@@ -105,6 +105,13 @@ void pickDiceController(int input, UserInterface &ui) {
 		default:
 			break;
 	}
+	if (ui.currentMove.by != 0) {
+		int digits = (int)(nDigits(ui.currentMove.by, 10));
+		const char *moveBy = numberToString(ui.currentMove.by, digits);
+		const char *str = joinStrings("Move by: ", 9, moveBy, digits);
+		messageSet(ui.infoMess, str);
+		delete[] str;
+	}
 }
 
 void pickPointController(int input, UserInterface &ui) {

@@ -74,7 +74,7 @@ void generateInteractiveUI(UserInterface &ui) {
 
 	handlePawnPlacement(ui.board, ui.space.board);
 
-
+	handleMessages(ui);
 
 	/// CLEAR MEMORY!!!
 	for (int i = 0; i < nPoints; ++i) {
@@ -228,5 +228,12 @@ void handlePawnPlacement(Board &game, Placement space) {
 }
 
 void handleMessages(UserInterface &ui) {
+	Placement textPos = ui.space.board;
+	textPos.min.y += (boardHeight + borders) / 2;
+	UiColorsId colours = {FOREGROUND_DARK};
+	char* tempMessages[1];
 
+	tempMessages[0] = ui.infoMess;
+	uint length = len(ui.infoMess);
+	drawCenteredText(textPos, 0, (int)(length), tempMessages, 1, &colours, 1);
 }

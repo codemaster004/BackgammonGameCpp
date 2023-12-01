@@ -84,3 +84,19 @@ void redefineMenu(UserInterface &ui) {
 Move initMove() {
 	return Move{0, 0};
 }
+
+void resetMessages(UserInterface &ui)  {
+	for (char ch: ui.errorMess) {
+		ch = 0;
+	}
+	for (char ch: ui.infoMess) {
+		ch = 0;
+	}
+}
+
+void messageSet(char message[MAX_MESSAGE_LEN], const char *newMessage) {
+	int length = min(MAX_MESSAGE_LEN - 1, (int)(len(newMessage)));
+	for (int i = 0; i < length; ++i) {
+		message[i] = newMessage[i];
+	}
+}
