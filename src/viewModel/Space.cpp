@@ -26,7 +26,7 @@ Placement initBoard(Placement game) {
 Placement initDice(Placement game) {
 	Placement space{
 		.min={game.max.x - DICE_WIDTH - borders + 1,
-			  game.min.y + HEADER_OFFSET + INDEX_OFFSET + TEXT_HEIGHT * 2},
+			  game.min.y + BOARD_OFFSET_Y + HEADER_OFFSET + INDEX_OFFSET + TEXT_HEIGHT * 2},
 	};
 	space.max={game.max.x, space.min.y + boardHeight + borders - 1};
 	return space;

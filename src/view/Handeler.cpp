@@ -102,7 +102,7 @@ void handlePieces(Placement space) {
 
 void handleBar() {
 	for (int i = N_BOARDS - 1; i > 0; --i)
-		drawBar(OFFSET_X + (boardWidth + borders) * i, OFFSET_Y + HEADER_OFFSET + INDEX_OFFSET + TEXT_HEIGHT * 2,
+		drawBar(OFFSET_X + (boardWidth + borders) * i, OFFSET_Y + BOARD_OFFSET_Y + HEADER_OFFSET + INDEX_OFFSET + TEXT_HEIGHT * 2,
 				boardHeight + borders);
 }
 

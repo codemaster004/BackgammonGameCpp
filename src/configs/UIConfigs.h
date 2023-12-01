@@ -27,7 +27,7 @@
 #define OFFSET_Y 1
 #define INDEX_OFFSET 1
 #define HEADER_OFFSET 0
-#define BOARD_OFFSET_Y 0
+#define BOARD_OFFSET_Y 2
 #define BOARD_OFFSET_X 0
 
 #define COLOR_THEME 230, 120, 220
