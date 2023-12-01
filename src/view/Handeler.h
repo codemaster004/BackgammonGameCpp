@@ -22,6 +22,8 @@ void handleMenu(Menu menu, Pos center);
 
 void handleIndexes(char **indexes, int pickedIndex, int digits, Placement posTop, Placement posBot);
 
+void handleMessages(UserInterface &ui);
+
 void generateBasicBoard(UserInterface &ui);
 
 void generateInteractiveUI(UserInterface &ui);

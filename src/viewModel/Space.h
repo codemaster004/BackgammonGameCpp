@@ -15,13 +15,15 @@ typedef struct {
 	Pos max;
 } Placement;
 
-Placement initBoard();
+Placement initGameSpace();
 
-Placement initDice(Placement board);
+Placement initBoard(Placement game);
+
+Placement initDice(Placement game);
 
 Placement initIndex(Placement board, int offset);
 
-Pos initCenter(Placement space);
+Pos initCenter(Placement boardSpace, Placement gameSpace);
 
 void moveSpace(Placement &space, Pos by);
 

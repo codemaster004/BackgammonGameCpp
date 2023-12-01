@@ -39,9 +39,8 @@ Placement initTextSpace(Pos center, char **values, int nElements) {
 void generateHeader(UserInterface &ui) {
 	const char *title[3] = {ui.gameName, ui.authorName, ui.authorId};
 
-	Placement textSpace = ui.space.board;
-	textSpace.min.y = ui.space.board.min.y - 3;
-	textSpace.max.x += DICE_WIDTH + borders;
+	Placement textSpace = ui.space.gameSpace;
+	textSpace.min.y = ui.space.gameSpace.min.y + HEADER_OFFSET;
 	drawSpreadText(textSpace, (char **) (title), 3);
 }
 
@@ -75,6 +74,8 @@ void generateInteractiveUI(UserInterface &ui) {
 
 	handlePawnPlacement(ui.board, ui.space.board);
 
+
+
 	/// CLEAR MEMORY!!!
 	for (int i = 0; i < nPoints; ++i) {
 		delete[] indexes[i];
@@ -104,7 +105,8 @@ void handlePieces(Placement space) {
 
 void handleBar() {
 	for (int i = N_BOARDS - 1; i > 0; --i)
-		drawBar(OFFSET_X + (boardWidth + borders) * i, OFFSET_Y, boardHeight + borders);
+		drawBar(OFFSET_X + (boardWidth + borders) * i, OFFSET_Y + HEADER_OFFSET + INDEX_OFFSET + TEXT_HEIGHT * 2,
+				boardHeight + borders);
 }
 
 void handleDices(Placement space, Pos center, int *dices) {
@@ -225,15 +227,9 @@ void handlePawnPlacement(Board &game, Placement space) {
 			moveSpace(space, Pos{change, 0});
 		}
 		moveSpace(space, Pos{pieceSpacing / 2 * 2 + borders + BAR_WIDTH - pieceSpacing, 0});
-//		int totalOffset = offsetX + pieceSpacing / 2;
-//		for (int i = 0; i < PAWNS_PER_POINT; i += 2) {
-//			Placement offset = {
-//				.min = Pos{.x = totalOffset, .y = offsetY},
-//				.max = Pos{.x = totalOffset, .y = offsetY + PAWNS_PER_POINT}
-//			};
-//			// placement
-//			drawLine(symbol, offset);
-//			totalOffset += (pieceWidth + pieceSpacing) * 2;
-//		}
 	}
+}
+
+void handleMessages(UserInterface &ui) {
+
 }

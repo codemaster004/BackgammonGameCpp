@@ -6,6 +6,7 @@
 #define BACKGAMMONGAME_USERINTERFACE_H
 
 #include "../configs/GameConfigs.h"
+#include "../configs/UIConfigs.h"
 #include "../model/Board.h"
 #include "Space.h"
 
@@ -28,6 +29,7 @@ typedef struct {
 	Pos boardCenter;
 	Placement indexesTop;
 	Placement indexesBottom;
+	Placement gameSpace;
 } GameSpace;
 
 typedef struct {
@@ -62,6 +64,8 @@ typedef struct {
 	UiState state;
 	Move currentMove;
 	int pickedIndex;
+	char infoMess[MAX_MESSAGE_LEN];
+	char errorMess[MAX_MESSAGE_LEN];
 } UserInterface;
 
 UserInterface initUI();

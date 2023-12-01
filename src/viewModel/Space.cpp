@@ -6,18 +6,30 @@
 #include "../configs/UIConfigs.h"
 
 
-Placement initBoard() {
+Placement initGameSpace() {
 	Placement space{.min={OFFSET_X, OFFSET_Y}};
-	space.max = {space.min.x + N_BOARDS * (boardWidth + borders + BAR_WIDTH) - BAR_WIDTH - 1,
+	space.max = {space.min.x + N_BOARDS * (boardWidth + borders + BAR_WIDTH) - BAR_WIDTH + DICE_WIDTH + BORDER_WIDTH - 1,
+				 space.min.y + boardHeight + borders - 1};
+
+	return space;
+}
+
+Placement initBoard(Placement game) {
+	Placement space = game;
+	space.min = {space.min.x + BOARD_OFFSET_X,
+				 space.min.y + BOARD_OFFSET_Y + HEADER_OFFSET + INDEX_OFFSET + TEXT_HEIGHT * 2};
+	space.max = {space.min.x + boardWidth + borders + BAR_WIDTH - 1,
 				 space.min.y + boardHeight + borders - 1};
 	return space;
 }
 
-Placement initDice(Placement board) {
-	return Placement{
-		.min={board.max.x, board.min.y},
-		.max={board.max.x + DICE_WIDTH + borders - 1, board.max.y},
+Placement initDice(Placement game) {
+	Placement space{
+		.min={game.max.x - DICE_WIDTH - borders + 1,
+			  game.min.y + HEADER_OFFSET + INDEX_OFFSET + TEXT_HEIGHT * 2},
 	};
+	space.max={game.max.x, space.min.y + boardHeight + borders - 1};
+	return space;
 }
 
 Placement initIndex(Placement board, int offset) {
@@ -32,10 +44,10 @@ Placement initIndex(Placement board, int offset) {
 	};
 }
 
-Pos initCenter(Placement space) {
+Pos initCenter(Placement boardSpace, Placement gameSpace) {
 	return Pos{
-		.x=space.min.x + (space.max.x - space.min.x) / 2,
-		.y=space.min.y + (space.max.y - space.min.y) / 2
+		.x=gameSpace.min.x + (gameSpace.max.x - gameSpace.min.x) / 2,
+		.y=boardSpace.min.y + (boardSpace.max.y - boardSpace.min.y) / 2
 	};
 }
 

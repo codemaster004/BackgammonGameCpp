@@ -14,15 +14,18 @@ UserInterface initUI() {
 		.gameName=gameName,
 		.authorId=creatorId,
 		.authorName=creatorName,
-		.space=GameSpace{initBoard()},
+		.space=GameSpace{.gameSpace=initGameSpace()},
 		.currentMove=initMove(),
 		.pickedIndex=-1,
+		.infoMess="",
+		.errorMess="",
 	};
+	ui.space.board = initBoard(ui.space.gameSpace);
 	Placement board = ui.space.board;
-	ui.space.boardCenter = initCenter(board);
-	ui.space.dice = initDice(board);
-	ui.space.indexesTop = initIndex(board, board.min.y - 1);
-	ui.space.indexesBottom = initIndex(board, board.max.y + 1);
+	ui.space.boardCenter = initCenter(board, ui.space.gameSpace);
+	ui.space.dice = initDice(ui.space.gameSpace);
+	ui.space.indexesTop = initIndex(board, board.min.y - INDEX_OFFSET);
+	ui.space.indexesBottom = initIndex(board, board.max.y + INDEX_OFFSET);
 	ui.needToRefresh = true;
 
 	return ui;
