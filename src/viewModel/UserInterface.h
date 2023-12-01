@@ -56,7 +56,7 @@ typedef struct {
 	const char *authorName;
 	Board board;
 	// TODO: create/implement structure for keeping currentPlayersScores
-	int currentScores[PLAYERS_PER_GAME];
+	int currentScores[N_PLAYERS];
 	Menu menu;
 	GameSpace space;
 	bool needToRefresh;

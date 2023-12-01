@@ -97,17 +97,27 @@ void drawCenteredText(Placement pos, int spacing, int len, char **text, int coun
 	}
 }
 
-void drawSpreadText(Placement pos, char **text, int count) {
+void drawSpreadText(Placement pos, char **text, int count, int selected) {
 	int textSpace = (pos.max.x - pos.min.x) / count;
 	Placement tempPos = pos;
 	tempPos.max.x = tempPos.min.x + textSpace;
 
-	UiColorsId colors = {FOREGROUND};
+	UiColorsId *colors;
+	colors = new UiColorsId[count];
+	for (int i = 0; i < count; ++i) {
+		if (selected < 0) {
+			colors[i] = FOREGROUND;
+		} else {
+			colors[i] = i == selected ? FOREGROUND_LIGHT : FOREGROUND_DARK;
+		}
+	}
+
 	for (int i = 0; i < count; ++i) {
 		uint textLen = len(text[i]);
-		drawCenteredText(tempPos, 0, (int) (textLen), text + i, 1, &colors, 1);
+		drawCenteredText(tempPos, 0, (int) (textLen), text + i, 1, &colors[i], 1);
 		moveSpace(tempPos, Pos{textSpace});
 	}
+	delete[] colors;
 }
 
 void setColor(short colorName, short nRed, short nGreen, short nBlue, float diff) {

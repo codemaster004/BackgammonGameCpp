@@ -21,7 +21,6 @@
 /////////////////////////////////////////////////////////
 
 #define N_PLAYERS 2
-#define PLAYERS_PER_GAME 2
 #define N_STARTING_POS 4
 
 #define MAX_NAME_LENGTH 16

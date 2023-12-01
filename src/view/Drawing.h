@@ -21,7 +21,7 @@ void drawPieces(int offsetX, int offsetY);
 
 void drawCenteredText(Placement pos, int spacing, int len, char **text, int count, UiColorsId *colors, int nColors);
 
-void drawSpreadText(Placement pos, char **text, int count);
+void drawSpreadText(Placement pos, char **text, int count, int selected=-1);
 
 void drawLine(Pawn pawn, Placement pos);
 

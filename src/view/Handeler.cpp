@@ -44,8 +44,24 @@ void generateHeader(UserInterface &ui) {
 	drawSpreadText(textSpace, (char **) (title), 3);
 }
 
+void generatePlayers(UserInterface &ui) {
+	const char *players[N_PLAYERS];
+	int selected = -1;
+	for (int i = 0; i < N_PLAYERS; ++i) {
+		players[i] = ui.board.players[i].name;
+		if (ui.board.players[i].id == ui.board.currentPlayerId)
+			selected = i;
+	}
+
+	Placement textSpace = ui.space.gameSpace;
+	textSpace.min.y = ui.space.gameSpace.min.y + HEADER_OFFSET + 2;
+	drawSpreadText(textSpace, (char **) (players), N_PLAYERS, selected);
+}
+
 void generateBasicBoard(UserInterface &ui) {
 	generateHeader(ui);
+
+	generatePlayers(ui);
 
 	attron(COLOR_PAIR(FOREGROUND));
 
