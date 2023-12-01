@@ -18,7 +18,7 @@ const char *menuDiceOptions[N_DICE_MENU_OPTIONS] = {"Use Dice (1)", "Use Dice (2
 const char menuDiceKeys[N_DICE_MENU_OPTIONS] = {'1', '2', '0', '-'};
 
 #define N_PIECE_MENU_OPTIONS 2
-const char *menuPieceOptions[N_PIECE_MENU_OPTIONS] = {"Pick Piece (Enter)", "Give up Turn (-)"};
-const char menuPieceKeys[N_PIECE_MENU_OPTIONS] = {'1', '2'};
+const char *menuPieceOptions[N_PIECE_MENU_OPTIONS] = {"Pick Piece (Space)", "Give up Turn (-)"};
+const char menuPieceKeys[N_PIECE_MENU_OPTIONS] = {' ', '-'};
 
 #endif //BACKGAMMONGAME_MENUCONFIGS_H

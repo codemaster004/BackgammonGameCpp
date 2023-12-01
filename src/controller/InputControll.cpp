@@ -107,12 +107,32 @@ void pickDiceController(int input, UserInterface &ui) {
 	}
 }
 
+void pickPointController(int input, UserInterface &ui) {
+	switch (input) {
+		case ' ':
+			ui.currentMove.from = ui.pickedIndex;
+			movePawn(ui.board, ui.currentMove);
+			break;
+		case '-':
+			break;
+		case KEY_BACKSPACE:
+		case 0x7F:
+			ui.pickedIndex /= 10;
+			break;
+		default:
+			numberInputController(input, ui.pickedIndex);
+			ui.pickedIndex %= nPoints;
+			break;
+	}
+}
+
 void handleMenuModes(int input, UserInterface &ui) {
 	switch (ui.menu.mode) {
 		case DEFAULT:
 			gamePlayController(input, ui);
 			break;
 		case PICK_POINT:
+			pickPointController(input, ui);
 			break;
 		case PICK_DICE:
 			pickDiceController(input, ui);
@@ -123,30 +143,38 @@ void handleMenuModes(int input, UserInterface &ui) {
 	}
 }
 
+int newSelected(int selected, int change, int count) {
+	selected = selected + change;
+	if (selected < 0)
+		selected = count - 1;
+	return selected % count;
+}
+
 void inputController(int input, UserInterface &ui) {
-//	numberInputController(input, inputtedNumber);
-//	if (input == '\r' || input == '\n') {
-//		movePawn(game, *inputtedNumber, *dice1);
-//		*inputtedNumber = 0;
-//	}
 	switch (input) {
 		case '\n':
 		case '\r':
 			inputController(ui.menu.elements[ui.menu.selected].key, ui);
 			break;
 		case KEY_UP:
+			if (ui.menu.mode == PICK_POINT) {
+				ui.pickedIndex = newSelected(ui.pickedIndex, 1, nPoints);
+			}
 			break;
 		case KEY_DOWN:
+			if (ui.menu.mode == PICK_POINT) {
+				ui.pickedIndex = newSelected(ui.pickedIndex, -1, nPoints);
+			}
 			break;
 		case KEY_LEFT:
-			ui.menu.selected = ui.menu.selected - 1;
-			if (ui.menu.selected < 0)
-				ui.menu.selected = ui.menu.elementsCount - 1;
-			ui.menu.selected = ui.menu.selected % ui.menu.elementsCount;
+			if (ui.menu.mode != PICK_POINT) {
+				ui.menu.selected = newSelected(ui.menu.selected, -1, ui.menu.elementsCount);
+			}
 			break;
 		case KEY_RIGHT:
-			ui.menu.selected = ui.menu.selected + 1;
-			ui.menu.selected = ui.menu.selected % ui.menu.elementsCount;
+			if (ui.menu.mode != PICK_POINT) {
+				ui.menu.selected = newSelected(ui.menu.selected, 1, ui.menu.elementsCount);
+			}
 			break;
 		default:
 			if (ui.menu.elements[ui.menu.selected].key == 'q') {
@@ -161,14 +189,14 @@ void inputController(int input, UserInterface &ui) {
 
 // TODO: N pawnsId to move
 // TODO: maybe return 0 and 1 for eero check
-void movePawn(Board &game, int fromIndex, int moveBy) {
-	moveToPoint moveType = determineMoveType(game, fromIndex, moveBy);
+void movePawn(Board &game, Move move) {
+	moveToPoint moveType = determineMoveType(game, move.from, move.by);
 	if (!enumToBool(moveType)) {
 		return;
 	}
-	int toIndex = fromIndex + moveBy;
+	int toIndex = move.from + move.by * game.points[move.from].pawns[0]->moveDirection;
 	Point *toPoint = &game.points[toIndex];
-	Point *fromPoint = &game.points[fromIndex];
+	Point *fromPoint = &game.points[move.from];
 	if (moveType == CAPTURE) {
 		pawnCapture(game, toPoint);
 	}

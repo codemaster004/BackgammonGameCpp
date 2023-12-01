@@ -215,6 +215,7 @@ void handlePawnPlacement(Board &game, Placement space) {
 			int indexBot = POINTS_PER_BOARD * N_BOARDS - (i * POINTS_PER_BOARD + j) - 1;
 			count = game.points[indexBot].pawnsInside;
 			if (count) {
+				space.max.y = space.min.y + count;
 				moveSpace(space, Pos {0, boardHeight - count});
 				drawLine(*game.points[indexBot].pawns[0], space);
 				moveSpace(space, Pos {0, - boardHeight + count});
