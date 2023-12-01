@@ -16,6 +16,7 @@ UserInterface initUI() {
 		.authorName=creatorName,
 		.space=GameSpace{initBoard()},
 		.currentMove=initMove(),
+		.pickedIndex=-1,
 	};
 	Placement board = ui.space.board;
 	ui.space.boardCenter = initCenter(board);
@@ -62,6 +63,7 @@ void redefineMenu(UserInterface &ui) {
 			options = (char **)(menuPieceOptions);
 			keys = (char *) (menuPieceKeys);
 			ui.menu.selected = -1;
+			ui.pickedIndex = 0; // TODO: maybe player based
 			break;
 		case PICK_DICE:
 			ui.menu.elementsCount = N_DICE_MENU_OPTIONS;

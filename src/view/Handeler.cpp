@@ -69,7 +69,7 @@ void generateInteractiveUI(UserInterface &ui) {
 		indexes[i] = numberToString(i, (int) (digits));
 	}
 
-	handleIndexes(indexes, (int) (digits), ui.space.indexesTop, ui.space.indexesBottom);
+	handleIndexes(indexes, ui.pickedIndex, (int) (digits), ui.space.indexesTop, ui.space.indexesBottom);
 
 	handleMenu(ui.menu, Pos{ui.space.boardCenter.x, ui.space.board.max.y + MENU_TOP_SPACING});
 
@@ -129,7 +129,32 @@ void drawBar(int offsetX, int offsetY, int height) {
 	mvprintw(offsetY + (height) / 2, offsetX - (int) (sizeof(barLabel)) / 2 + 1, barLabel);
 }
 
-void handleIndexes(char **indexes, int digits, Placement posTop, Placement posBot) {
+int generateColorsForIndexes(char **text, int count, int pickedIndex, UiColorsId *&colors) {
+	int index = -1;
+	for (int i = 0; i < count; ++i) {
+		if (stringToNumber(text[i]) == pickedIndex) {
+			index = i;
+		}
+	}
+	if (pickedIndex == -1) {
+		colors = new UiColorsId [1];
+		colors[0] = FOREGROUND;
+		return 1;
+	} else if (index < 0) {
+		colors = new UiColorsId [1];
+		colors[0] = FOREGROUND_DARK;
+		return 1;
+	} else {
+		colors = new UiColorsId [count];
+		for (int i = 0; i < count; ++i) {
+			colors[i] = i == index ? FOREGROUND_LIGHT : FOREGROUND_DARK;
+		}
+		return count;
+	}
+}
+
+// TODO: REWRITE
+void handleIndexes(char **indexes, int pickedIndex, int digits, Placement posTop, Placement posBot) {
 	revertTable(indexes, indexes + nPoints / 2);
 
 	for (int i = 0; i < N_BOARDS; ++i) {
@@ -137,11 +162,18 @@ void handleIndexes(char **indexes, int digits, Placement posTop, Placement posBo
 		posTop.max.x = posTop.min.x + pieceWidth * POINTS_PER_BOARD + pieceSpacing * (POINTS_PER_BOARD - 1);
 		posBot.max.x = posTop.max.x;
 
-		UiColorsId colors = {FOREGROUND};
+		UiColorsId *colors = nullptr;
+
+		int nColours = generateColorsForIndexes(&indexes[i * POINTS_PER_BOARD], POINTS_PER_BOARD, pickedIndex, colors);
 		drawCenteredText(posBot, pieceSpacing, (int) (digits),
-						 &indexes[i * POINTS_PER_BOARD], POINTS_PER_BOARD, &colors, 1);
+						 &indexes[i * POINTS_PER_BOARD], POINTS_PER_BOARD, colors, nColours);
+		delete[] colors;
+
+		colors = nullptr;
+		nColours = generateColorsForIndexes(&indexes[nPoints / 2 + i * POINTS_PER_BOARD], POINTS_PER_BOARD, pickedIndex, colors);
 		drawCenteredText(posTop, pieceSpacing, (int) (digits),
-						 &indexes[nPoints / 2 + i * POINTS_PER_BOARD], POINTS_PER_BOARD, &colors, 1);
+						 &indexes[nPoints / 2 + i * POINTS_PER_BOARD], POINTS_PER_BOARD, colors, nColours);
+		delete[] colors;
 
 		posTop.min.x = posTop.max.x + BORDER_WIDTH * 2 + BAR_WIDTH + pieceSpacing / 2 * 2;
 		posBot.min.x = posTop.min.x;

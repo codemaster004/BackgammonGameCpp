@@ -66,6 +66,17 @@ char *numberToString(int number, int width) {
 	return str;
 }
 
+int stringToNumber(const char *str) {
+	int result = 0;
+	int i = 0;
+	while (str[i] != '\0') {
+		result *= 10;
+		result += str[i] - '0';
+		i++;
+	}
+	return result;
+}
+
 void revertTable(char **from, char **to) {
 	for (int i = 0; i < (to - from) / 2; ++i) {
 		char *temp = from[i];

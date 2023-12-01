@@ -18,7 +18,7 @@ void gamePlayController(int input, UserInterface &ui);
 
 void pickDiceController(int input, UserInterface &ui);
 
-void inputController(int input, UserInterface &ui, int &inputtedNumber);
+void inputController(int input, UserInterface &ui);
 
 void movePawn(Board &game, int fromIndex, int moveBy);
 

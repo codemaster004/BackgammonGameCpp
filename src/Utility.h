@@ -23,6 +23,8 @@ uint maxInBase(int n, int base);
 
 char* numberToString(int number, int width);
 
+int stringToNumber(const char *str);
+
 void revertTable(char **from, char **to);
 
 char *joinStrings(char *string1, int len1, char *string2, int len2);

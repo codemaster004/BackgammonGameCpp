@@ -46,9 +46,8 @@ int main(int argc, char **argv) {
 
 	int ch = 0;
 	UI.gameEnded = false;
-	int pickedPiece = 0;
 	do {
-		inputController(ch, UI, pickedPiece);
+		inputController(ch, UI);
 		if (UI.gameEnded)
 			break;
 

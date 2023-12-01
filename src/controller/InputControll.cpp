@@ -123,7 +123,7 @@ void handleMenuModes(int input, UserInterface &ui) {
 	}
 }
 
-void inputController(int input, UserInterface &ui, int &inputtedNumber) {
+void inputController(int input, UserInterface &ui) {
 //	numberInputController(input, inputtedNumber);
 //	if (input == '\r' || input == '\n') {
 //		movePawn(game, *inputtedNumber, *dice1);
@@ -132,7 +132,7 @@ void inputController(int input, UserInterface &ui, int &inputtedNumber) {
 	switch (input) {
 		case '\n':
 		case '\r':
-			inputController(ui.menu.elements[ui.menu.selected].key, ui, inputtedNumber);
+			inputController(ui.menu.elements[ui.menu.selected].key, ui);
 			break;
 		case KEY_UP:
 			break;

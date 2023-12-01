@@ -61,6 +61,7 @@ typedef struct {
 	bool gameEnded;
 	UiState state;
 	Move currentMove;
+	int pickedIndex;
 } UserInterface;
 
 UserInterface initUI();
