@@ -236,4 +236,9 @@ void handleMessages(UserInterface &ui) {
 	tempMessages[0] = ui.infoMess;
 	uint length = len(ui.infoMess);
 	drawCenteredText(textPos, 0, (int)(length), tempMessages, 1, &colours, 1);
+
+	moveSpace(textPos, {(N_BOARDS - 1) * (boardWidth + BAR_WIDTH + borders), 0});
+	tempMessages[0] = ui.errorMess;
+	length = len(ui.errorMess);
+	drawCenteredText(textPos, 0, (int)(length), tempMessages, 1, &colours, 1);
 }

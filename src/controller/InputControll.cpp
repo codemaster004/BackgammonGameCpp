@@ -81,6 +81,18 @@ void gamePlayController(int input, UserInterface &ui) {
 	}
 }
 
+void createDiceMessage(UserInterface ui) {
+	int digits = (int)(nDigits(ui.currentMove.by, 10));
+	const char *moveBy = numberToString(ui.currentMove.by, digits);
+	const char *str = joinStrings("Move by: ", 9, moveBy, digits);
+	messageSet(ui.infoMess, str);
+	delete[] str;
+}
+
+void createErrorMessage(UserInterface &ui) {
+	messageSet(ui.errorMess, "Invalid Point");
+}
+
 void pickDiceController(int input, UserInterface &ui) {
 	// TODO: rewrite for N dices
 	switch (input) {
@@ -106,11 +118,7 @@ void pickDiceController(int input, UserInterface &ui) {
 			break;
 	}
 	if (ui.currentMove.by != 0) {
-		int digits = (int)(nDigits(ui.currentMove.by, 10));
-		const char *moveBy = numberToString(ui.currentMove.by, digits);
-		const char *str = joinStrings("Move by: ", 9, moveBy, digits);
-		messageSet(ui.infoMess, str);
-		delete[] str;
+		createDiceMessage(ui);
 	}
 }
 
@@ -118,7 +126,9 @@ void pickPointController(int input, UserInterface &ui) {
 	switch (input) {
 		case ' ':
 			ui.currentMove.from = ui.pickedIndex;
-			movePawn(ui.board, ui.currentMove);
+			if(movePawn(ui.board, ui.currentMove)) {
+				createErrorMessage(ui);
+			}
 			break;
 		case '-':
 			break;
@@ -196,10 +206,10 @@ void inputController(int input, UserInterface &ui) {
 
 // TODO: N pawnsId to move
 // TODO: maybe return 0 and 1 for eero check
-void movePawn(Board &game, Move move) {
-	moveToPoint moveType = determineMoveType(game, move.from, move.by);
+int movePawn(Board &game, Move move) {
+	MoveToPoint moveType = determineMoveType(game, move.from, move.by);
 	if (!enumToBool(moveType)) {
-		return;
+		return 1;
 	}
 	int toIndex = move.from + move.by * game.points[move.from].pawns[0]->moveDirection;
 	Point *toPoint = &game.points[toIndex];
@@ -209,4 +219,5 @@ void movePawn(Board &game, Move move) {
 	}
 	toPoint->pawns[toPoint->pawnsInside++] = fromPoint->pawns[--fromPoint->pawnsInside];
 	fromPoint->pawns[fromPoint->pawnsInside] = nullptr;
+	return 0;
 }

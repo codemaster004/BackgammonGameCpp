@@ -39,7 +39,7 @@ int canBeMoved(Board &game, int pointIndex, int moveBy) {
  * 	POSSIBLE - can move to this Point
  * 	CAPTURE - can move and a Capture will happen
  */
-moveToPoint canMoveTo(Board &game, int fromIndex, int toIndex) {
+MoveToPoint canMoveTo(Board &game, int fromIndex, int toIndex) {
 	// Consider the destination indexes are already check
 	int destinationSize = game.points[toIndex].pawnsInside;
 	// Moving to full Point
@@ -57,7 +57,7 @@ moveToPoint canMoveTo(Board &game, int fromIndex, int toIndex) {
 	return CAPTURE; // We know Point has an opponents Pawn, but we can Capture it
 }
 
-moveToPoint determineMoveType(Board &game, int pointIndex, int moveBy) {
+MoveToPoint determineMoveType(Board &game, int pointIndex, int moveBy) {
 	int destination = canBeMoved(game, pointIndex, moveBy);
 	if (destination < 0) {
 		return NOT_ALLOWED;
@@ -65,7 +65,7 @@ moveToPoint determineMoveType(Board &game, int pointIndex, int moveBy) {
 	return canMoveTo(game, pointIndex, destination);
 }
 
-bool enumToBool(moveToPoint value) {
+bool enumToBool(MoveToPoint value) {
 	return !(value == BLOCKED || value == NOT_ALLOWED);
 }
 

@@ -9,7 +9,7 @@ typedef struct Player Player;
 typedef struct Board Board;
 typedef struct Point Point;
 
-enum moveToPoint {
+enum MoveToPoint {
 	BLOCKED,
 	POSSIBLE,
 	CAPTURE,
@@ -32,11 +32,11 @@ typedef struct {
 
 int canBeMoved(Board &game, int pointIndex, int moveBy);
 
-moveToPoint canMoveTo(Board &game, int fromIndex, int toIndex);
+MoveToPoint canMoveTo(Board &game, int fromIndex, int toIndex);
 
-moveToPoint determineMoveType(Board &game, int pointIndex, int moveBy);
+MoveToPoint determineMoveType(Board &game, int pointIndex, int moveBy);
 
-bool enumToBool(moveToPoint value);
+bool enumToBool(MoveToPoint value);
 
 void pawnCapture(Board &game, Point *point);
 
