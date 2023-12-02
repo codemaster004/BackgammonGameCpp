@@ -42,9 +42,13 @@ void setClearBoard(Board &gameBoard) {
 		court = Court{0};
 	}
 
-	// set both Dices to 0
-	for (auto &dice: gameBoard.dices) {
-		dice = 0;
+	clearDices(gameBoard.dices);
+}
+
+/// Set all Dices to 0
+void clearDices(int *dices) {
+	for (int i = 0; i < N_DICES; ++i) {
+		dices[i] = 0;
 	}
 }
 

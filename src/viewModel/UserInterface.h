@@ -74,6 +74,8 @@ Move initMove();
 
 void starterScreen(UserInterface &ui);
 
+void setBasicGameState(UserInterface &ui);
+
 void titleArt(int offsetX, int offsetY);
 
 void createStarterMenu(Menu &menu);

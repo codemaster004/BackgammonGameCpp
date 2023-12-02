@@ -31,6 +31,12 @@ UserInterface initUI() {
 	return ui;
 }
 
+void setBasicGameState(UserInterface &ui) {
+	ui.menu.mode = DEFAULT;
+	ui.needToRefresh = true;
+	resetMessages(ui);
+}
+
 void titleArt(int offsetX, int offsetY) {
 	attron(COLOR_PAIR(FOREGROUND));
 	mvprintw(offsetY + 0, offsetX, R"( ____             _     ___)") ;

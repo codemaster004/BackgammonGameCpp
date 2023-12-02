@@ -131,6 +131,9 @@ void pickPointController(int input, UserInterface &ui) {
 			}
 			break;
 		case '-':
+			clearDices(ui.board.dices);
+			setBasicGameState(ui);
+			changePlayers(ui.board);
 			break;
 		case KEY_BACKSPACE:
 		case 0x7F:
