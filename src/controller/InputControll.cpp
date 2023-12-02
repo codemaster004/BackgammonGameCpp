@@ -113,6 +113,8 @@ void pickDiceController(int input, UserInterface &ui) {
 			resetMenuTo(ui, PICK_POINT);
 			break;
 		case '-':
+			setBasicGameState(ui);
+			changePlayers(ui.board);
 			break;
 		default:
 			break;
@@ -131,7 +133,6 @@ void pickPointController(int input, UserInterface &ui) {
 			}
 			break;
 		case '-':
-			clearDices(ui.board.dices);
 			setBasicGameState(ui);
 			changePlayers(ui.board);
 			break;
