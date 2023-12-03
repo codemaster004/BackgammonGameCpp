@@ -94,8 +94,7 @@ void serialiseBoard(Board &board, uint8_t *buffer, size_t &offset) {
 }
 
 /// Deserialize Board object from byte array to object
-Board deserializeBoard(const uint8_t *buffer, size_t &offset) {
-	Board board;
+Board deserializeBoard(const uint8_t *buffer, size_t &offset, Board &board) {
 	for (auto &player : board.players) {
 		player = deserializePlayer(buffer, offset);
 	}

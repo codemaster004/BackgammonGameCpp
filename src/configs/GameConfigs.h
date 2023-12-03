@@ -8,7 +8,7 @@
 #include "../Utility.h"
 #include "../viewModel/Space.h"
 
-#define DEBUG_MODE true
+#define DEBUG_MODE false
 
 #define N_BOARDS 2
 #define POINTS_PER_BOARD 6

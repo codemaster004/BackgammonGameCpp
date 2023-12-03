@@ -11,8 +11,8 @@ void serializeInt(int value, uint8_t *buffer, size_t &offset);
 
 int deserializeInt(const uint8_t *buffer, size_t &index);
 
-void serializeToFile(char filename[], Board &game);
+void saveToFile(char filename[], Board &game);
 
-Board loadFromFile(char filename[]);
+void loadFromFile(char filename[], Board &game);
 
 #endif //BACKGAMMONGAME_SERIALIZETOFILE_H

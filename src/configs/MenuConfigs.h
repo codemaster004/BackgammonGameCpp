@@ -5,9 +5,9 @@
 #ifndef BACKGAMMONGAME_MENUCONFIGS_H
 #define BACKGAMMONGAME_MENUCONFIGS_H
 
-#define N_GAME_MENU_OPTIONS 5
-const char *menuGameOptions[N_GAME_MENU_OPTIONS] = {"(M)ove", "(R)oll", "(U)ndo", "(S)ave", "(Q)uit"};
-const char menuGameKeys[N_GAME_MENU_OPTIONS] = {'m', 'r', 'u', 's', 'q'};
+#define N_GAME_MENU_OPTIONS 4
+const char *menuGameOptions[N_GAME_MENU_OPTIONS] = {"(R)oll", "(U)ndo", "(S)ave", "(Q)uit"};
+const char menuGameKeys[N_GAME_MENU_OPTIONS] = {'r', 'u', 's', 'q'};
 
 #define N_STARTER_MENU_OPTIONS 3
 const char *menuStarterOptions[N_STARTER_MENU_OPTIONS] = {"(N)ew Game", "(L)oad Game", "(Q)uit"};
