@@ -34,7 +34,7 @@ int deserializeInt(const uint8_t *buffer, size_t &index) {
 	return value;
 }
 
-void serializeToFile(char filename[], Board &game) {
+void saveToFile(char filename[], Board &game) {
 	auto *bufferTable = new uint8_t[boardSize];
 
 	size_t index = 0;
@@ -58,19 +58,21 @@ void serializeToFile(char filename[], Board &game) {
 	delete[] encodedFile;
 }
 
-Board loadFromFile(char filename[]) {
+void loadFromFile(char filename[], Board &game) {
 	int encodedLen = finalEncodedDataLen((int) (boardSize));
 	auto *bufferTable = new char[encodedLen];
 	size_t index = 0;
 
 	char *path = joinStrings((char *)(savesDir), sizeof(savesDir) - 1, filename, 9);
-	FILE *file = fopen(path, "w");
+	FILE *file = fopen(path, "r");
 	delete[] path;
 
 	int ch;
 	while ((ch = fgetc(file)) != EOF) {
 		bufferTable[index++] = (char) (ch);
 	}
+	fclose(file);
+
 	if (index != encodedLen) {
 		// TODO: Generate some error for the user to see
 	}
@@ -78,9 +80,7 @@ Board loadFromFile(char filename[]) {
 	delete[] bufferTable;
 
 	index = 0;
-	Board savedGame = deserializeBoard(decodedBoard, index);
+	deserializeBoard(decodedBoard, index, game);
 
 	delete[] decodedBoard;
-
-	return savedGame;
 }

@@ -22,18 +22,11 @@ int getInput(int argc, char **argv);
 int main(int argc, char **argv) {
 	startScreen(argc, argv);
 
-//	char fName[10] = {"game0.txt"};
-//	serializeToFile(fName);
-//	return 0;
-
 	UserInterface UI = initUI();
 	UI.board = Board{};
 	setClearBoard(UI.board);
 
 	gameSetUp(UI.board);
-
-//	char name[] = "game0.txt";
-//	serializeToFile(name, UI.board);
 
 	if (DEBUG_MODE) {
 		UI.state = GAME_PLAY;
