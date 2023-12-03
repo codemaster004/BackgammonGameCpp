@@ -103,7 +103,7 @@ void startScreen(int argc, char **argv) {
  * TODO: [x] Basic Board UI (1pt)
  * TODO: [x] Visualisation of game state (1pt)
  * TODO: [x] Saving game state to a file (2pt)
- * TODO: [x] Loading game state from file + ?next move? (2pt)
+ * TODO: [x] Loading game state from file + next move (2pt)
  * TODO: [ ] Ability to capture pawnsId (1pt)
  * TODO: [ ] Removing pawnsId ?bar or court? (1pt)
  * TODO: [ ] ?Game simulation from any point till the end? (2pt)
