@@ -19,7 +19,9 @@ void drawPiece(const char *symbol, int offsetX, int offsetY);
 
 void drawPieces(int offsetX, int offsetY);
 
-void drawSpacedText(Placement pos, int spacing, int len, char **text, int count);
+void drawCenteredText(Placement pos, int spacing, int len, char **text, int count, UiColorsId *colors, int nColors);
+
+void drawSpreadText(Placement pos, char **text, int count, int selected=-1);
 
 void drawLine(Pawn pawn, Placement pos);
 

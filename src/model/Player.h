@@ -17,6 +17,8 @@ typedef struct Player {
 	int points;
 } Player;
 
+void changePlayers(Board &game);
+
 /// Handle Serialization of Player object
 void serialisePlayer(Player player, uint8_t *buffer, size_t &offset);
 

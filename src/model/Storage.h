@@ -8,17 +8,17 @@
 #include "../configs/GameConfigs.h"
 #include "Pawn.h"
 
-typedef struct {
+typedef struct Point {
 	int pawnsInside;
 	Pawn *pawns[PAWNS_PER_POINT];
 } Point;
 
-typedef struct {
+typedef struct Bar {
 	int pawnsInside;
 	Pawn *pawns[totalPawns];
 } Bar;
 
-typedef struct {
+typedef struct Court {
 	int pawnsInside;
 	Pawn *pawns[PAWNS_PER_PLAYER];
 	Player *owner;

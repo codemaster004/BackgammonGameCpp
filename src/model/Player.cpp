@@ -10,6 +10,11 @@
 #include "SerializeToFile.h"
 
 
+void changePlayers(Board &game) {
+	game.currentPlayerId += 1;
+	game.currentPlayerId %= N_PLAYERS;
+}
+
 void serialisePlayer(Player player, uint8_t *buffer, size_t &offset) {
 	std::memcpy(buffer + offset, &player, sizeof(Player));
 	offset += sizeof(Player);

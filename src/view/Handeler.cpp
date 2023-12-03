@@ -8,7 +8,7 @@
 #include "Drawing.h"
 
 
-Placement initMenu(Pos center, MenuElement values[], int nElements) {
+Placement initMenuSpace(Pos center, MenuElement values[], int nElements) {
 	uint realLen = OPTION_SPACING * (nElements - 1);
 	for (int i = 0; i < nElements; ++i) {
 		realLen += len(values[i].value) - 1;
@@ -22,7 +22,47 @@ Placement initMenu(Pos center, MenuElement values[], int nElements) {
 	};
 }
 
+Placement initTextSpace(Pos center, char **values, int nElements) {
+	uint realLen = OPTION_SPACING * (nElements - 1);
+	for (int i = 0; i < nElements; ++i) {
+		realLen += len(values[i]) - 1;
+	}
+	return Placement{
+		.min={
+			.x=center.x - (int) (realLen / 2),
+			.y=center.y
+		},
+		.max {.x=center.x + (int) (realLen / 2)}
+	};
+}
+
+void generateHeader(UserInterface &ui) {
+	const char *title[3] = {ui.gameName, ui.authorName, ui.authorId};
+
+	Placement textSpace = ui.space.gameSpace;
+	textSpace.min.y = ui.space.gameSpace.min.y + HEADER_OFFSET;
+	drawSpreadText(textSpace, (char **) (title), 3);
+}
+
+void generatePlayers(UserInterface &ui) {
+	const char *players[N_PLAYERS];
+	int selected = -1;
+	for (int i = 0; i < N_PLAYERS; ++i) {
+		players[i] = ui.board.players[i].name;
+		if (ui.board.players[i].id == ui.board.currentPlayerId)
+			selected = i;
+	}
+
+	Placement textSpace = ui.space.gameSpace;
+	textSpace.min.y = ui.space.gameSpace.min.y + HEADER_OFFSET + 2;
+	drawSpreadText(textSpace, (char **) (players), N_PLAYERS, selected);
+}
+
 void generateBasicBoard(UserInterface &ui) {
+	generateHeader(ui);
+
+	generatePlayers(ui);
+
 	attron(COLOR_PAIR(FOREGROUND));
 
 	handleBoardOutline(ui.space.board);
@@ -35,11 +75,7 @@ void generateBasicBoard(UserInterface &ui) {
 	attroff(COLOR_PAIR(FOREGROUND));
 }
 
-void generateInteractiveUI(UserInterface &ui, int &menuSelected) {
-	auto *testMenu = new MenuElement[N_MENU_OPTIONS];
-	for (int i = 0; i < N_MENU_OPTIONS; ++i) {
-		testMenu[i] = MenuElement{.id=i, .value=menuOptions[i]};
-	}
+void generateInteractiveUI(UserInterface &ui) {
 
 	// Indexes
 	uint digits = nDigits(nPoints, 10);
@@ -47,31 +83,28 @@ void generateInteractiveUI(UserInterface &ui, int &menuSelected) {
 	for (int i = 0; i < nPoints; ++i) {
 		indexes[i] = numberToString(i, (int) (digits));
 	}
-	attron(COLOR_PAIR(FOREGROUND));
-	handleIndexes(indexes, (int) (digits), ui.space.indexesTop, ui.space.indexesBottom);
-	attroff(COLOR_PAIR(FOREGROUND));
 
-	handleMenu(testMenu, N_MENU_OPTIONS, menuSelected,
-			   Pos{ui.space.boardCenter.x, ui.space.board.max.y + MENU_TOP_SPACING});
+	handleIndexes(indexes, ui.pickedIndex, (int) (digits), ui.space.indexesTop, ui.space.indexesBottom);
+
+	handleMenu(ui.menu, Pos{ui.space.boardCenter.x, ui.space.board.max.y + MENU_TOP_SPACING});
 
 	handlePawnPlacement(ui.board, ui.space.board);
+
+	handleMessages(ui);
 
 	/// CLEAR MEMORY!!!
 	for (int i = 0; i < nPoints; ++i) {
 		delete[] indexes[i];
 	}
 	delete[] indexes;
-	delete[] testMenu;
+//	delete[] testMenu;
 
 }
 
 void handleBoardOutline(Placement space) {
-	space.max.y = space.min.y + boardHeight + borders - 1;
 	for (int i = 0; i < N_BOARDS; ++i) {
-		space.max.x = space.min.x + boardWidth + borders - 1;
 		drawBorders(space);
-
-		space.min.x += boardWidth + borders + BAR_WIDTH;
+		moveSpace(space, {boardWidth + borders + BAR_WIDTH, 0});
 	}
 }
 
@@ -85,7 +118,8 @@ void handlePieces(Placement space) {
 
 void handleBar() {
 	for (int i = N_BOARDS - 1; i > 0; --i)
-		drawBar(OFFSET_X + (boardWidth + borders) * i, OFFSET_Y, boardHeight + borders);
+		drawBar(OFFSET_X + (boardWidth + borders) * i, OFFSET_Y + BOARD_OFFSET_Y + HEADER_OFFSET + INDEX_OFFSET + TEXT_HEIGHT * 2,
+				boardHeight + borders);
 }
 
 void handleDices(Placement space, Pos center, int *dices) {
@@ -110,33 +144,72 @@ void drawBar(int offsetX, int offsetY, int height) {
 	mvprintw(offsetY + (height) / 2, offsetX - (int) (sizeof(barLabel)) / 2 + 1, barLabel);
 }
 
-void handleIndexes(char **indexes, int digits, Placement pos1, Placement pos2) {
+int generateColorsForIndexes(char **text, int count, int pickedIndex, UiColorsId *&colors) {
+	int index = -1;
+	for (int i = 0; i < count; ++i) {
+		if (stringToNumber(text[i]) == pickedIndex) {
+			index = i;
+		}
+	}
+	if (pickedIndex == -1) {
+		colors = new UiColorsId [1];
+		colors[0] = FOREGROUND;
+		return 1;
+	} else if (index < 0) {
+		colors = new UiColorsId [1];
+		colors[0] = FOREGROUND_DARK;
+		return 1;
+	} else {
+		colors = new UiColorsId [count];
+		for (int i = 0; i < count; ++i) {
+			colors[i] = i == index ? FOREGROUND_LIGHT : FOREGROUND_DARK;
+		}
+		return count;
+	}
+}
+
+// TODO: REWRITE
+void handleIndexes(char **indexes, int pickedIndex, int digits, Placement posTop, Placement posBot) {
 	revertTable(indexes, indexes + nPoints / 2);
 
 	for (int i = 0; i < N_BOARDS; ++i) {
 		// TODO: this value as default with for one
-		pos1.max.x = pos1.min.x + pieceWidth * POINTS_PER_BOARD + pieceSpacing * (POINTS_PER_BOARD - 1);
-		pos2.max.x = pos1.max.x;
-		drawSpacedText(pos2, pieceSpacing, (int) (digits),
-					   &indexes[i * POINTS_PER_BOARD], POINTS_PER_BOARD);
-		drawSpacedText(pos1, pieceSpacing, (int) (digits),
-					   &indexes[nPoints / 2 + i * POINTS_PER_BOARD], POINTS_PER_BOARD);
-		// TODO: create a fucntion to handle moving by offset
-		pos1.min.x = pos1.max.x + BORDER_WIDTH * 2 + BAR_WIDTH + pieceSpacing / 2 * 2;
-		pos2.min.x = pos1.min.x;
+		posTop.max.x = posTop.min.x + pieceWidth * POINTS_PER_BOARD + pieceSpacing * (POINTS_PER_BOARD - 1);
+		posBot.max.x = posTop.max.x;
+
+		UiColorsId *colors = nullptr;
+
+		int nColours = generateColorsForIndexes(&indexes[i * POINTS_PER_BOARD], POINTS_PER_BOARD, pickedIndex, colors);
+		drawCenteredText(posBot, pieceSpacing, (int) (digits),
+						 &indexes[i * POINTS_PER_BOARD], POINTS_PER_BOARD, colors, nColours);
+		delete[] colors;
+
+		colors = nullptr;
+		nColours = generateColorsForIndexes(&indexes[nPoints / 2 + i * POINTS_PER_BOARD], POINTS_PER_BOARD, pickedIndex, colors);
+		drawCenteredText(posTop, pieceSpacing, (int) (digits),
+						 &indexes[nPoints / 2 + i * POINTS_PER_BOARD], POINTS_PER_BOARD, colors, nColours);
+		delete[] colors;
+
+		posTop.min.x = posTop.max.x + BORDER_WIDTH * 2 + BAR_WIDTH + pieceSpacing / 2 * 2;
+		posBot.min.x = posTop.min.x;
 	}
 }
 
-void handleMenu(MenuElement options[], int optionCount, int selected, Pos center) {
-	Placement menuSpace = initMenu(center, options, optionCount);
+void handleMenu(Menu menu, Pos center) {
+	Placement menuSpace = initMenuSpace(center, menu.elements, menu.elementsCount);
 
-	for (int i = 0; i < optionCount; ++i) {
-		if (options[i].id == selected) {
-			printColor(FOREGROUND_LIGHT, menuSpace.min.x, menuSpace.min.y, options[i].value);
+	for (int i = 0; i < menu.elementsCount; ++i) {
+		if (menu.selected == -1) {
+			printColor(FOREGROUND, menuSpace.min.x, menuSpace.min.y, menu.elements[i].value);
 		} else {
-			printColor(FOREGROUND_DARK, menuSpace.min.x, menuSpace.min.y, options[i].value);
+			if (menu.elements[i].id == menu.selected) {
+				printColor(FOREGROUND_LIGHT, menuSpace.min.x, menuSpace.min.y, menu.elements[i].value);
+			} else {
+				printColor(FOREGROUND_DARK, menuSpace.min.x, menuSpace.min.y, menu.elements[i].value);
+			}
 		}
-		menuSpace.min.x += (int) (len(options[i].value) - 1) + OPTION_SPACING;
+
+		menuSpace.min.x += (int) (len(menu.elements[i].value) - 1) + OPTION_SPACING;
 	}
 }
 
@@ -157,24 +230,31 @@ void handlePawnPlacement(Board &game, Placement space) {
 			int indexBot = POINTS_PER_BOARD * N_BOARDS - (i * POINTS_PER_BOARD + j) - 1;
 			count = game.points[indexBot].pawnsInside;
 			if (count) {
-				moveSpace(&space, Pos {0, boardHeight - count});
+				space.max.y = space.min.y + count;
+				moveSpace(space, Pos {0, boardHeight - count});
 				drawLine(*game.points[indexBot].pawns[0], space);
-				moveSpace(&space, Pos {0, - boardHeight + count});
+				moveSpace(space, Pos {0, - boardHeight + count});
 			}
 
 //			drawLine(pawn1, space);
-			moveSpace(&space, Pos{change, 0});
+			moveSpace(space, Pos{change, 0});
 		}
-		moveSpace(&space, Pos{pieceSpacing / 2 * 2 + borders + BAR_WIDTH - pieceSpacing, 0});
-//		int totalOffset = offsetX + pieceSpacing / 2;
-//		for (int i = 0; i < PAWNS_PER_POINT; i += 2) {
-//			Placement offset = {
-//				.min = Pos{.x = totalOffset, .y = offsetY},
-//				.max = Pos{.x = totalOffset, .y = offsetY + PAWNS_PER_POINT}
-//			};
-//			// placement
-//			drawLine(symbol, offset);
-//			totalOffset += (pieceWidth + pieceSpacing) * 2;
-//		}
+		moveSpace(space, Pos{pieceSpacing / 2 * 2 + borders + BAR_WIDTH - pieceSpacing, 0});
 	}
+}
+
+void handleMessages(UserInterface &ui) {
+	Placement textPos = ui.space.board;
+	textPos.min.y += (boardHeight + borders) / 2;
+	UiColorsId colours = {FOREGROUND_DARK};
+	char* tempMessages[1];
+
+	tempMessages[0] = ui.infoMess;
+	uint length = len(ui.infoMess);
+	drawCenteredText(textPos, 0, (int)(length), tempMessages, 1, &colours, 1);
+
+	moveSpace(textPos, {(N_BOARDS - 1) * (boardWidth + BAR_WIDTH + borders), 0});
+	tempMessages[0] = ui.errorMess;
+	length = len(ui.errorMess);
+	drawCenteredText(textPos, 0, (int)(length), tempMessages, 1, &colours, 1);
 }

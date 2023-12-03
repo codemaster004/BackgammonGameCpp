@@ -22,6 +22,8 @@ typedef struct Board {
 
 void setClearBoard(Board &gameBoard);
 
+void clearDices(int *dices);
+
 void placePawns(Board &gameBoard);
 
 void serialiseBoard(Board &board, uint8_t *buffer, size_t &offset);
