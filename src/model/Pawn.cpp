@@ -11,25 +11,26 @@
 #include "SerializeToFile.h"
 
 
-bool canBeMoved(Board &game, int pointIndex, int moveBy) {
+int canBeMoved(Board &game, int pointIndex, int moveBy) {
 	// Index out of range
 	if (pointIndex >= nPoints || pointIndex < 0)
-		return false;
+		return -1;
 	// Moving Pawn from an empty Point
 	if (game.points[pointIndex].pawnsInside == 0)
-		return false;
+		return -1;
 	// Moving not your Pawn
 	if (game.points[pointIndex].pawns[0]->ownerId != game.currentPlayerId)
-		return false;
+		return -1;
 
 	// Handle move in both direction based on Pawn "Color"
 	short direction = game.points[pointIndex].pawns[0]->moveDirection;
 	int destinationIndex = pointIndex + moveBy * direction;
 	// Moving outside of range
 	if (destinationIndex >= nPoints || destinationIndex < 0)
-		return false;
+		return -1;
 
-	return true; // We check all the index Pawn can be moved by player from pos A to B
+	// We check all the index Pawn can be moved by player from pos A to B
+	return destinationIndex;
 }
 
 /*
@@ -38,7 +39,7 @@ bool canBeMoved(Board &game, int pointIndex, int moveBy) {
  * 	POSSIBLE - can move to this Point
  * 	CAPTURE - can move and a Capture will happen
  */
-moveToPoint canMoveTo(Board &game, int fromIndex, int toIndex) {
+MoveToPoint canMoveTo(Board &game, int fromIndex, int toIndex) {
 	// Consider the destination indexes are already check
 	int destinationSize = game.points[toIndex].pawnsInside;
 	// Moving to full Point
@@ -56,8 +57,23 @@ moveToPoint canMoveTo(Board &game, int fromIndex, int toIndex) {
 	return CAPTURE; // We know Point has an opponents Pawn, but we can Capture it
 }
 
-bool enumToBool(moveToPoint value) {
-	return value != BLOCKED;
+MoveToPoint determineMoveType(Board &game, int pointIndex, int moveBy) {
+	int destination = canBeMoved(game, pointIndex, moveBy);
+	if (destination < 0) {
+		return NOT_ALLOWED;
+	}
+	return canMoveTo(game, pointIndex, destination);
+}
+
+bool enumToBool(MoveToPoint value) {
+	return !(value == BLOCKED || value == NOT_ALLOWED);
+}
+
+void pawnCapture(Board &game, Point *point) {
+	for (int i = 0; i < CAPTURE_THRESHOLD; ++i) {
+		game.bar.pawns[game.bar.pawnsInside++] = point->pawns[i];
+	}
+	point->pawnsInside -= CAPTURE_THRESHOLD;
 }
 
 /// Handle Serialization of Pawn object

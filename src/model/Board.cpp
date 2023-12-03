@@ -21,13 +21,16 @@
  *   11 10 09 08 07 06   05 04 03 02 01 00
  */
 
+/// Clear the Board Structure for a New Game
 void setClearBoard(Board &gameBoard) {
-	gameBoard.bar = Bar{0};
 
-	gameBoard.currentPlayerId = 0;
+	gameBoard.currentPlayerId = NULL;
 	for (auto &player: gameBoard.players) {
 		player = Player{};
 	}
+
+	// set Bar to keep 0 Pawns
+	gameBoard.bar = Bar{0};
 
 	// set Points to keep 0 Pawns
 	for (auto &point: gameBoard.points) {
@@ -38,9 +41,18 @@ void setClearBoard(Board &gameBoard) {
 	for (auto &court: gameBoard.courts) {
 		court = Court{0};
 	}
+
+	clearDices(gameBoard.dices);
 }
 
-// TODO: rename
+/// Set all Dices to 0
+void clearDices(int *dices) {
+	for (int i = 0; i < N_DICES; ++i) {
+		dices[i] = 0;
+	}
+}
+
+/// Place Pawns on the board with default configuration
 void placePawns(Board &gameBoard) {
 	int pawnIndex = 0;
 	for (auto pos: startingPos) {
@@ -55,11 +67,12 @@ void placePawns(Board &gameBoard) {
 	for (auto pos: startingPos) {
 		gameBoard.points[endIndex - pos->x].pawnsInside = pos->y;
 		for (int j = 0; j < pos->y; ++j) {
-			gameBoard.points[endIndex - pos->x].pawns[j] = &gameBoard.pawns[pawnIndex++];
+			gameBoard.points[endIndex - pos->x].pawns[j] = &gameBoard.pawns[PAWNS_PER_PLAYER + pawnIndex++];
 		}
 	}
 }
 
+/// Serialize Board object to a byte array
 void serialiseBoard(Board &board, uint8_t *buffer, size_t &offset) {
 	for (auto &player: board.players) {
 		serialisePlayer(player, buffer, offset);
@@ -80,6 +93,7 @@ void serialiseBoard(Board &board, uint8_t *buffer, size_t &offset) {
 	}
 }
 
+/// Deserialize Board object from byte array to object
 Board deserializeBoard(const uint8_t *buffer, size_t &offset) {
 	Board board;
 	for (auto &player : board.players) {

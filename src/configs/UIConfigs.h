@@ -21,10 +21,23 @@
 #define OPTION_SPACING 3
 #define MENU_TOP_SPACING 3
 
-#define OFFSET_X 3
-#define OFFSET_Y 2
+#define TEXT_HEIGHT 1
 
-#define COLOR_THEME 230, 150, 230
+#define OFFSET_X 16
+#define OFFSET_Y 1
+#define INDEX_OFFSET 1
+#define HEADER_OFFSET 0
+#define BOARD_OFFSET_Y 2
+#define BOARD_OFFSET_X 0
+
+#define COLOR_THEME 230, 120, 220
+
+#define MAX_MESSAGE_LEN 25
+
+const char gameName[] = "Backgammon";
+const char creatorId[] = "s197712";
+const char creatorName[] = "Filip Dabkowski";
+
 
 enum UiColorsId {
 	FOREGROUND = 1,
@@ -48,7 +61,7 @@ const char pawn2[] = { "[]" };
 const int pieceWidth = 2;
 const int pieceSpacing = 3;
 
-const float colorDiff = 0.25;
+const float colorDiff = 0.3;
 
 // Calculations
 const int borders = BORDER_WIDTH * 2;

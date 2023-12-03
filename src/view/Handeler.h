@@ -18,13 +18,15 @@ void handleDices(Placement space, Pos center, int *dices);
 
 void drawBar(int offsetX, int offsetY, int height);
 
-void handleMenu(MenuElement options[], int optionCount, int selected, Pos center);
+void handleMenu(Menu menu, Pos center);
 
-void handleIndexes(char **indexes, int digits, Placement pos1, Placement pos2);
+void handleIndexes(char **indexes, int pickedIndex, int digits, Placement posTop, Placement posBot);
+
+void handleMessages(UserInterface &ui);
 
 void generateBasicBoard(UserInterface &ui);
 
-void generateInteractiveUI(UserInterface &ui, int &menuSelected);
+void generateInteractiveUI(UserInterface &ui);
 
 void handlePawnPlacement(Board &game, Placement space);
 

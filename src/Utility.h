@@ -15,6 +15,8 @@ short capAt(short value, short max);
 
 int max(int a, int b);
 
+int min(int a, int b);
+
 uint len(const char *text);
 
 uint nDigits(int n, int base);
@@ -23,8 +25,10 @@ uint maxInBase(int n, int base);
 
 char* numberToString(int number, int width);
 
+int stringToNumber(const char *str);
+
 void revertTable(char **from, char **to);
 
-char *joinStrings(char *string1, int len1, char *string2, int len2);
+char *joinStrings(const char *string1, int len1, const char *string2, int len2);
 
 #endif //BACKGAMMONGAME_UTILITY_H
