@@ -45,10 +45,13 @@ void generateHeader(UserInterface &ui) {
 }
 
 void generatePlayers(UserInterface &ui) {
-	const char *players[N_PLAYERS];
+	auto players = new char* [N_PLAYERS];
 	int selected = -1;
 	for (int i = 0; i < N_PLAYERS; ++i) {
-		players[i] = ui.board.players[i].name;
+		players[i] = new char[MAX_NAME_LENGTH + 4];
+		const char *data[3] = {ui.board.players[i].name, " ", (char *) (ui.board.players[i].id ? pawn2 : pawn1)};
+		joinStrings(players[i], data, 3);
+
 		if (ui.board.players[i].id == ui.board.currentPlayerId)
 			selected = i;
 	}
@@ -56,6 +59,11 @@ void generatePlayers(UserInterface &ui) {
 	Placement textSpace = ui.space.gameSpace;
 	textSpace.min.y = ui.space.gameSpace.min.y + HEADER_OFFSET + 2;
 	drawSpreadText(textSpace, (char **) (players), N_PLAYERS, selected);
+
+	for (int i = 0; i < N_PLAYERS; ++i) {
+		delete[] players[i];
+	}
+	delete[] players;
 }
 
 void generateBasicBoard(UserInterface &ui) {

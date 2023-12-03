@@ -59,7 +59,7 @@ MoveToPoint canMoveTo(Board &game, int fromIndex, int toIndex) {
 
 MoveToPoint determineMoveType(Board &game, int pointIndex, int moveBy) {
 	int destination = canBeMoved(game, pointIndex, moveBy);
-	if (destination < 0) {
+	if (destination < 0 || destination > nPoints) {
 		return NOT_ALLOWED;
 	}
 	return canMoveTo(game, pointIndex, destination);
