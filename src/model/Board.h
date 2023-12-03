@@ -28,7 +28,7 @@ void placePawns(Board &gameBoard);
 
 void serialiseBoard(Board &board, uint8_t *buffer, size_t &offset);
 
-Board deserializeBoard(const uint8_t *buffer, size_t &offset);
+Board deserializeBoard(const uint8_t *buffer, size_t &offset, Board &board);
 
 
 #endif //BACKGAMMONGAME_BOARD_H

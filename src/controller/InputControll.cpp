@@ -8,6 +8,7 @@
 #include "../configs/GameConfigs.h"
 #include "../model/Board.h"
 #include "InputControll.h"
+#include "../model/SerializeToFile.h"
 
 
 void gameSetUp(Board &game) {
@@ -52,12 +53,16 @@ void resetMenuTo(UserInterface &ui, MenuMode mode) {
 
 
 void newGameController(int input, UserInterface &ui) {
+	char name[] = "game0.txt";
 	switch (input) {
 		case 'n':
 			ui.state = GAME_PLAY;
 			resetMenuTo(ui, DEFAULT);
 			break;
 		case 'l':
+			ui.state = GAME_PLAY;
+			resetMenuTo(ui, DEFAULT);
+			loadFromFile(name, ui.board);
 			break;
 		default:
 			break;
@@ -65,8 +70,10 @@ void newGameController(int input, UserInterface &ui) {
 }
 
 void gamePlayController(int input, UserInterface &ui) {
+	char name[] = "game0.txt";
 	switch (input) {
-		case 'm':
+		case 's':
+			saveToFile(name, ui.board);
 			break;
 		case 'u':
 			break;
