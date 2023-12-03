@@ -114,6 +114,7 @@ void pickDiceController(int input, UserInterface &ui) {
 			break;
 		case '-':
 			setBasicGameState(ui);
+			clearDices(ui.board.dices);
 			changePlayers(ui.board);
 			break;
 		default:
@@ -130,10 +131,13 @@ void pickPointController(int input, UserInterface &ui) {
 			ui.currentMove.from = ui.pickedIndex;
 			if(movePawn(ui.board, ui.currentMove)) {
 				createErrorMessage(ui);
+			} else {
+				resetMenuTo(ui, PICK_DICE);
 			}
 			break;
 		case '-':
 			setBasicGameState(ui);
+			clearDices(ui.board.dices);
 			changePlayers(ui.board);
 			break;
 		case KEY_BACKSPACE:
