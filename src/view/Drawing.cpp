@@ -136,3 +136,12 @@ void setColourTheme(short baseRed, short baseGreen, short baseBlue) {
 	setColor(COLOUR_MAIN_DARK, nRed, nGreen, nBlue, (1 - colorDiff));
 	setColor(COLOUR_MAIN_LIGHT, nRed, nGreen, nBlue, (1 + colorDiff));
 }
+
+void drawVertically(Pos pos, const char *text) {
+	int length = (int)(len(text));
+	for (int i = 0; i < length; ++i) {
+		mvprintw(pos.y + i, pos.x, "%c", text[i]);
+	}
+}
+
+

@@ -74,7 +74,8 @@ void generateBasicBoard(UserInterface &ui) {
 	attron(COLOR_PAIR(FOREGROUND));
 
 	handleBoardOutline(ui.space.board);
-	handleBar();
+
+	handleBar(ui.board.bar);
 	handlePieces(ui.space.board);
 
 	// Dies
@@ -124,10 +125,19 @@ void handlePieces(Placement space) {
 	}
 }
 
-void handleBar() {
+void handleBar(Bar bar) {
+	int onBar[N_PLAYERS] = {0, 0};
+	for (int i = 0; i < bar.pawnsInside; ++i) {
+		if (bar.pawns[i]->color == PAWN_WHITE)
+			onBar[0]++;
+		if (bar.pawns[i]->color == PAWN_BLACK)
+			onBar[1]++;
+	}
+
 	for (int i = N_BOARDS - 1; i > 0; --i)
-		drawBar(OFFSET_X + (boardWidth + borders) * i, OFFSET_Y + BOARD_OFFSET_Y + HEADER_OFFSET + INDEX_OFFSET + TEXT_HEIGHT * 2,
-				boardHeight + borders);
+		drawBar(OFFSET_X + (boardWidth + borders) * i,
+				OFFSET_Y + BOARD_OFFSET_Y + HEADER_OFFSET + INDEX_OFFSET + TEXT_HEIGHT * 2,
+				boardHeight + borders, onBar);
 }
 
 void handleDices(Placement space, Pos center, int *dices) {
@@ -143,11 +153,22 @@ void handleDices(Placement space, Pos center, int *dices) {
 	}
 }
 
-void drawBar(int offsetX, int offsetY, int height) {
+void drawBarInfo(Pos pos, const char *label, int value) {
+	if (value > 0) {
+		char *text = joinStrings(label, numberToString(value, 2));
+		drawVertically(pos, text);
+		delete[] text;
+	}
+}
+
+void drawBar(int offsetX, int offsetY, int height, int onBar[N_PLAYERS]) {
 	mvprintw(offsetY, offsetX, borderCorner);
 	drawLine(borderVertical, Placement{offsetX, offsetY + 1,
 									   offsetX, offsetY + height - 1});
 	mvprintw(offsetY + height - 1, offsetX, borderCorner);
+
+	drawBarInfo({offsetX, offsetY + BORDER_WIDTH}, "BLC ", onBar[0]);
+	drawBarInfo({offsetX, offsetY + (height) / 2 + BORDER_WIDTH + 1}, "WHT ", onBar[1]);
 
 	mvprintw(offsetY + (height) / 2, offsetX - (int) (sizeof(barLabel)) / 2 + 1, barLabel);
 }
