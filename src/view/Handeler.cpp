@@ -167,8 +167,8 @@ void drawBar(int offsetX, int offsetY, int height, int onBar[N_PLAYERS]) {
 									   offsetX, offsetY + height - 1});
 	mvprintw(offsetY + height - 1, offsetX, borderCorner);
 
-	drawBarInfo({offsetX, offsetY + BORDER_WIDTH}, "BLC ", onBar[0]);
-	drawBarInfo({offsetX, offsetY + (height) / 2 + BORDER_WIDTH + 1}, "WHT ", onBar[1]);
+	drawBarInfo({offsetX, offsetY + BORDER_WIDTH}, "WHT ", onBar[0]);
+	drawBarInfo({offsetX, offsetY + (height) / 2 + BORDER_WIDTH + 1}, "BLC ", onBar[1]);
 
 	mvprintw(offsetY + (height) / 2, offsetX - (int) (sizeof(barLabel)) / 2 + 1, barLabel);
 }
