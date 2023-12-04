@@ -13,10 +13,10 @@
 
 void gameSetUp(Board &game) {
 	game.players[0] = Player {
-		0, {"Me"}, true, 0
+		0, {"Me"}, PAWN_WHITE, true
 	};
 	game.players[1] = Player {
-		1, {"You"}, false, 0
+		1, {"You"}, PAWN_BLACK, false
 	};
 	game.currentPlayerId = 0;
 	for (int & dice : game.dices) {
@@ -24,8 +24,8 @@ void gameSetUp(Board &game) {
 	}
 
 	for (int i = 0; i < PAWNS_PER_PLAYER; ++i) {
-		game.pawns[i] = Pawn{.ownerId=game.players[0].id, .id=i, .isHome=false, .isOnBar=false, .color=PAWN_WHITE, .moveDirection=1};
-		game.pawns[i + PAWNS_PER_PLAYER] = Pawn{.ownerId=game.players[1].id, .id=PAWNS_PER_PLAYER + i, .isHome=false, .isOnBar=false, .color=PAWN_BLACK, .moveDirection=-1};
+		game.pawns[i] = Pawn{.ownerId=game.players[0].id, .id=i, .isHome=false, .color=PAWN_WHITE, .moveDirection=1};
+		game.pawns[i + PAWNS_PER_PLAYER] = Pawn{.ownerId=game.players[1].id, .id=PAWNS_PER_PLAYER + i, .isHome=false, .color=PAWN_BLACK, .moveDirection=-1};
 	}
 	placePawns(game);
 }

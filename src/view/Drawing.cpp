@@ -15,6 +15,12 @@ void printColor(UiColorsId color, int x, int y, const char *text) {
 	attroff(COLOR_PAIR(color));
 }
 
+void printColor(UiColorsId color, int x, int y, char text) {
+	attron(COLOR_PAIR(color));
+	mvprintw(y, x, "%c", text);
+	attroff(COLOR_PAIR(color));
+}
+
 void drawLine(const char *symbol, Placement pos) {
 	int deltaX = pos.max.x - pos.min.x;
 	int deltaY = pos.max.y - pos.min.y;
@@ -137,11 +143,34 @@ void setColourTheme(short baseRed, short baseGreen, short baseBlue) {
 	setColor(COLOUR_MAIN_LIGHT, nRed, nGreen, nBlue, (1 + colorDiff));
 }
 
-void drawVertically(Pos pos, const char *text) {
+void drawVertically(Pos pos, const char *text, UiColorsId color) {
 	int length = (int)(len(text));
 	for (int i = 0; i < length; ++i) {
-		mvprintw(pos.y + i, pos.x, "%c", text[i]);
+		printColor(color, pos.x, pos.y + i, text[i]);
 	}
 }
 
+void drawVerticalInfo(Pos pos, const char *label, int value, UiColorsId color, bool force) {
+	if (value > 0 || force) {
+		char *text = joinStrings(label, numberToString(value, 2));
+		drawVertically(pos, text, color);
+		delete[] text;
+	}
+}
 
+void drawBar(int offsetX, int offsetY, int height, int onBar[2], int selected) {
+	attron(COLOR_PAIR(FOREGROUND));
+	mvprintw(offsetY, offsetX, borderCorner);
+	drawLine(borderVertical, Placement{offsetX, offsetY + 1,
+									   offsetX, offsetY + height - 1});
+	mvprintw(offsetY + height - 1, offsetX, borderCorner);
+
+	drawVerticalInfo({offsetX, offsetY + BORDER_WIDTH}, "WHT ", onBar[0]);
+	drawVerticalInfo({offsetX, offsetY + (height) / 2 + BORDER_WIDTH + 1}, "BLC ", onBar[1]);
+
+	UiColorsId color = FOREGROUND;
+	if (onBar[0] || onBar[1] && selected >= 0) {
+		color = selected == nPoints ? FOREGROUND_LIGHT : FOREGROUND_DARK;
+	}
+	printColor(color, offsetX - (int) (sizeof(barLabel)) / 2 + 1, offsetY + (height) / 2, barLabel);
+}

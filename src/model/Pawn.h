@@ -37,7 +37,6 @@ typedef struct {
 	int ownerId;
 	int id;
 	bool isHome;
-	bool isOnBar;
 	PawnColor color;
 	short moveDirection;
 } Pawn;

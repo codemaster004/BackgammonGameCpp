@@ -22,13 +22,16 @@
 #define MENU_TOP_SPACING 3
 
 #define TEXT_HEIGHT 1
+#define TEXT_WIDTH 1
 
-#define OFFSET_X 16
+#define OFFSET_X 15
 #define OFFSET_Y 1
 #define INDEX_OFFSET 1
 #define HEADER_OFFSET 0
 #define BOARD_OFFSET_Y 2
 #define BOARD_OFFSET_X 0
+#define COURT_OFFSET_X 1
+#define COURT_OFFSET_Y 2
 
 #define COLOR_THEME 230, 120, 220
 
