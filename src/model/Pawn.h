@@ -7,7 +7,13 @@
 
 typedef struct Player Player;
 typedef struct Board Board;
+typedef struct Bar Bar;
 typedef struct Point Point;
+
+typedef struct Move {
+	int from;
+	int by;
+} Move;
 
 enum MoveToPoint {
 	BLOCKED,
@@ -21,6 +27,12 @@ enum PawnColor {
 	PAWN_BLACK,
 };
 
+enum MoveStatus {
+	MOVE_SUCCESSFUL,
+	PAWNS_ON_BAR,
+	MOVE_FAILED,
+};
+
 typedef struct {
 	int ownerId;
 	int id;
@@ -32,13 +44,23 @@ typedef struct {
 
 int canBeMoved(Board &game, int pointIndex, int moveBy);
 
-MoveToPoint canMoveTo(Board &game, int fromIndex, int toIndex);
+MoveToPoint canMoveTo(Board &game, Pawn *pawn, int toIndex);
 
 MoveToPoint determineMoveType(Board &game, int pointIndex, int moveBy);
 
+MoveStatus moveBarToPoint(Board &game, Move move, int indexOnBar);
+
+MoveStatus movePointToPoint(Board &game, Move move);
+
+MoveStatus movePawn(Board &game, Move move);
+
 bool enumToBool(MoveToPoint value);
 
-void pawnCapture(Board &game, Point *point);
+void movePointToBar(Board &game, Point *point);
+
+int hasPawnsOnBar(Bar &bar, int playerId);
+
+short findMoveDirection(Pawn **pawns, int count, int playerId);
 
 /// Handle Serialization of Pawn object
 void serialisePawn(Pawn pawn, uint8_t *buffer, size_t &offset);

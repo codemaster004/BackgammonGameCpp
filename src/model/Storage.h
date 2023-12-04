@@ -24,6 +24,10 @@ typedef struct Court {
 	Player *owner;
 } Court;
 
+bool removingFromBar(Board &game, Move move);
+
+int hasPawnsOnBar(Board &game);
+
 /// Serialize Point
 void serialisePoint(Point point, uint8_t *buffer, size_t &offset);
 

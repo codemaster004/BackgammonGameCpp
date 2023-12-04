@@ -75,7 +75,6 @@ void generateBasicBoard(UserInterface &ui) {
 
 	handleBoardOutline(ui.space.board);
 
-	handleBar(ui.board.bar);
 	handlePieces(ui.space.board);
 
 	// Dies
@@ -92,6 +91,8 @@ void generateInteractiveUI(UserInterface &ui) {
 	for (int i = 0; i < nPoints; ++i) {
 		indexes[i] = numberToString(i, (int) (digits));
 	}
+
+	handleBar(ui.board.bar, ui.pickedIndex);
 
 	handleIndexes(indexes, ui.pickedIndex, (int) (digits), ui.space.indexesTop, ui.space.indexesBottom);
 
@@ -125,9 +126,11 @@ void handlePieces(Placement space) {
 	}
 }
 
-void handleBar(Bar bar) {
+void handleBar(Bar bar, int selected) {
 	int onBar[N_PLAYERS] = {0, 0};
-	for (int i = 0; i < bar.pawnsInside; ++i) {
+	for (int i = 0; i < totalPawns; ++i) {
+		if (bar.pawns[i] == nullptr)
+			continue;
 		if (bar.pawns[i]->color == PAWN_WHITE)
 			onBar[0]++;
 		if (bar.pawns[i]->color == PAWN_BLACK)
@@ -137,7 +140,7 @@ void handleBar(Bar bar) {
 	for (int i = N_BOARDS - 1; i > 0; --i)
 		drawBar(OFFSET_X + (boardWidth + borders) * i,
 				OFFSET_Y + BOARD_OFFSET_Y + HEADER_OFFSET + INDEX_OFFSET + TEXT_HEIGHT * 2,
-				boardHeight + borders, onBar);
+				boardHeight + borders, onBar, selected);
 }
 
 void handleDices(Placement space, Pos center, int *dices) {
@@ -161,7 +164,8 @@ void drawBarInfo(Pos pos, const char *label, int value) {
 	}
 }
 
-void drawBar(int offsetX, int offsetY, int height, int onBar[N_PLAYERS]) {
+void drawBar(int offsetX, int offsetY, int height, int onBar[2], int selected) {
+	attron(COLOR_PAIR(FOREGROUND));
 	mvprintw(offsetY, offsetX, borderCorner);
 	drawLine(borderVertical, Placement{offsetX, offsetY + 1,
 									   offsetX, offsetY + height - 1});
@@ -170,7 +174,11 @@ void drawBar(int offsetX, int offsetY, int height, int onBar[N_PLAYERS]) {
 	drawBarInfo({offsetX, offsetY + BORDER_WIDTH}, "WHT ", onBar[0]);
 	drawBarInfo({offsetX, offsetY + (height) / 2 + BORDER_WIDTH + 1}, "BLC ", onBar[1]);
 
-	mvprintw(offsetY + (height) / 2, offsetX - (int) (sizeof(barLabel)) / 2 + 1, barLabel);
+	UiColorsId color = FOREGROUND;
+	if (onBar[0] || onBar[1] && selected >= 0) {
+		color = selected == nPoints ? FOREGROUND_LIGHT : FOREGROUND_DARK;
+	}
+	printColor(color, offsetX - (int) (sizeof(barLabel)) / 2 + 1, offsetY + (height) / 2, barLabel);
 }
 
 int generateColorsForIndexes(char **text, int count, int pickedIndex, UiColorsId *&colors) {

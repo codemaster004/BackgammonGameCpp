@@ -9,6 +9,26 @@
 #include "SerializeToFile.h"
 #include "Player.h"
 
+bool removingFromBar(Board &game, Move move) {
+	if (hasPawnsOnBar(game.bar, game.currentPlayerId)) {
+		return move.from == nPoints;
+	}
+	return false;
+}
+
+int hasPawnsOnBar(Board &game) {
+	if (game.bar.pawnsInside <= 0)
+		return -1;
+
+	for (int i = totalPawns - 1; i >= 0 ; --i) {
+		if (game.bar.pawns[i] == nullptr)
+			continue;
+		if (game.bar.pawns[i]->ownerId == game.currentPlayerId)
+			return i;
+	}
+	return -1;
+}
+
 void serialisePoint(Point point, uint8_t *buffer, size_t &offset) {
 	serializeInt(point.pawnsInside, buffer, offset);
 	for (auto &pawn : point.pawns) {
