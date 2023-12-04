@@ -29,6 +29,15 @@ int hasPawnsOnBar(Board &game) {
 	return -1;
 }
 
+bool isHomeBoard(int index, int listSize, int direction) {
+	if (direction == 1) {
+		return index >= listSize - 6 && index < listSize;
+	} else if (direction == -1) {
+		return index >= 0 && index < 6;
+	}
+	return false;
+}
+
 void serialisePoint(Point point, uint8_t *buffer, size_t &offset) {
 	serializeInt(point.pawnsInside, buffer, offset);
 	for (auto &pawn : point.pawns) {
