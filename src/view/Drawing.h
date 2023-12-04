@@ -27,4 +27,6 @@ void drawLine(Pawn pawn, Placement pos);
 
 void setColourTheme(short baseRed = 0, short baseGreen = 166, short baseBlue = 0);
 
+void drawVertically(Pos pos, const char *text);
+
 #endif //BACKGAMMONGAME_DRAWING_H

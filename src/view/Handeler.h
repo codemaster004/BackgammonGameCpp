@@ -12,11 +12,11 @@ void handleBoardOutline(Placement space);
 
 void handlePieces(Placement space);
 
-void handleBar();
+void handleBar(Bar bar, int selected);
 
 void handleDices(Placement space, Pos center, int *dices);
 
-void drawBar(int offsetX, int offsetY, int height);
+void drawBar(int offsetX, int offsetY, int height, int onBar[2], int selected);
 
 void handleMenu(Menu menu, Pos center);
 
