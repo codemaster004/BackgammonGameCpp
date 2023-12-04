@@ -7,7 +7,6 @@
 #include "cstdint"
 
 #include "Pawn.h"
-#include "Board.h"
 #include "SerializeToFile.h"
 
 
@@ -39,7 +38,7 @@ int canBeMoved(Board &game, int pointIndex, int moveBy) {
  * 	POSSIBLE - can move to this Point
  * 	CAPTURE - can move and a Capture will happen
  */
-MoveToPoint canMoveTo(Board &game, int fromIndex, int toIndex) {
+MoveToPoint canMoveTo(Board &game, Pawn *pawn, int toIndex) {
 	// Consider the destination indexes are already check
 	int destinationSize = game.points[toIndex].pawnsInside;
 	// Moving to full Point
@@ -49,7 +48,7 @@ MoveToPoint canMoveTo(Board &game, int fromIndex, int toIndex) {
 	if (destinationSize == 0)
 		return POSSIBLE;
 	// Check if Point is occupied by same player, by now we know the point has at least one empty slot
-	if (game.points[toIndex].pawns[0]->ownerId == game.points[fromIndex].pawns[0]->ownerId)
+	if (game.points[toIndex].pawns[0]->ownerId == pawn->ownerId)
 		return POSSIBLE;
 	// Check if Point is blocked by opponent
 	if (destinationSize > CAPTURE_THRESHOLD)
@@ -59,22 +58,86 @@ MoveToPoint canMoveTo(Board &game, int fromIndex, int toIndex) {
 
 MoveToPoint determineMoveType(Board &game, int pointIndex, int moveBy) {
 	int destination = canBeMoved(game, pointIndex, moveBy);
-	if (destination < 0) {
+	if (destination < 0 || destination > nPoints) {
 		return NOT_ALLOWED;
 	}
-	return canMoveTo(game, pointIndex, destination);
+	return canMoveTo(game, game.points[pointIndex].pawns[0], destination);
 }
 
 bool enumToBool(MoveToPoint value) {
 	return !(value == BLOCKED || value == NOT_ALLOWED);
 }
 
-void pawnCapture(Board &game, Point *point) {
+void movePointToBar(Board &game, Point *point) {
 	for (int i = 0; i < CAPTURE_THRESHOLD; ++i) {
 		game.bar.pawns[game.bar.pawnsInside++] = point->pawns[i];
 	}
 	point->pawnsInside -= CAPTURE_THRESHOLD;
 }
+
+int hasPawnsOnBar(Bar &bar, int playerId) {
+	int count = 0;
+	for (int i = 0; i < bar.pawnsInside; ++i)
+		if (bar.pawns[i]->ownerId == playerId)
+			count++;
+	return count;
+}
+
+short findMoveDirection(Pawn **pawns, int count, int playerId) {
+	for (int i = 0; i < count; ++i)
+		if (pawns[i]->ownerId == playerId)
+			return pawns[i]->moveDirection;
+	return 0;
+}
+
+MoveStatus moveBarToPoint(Board &game, Move move, int indexOnBar) {
+	if (!removingFromBar(game, move))
+		return PAWNS_ON_BAR;
+
+	short direction = findMoveDirection(game.bar.pawns, game.bar.pawnsInside, game.currentPlayerId);
+	int toIndex = (int)((move.from + move.by * direction) % nPoints);
+	Point *toPoint = &game.points[toIndex];
+
+	MoveToPoint moveType = canMoveTo(game, game.bar.pawns[indexOnBar], toIndex);
+	if (!enumToBool(moveType))
+		return MOVE_FAILED;
+
+	if (moveType == CAPTURE)
+		movePointToBar(game, toPoint);
+
+	toPoint->pawns[toPoint->pawnsInside++] = game.bar.pawns[indexOnBar];
+	game.bar.pawnsInside--;
+	game.bar.pawns[indexOnBar] = nullptr;
+
+	return MOVE_SUCCESSFUL;
+}
+
+MoveStatus movePointToPoint(Board &game, Move move) {
+	MoveToPoint moveType = determineMoveType(game, move.from, move.by);
+	if (!enumToBool(moveType))
+		return MOVE_FAILED;
+
+	int toIndex = move.from + move.by * game.points[move.from].pawns[0]->moveDirection;
+	Point *toPoint = &game.points[toIndex];
+	Point *fromPoint = &game.points[move.from];
+	if (moveType == CAPTURE)
+		movePointToBar(game, toPoint);
+
+	toPoint->pawns[toPoint->pawnsInside++] = fromPoint->pawns[--fromPoint->pawnsInside];
+	fromPoint->pawns[fromPoint->pawnsInside] = nullptr;
+	return MOVE_SUCCESSFUL;
+}
+
+// TODO: N pawnsId to move
+MoveStatus movePawn(Board &game, Move move) {
+	int indexOnBar = hasPawnsOnBar(game);
+	if (indexOnBar >= 0) {
+		return moveBarToPoint(game, move, indexOnBar);
+	} else {
+		return movePointToPoint(game, move);
+	}
+}
+
 
 /// Handle Serialization of Pawn object
 void serialisePawn(Pawn pawn, uint8_t *buffer, size_t &offset) {

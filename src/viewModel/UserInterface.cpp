@@ -54,17 +54,6 @@ void starterScreen(UserInterface &ui) {
 	handleMenu(ui.menu, Pos{ui.space.boardCenter.x, ui.space.board.max.y + MENU_TOP_SPACING});
 }
 
-void joinString(char *&buffer, const char **data, int count) {
-	int index = 0;
-	for (int i = 0; i < count; ++i) {
-
-		uint length = len(data[i]);
-		for (int j = 0; j < length - 1; ++j)
-			buffer[index++] = data[i][j];
-
-	}
-}
-
 int calcDiceLimit(UserInterface &ui) {
 	int limit = 1;
 	for (int i = 0; i < N_DICES; ++i)
@@ -81,7 +70,7 @@ void createDiceOption(UserInterface ui, char **&options, int index, int value) {
 	char *diceValue = numberToString(value, 1);
 
 	const char *diceName[4] = {"Dice (", diceNumber, "): ", diceValue};
-	joinString(options[index], diceName, 4);
+	joinStrings(options[index], diceName, 4);
 
 	delete[] diceNumber;
 	delete[] diceValue;

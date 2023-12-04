@@ -45,11 +45,6 @@ typedef struct Menu {
 	int selected;
 } Menu;
 
-typedef struct Move {
-	int from;
-	int by;
-} Move;
-
 typedef struct {
 	const char *gameName;
 	const char *authorId;

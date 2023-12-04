@@ -28,13 +28,6 @@ void gameSetUp(Board &game) {
 		game.pawns[i + PAWNS_PER_PLAYER] = Pawn{.ownerId=game.players[1].id, .id=PAWNS_PER_PLAYER + i, .isHome=false, .isOnBar=false, .color=PAWN_BLACK, .moveDirection=-1};
 	}
 	placePawns(game);
-
-	// TODO: SEPARATE
-//	game->currentPlayerId = &player1;
-//	int dice1 = 2, dice2 = 5;
-//	movePawn(game, 0, dice1);
-//	movePawn(game, 0, dice1);
-//	game->currentPlayerId = &player2;
 }
 
 void numberInputController(int input, int &inputtedNumber) {
@@ -96,8 +89,12 @@ void createDiceMessage(UserInterface &ui) {
 	delete[] str;
 }
 
-void createErrorMessage(UserInterface &ui) {
-	messageSet(ui.errorMess, "Invalid Point");
+void createErrorMessage(UserInterface &ui, MoveStatus errorId) {
+	if (errorId == MOVE_FAILED) {
+		messageSet(ui.errorMess, "Invalid Point");
+	} else if (errorId == PAWNS_ON_BAR) {
+		messageSet(ui.errorMess, "Pawns on Bar");
+	}
 }
 
 void pickDiceController(int input, UserInterface &ui) {
@@ -133,11 +130,13 @@ void pickDiceController(int input, UserInterface &ui) {
 }
 
 void pickPointController(int input, UserInterface &ui) {
+	MoveStatus moveValid;
 	switch (input) {
 		case ' ':
 			ui.currentMove.from = ui.pickedIndex;
-			if(movePawn(ui.board, ui.currentMove)) {
-				createErrorMessage(ui);
+			moveValid = movePawn(ui.board, ui.currentMove);
+			if(moveValid) {
+				createErrorMessage(ui, moveValid);
 			} else {
 				resetMenuTo(ui, PICK_DICE);
 			}
@@ -153,7 +152,7 @@ void pickPointController(int input, UserInterface &ui) {
 			break;
 		default:
 			numberInputController(input, ui.pickedIndex);
-			ui.pickedIndex %= nPoints;
+			ui.pickedIndex %= (nPoints + 1);
 			break;
 	}
 }
@@ -187,16 +186,18 @@ void inputController(int input, UserInterface &ui) {
 	switch (input) {
 		case '\n':
 		case '\r':
-			inputController(ui.menu.elements[ui.menu.selected].key, ui);
+			if (ui.menu.selected >= 0) {
+				inputController(ui.menu.elements[ui.menu.selected].key, ui);
+			}
 			break;
 		case KEY_UP:
 			if (ui.menu.mode == PICK_POINT) {
-				ui.pickedIndex = newSelected(ui.pickedIndex, 1, nPoints);
+				ui.pickedIndex = newSelected(ui.pickedIndex, 1, nPoints + 1);
 			}
 			break;
 		case KEY_DOWN:
 			if (ui.menu.mode == PICK_POINT) {
-				ui.pickedIndex = newSelected(ui.pickedIndex, -1, nPoints);
+				ui.pickedIndex = newSelected(ui.pickedIndex, -1, nPoints + 1);
 			}
 			break;
 		case KEY_LEFT:
@@ -218,22 +219,4 @@ void inputController(int input, UserInterface &ui) {
 			break;
 	}
 
-}
-
-// TODO: N pawnsId to move
-// TODO: maybe return 0 and 1 for eero check
-int movePawn(Board &game, Move move) {
-	MoveToPoint moveType = determineMoveType(game, move.from, move.by);
-	if (!enumToBool(moveType)) {
-		return 1;
-	}
-	int toIndex = move.from + move.by * game.points[move.from].pawns[0]->moveDirection;
-	Point *toPoint = &game.points[toIndex];
-	Point *fromPoint = &game.points[move.from];
-	if (moveType == CAPTURE) {
-		pawnCapture(game, toPoint);
-	}
-	toPoint->pawns[toPoint->pawnsInside++] = fromPoint->pawns[--fromPoint->pawnsInside];
-	fromPoint->pawns[fromPoint->pawnsInside] = nullptr;
-	return 0;
 }

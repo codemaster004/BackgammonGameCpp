@@ -45,10 +45,13 @@ void generateHeader(UserInterface &ui) {
 }
 
 void generatePlayers(UserInterface &ui) {
-	const char *players[N_PLAYERS];
+	auto players = new char* [N_PLAYERS];
 	int selected = -1;
 	for (int i = 0; i < N_PLAYERS; ++i) {
-		players[i] = ui.board.players[i].name;
+		players[i] = new char[MAX_NAME_LENGTH + 4];
+		const char *data[3] = {ui.board.players[i].name, " ", (char *) (ui.board.players[i].id ? pawn2 : pawn1)};
+		joinStrings(players[i], data, 3);
+
 		if (ui.board.players[i].id == ui.board.currentPlayerId)
 			selected = i;
 	}
@@ -56,6 +59,11 @@ void generatePlayers(UserInterface &ui) {
 	Placement textSpace = ui.space.gameSpace;
 	textSpace.min.y = ui.space.gameSpace.min.y + HEADER_OFFSET + 2;
 	drawSpreadText(textSpace, (char **) (players), N_PLAYERS, selected);
+
+	for (int i = 0; i < N_PLAYERS; ++i) {
+		delete[] players[i];
+	}
+	delete[] players;
 }
 
 void generateBasicBoard(UserInterface &ui) {
@@ -66,7 +74,7 @@ void generateBasicBoard(UserInterface &ui) {
 	attron(COLOR_PAIR(FOREGROUND));
 
 	handleBoardOutline(ui.space.board);
-	handleBar();
+
 	handlePieces(ui.space.board);
 
 	// Dies
@@ -83,6 +91,8 @@ void generateInteractiveUI(UserInterface &ui) {
 	for (int i = 0; i < nPoints; ++i) {
 		indexes[i] = numberToString(i, (int) (digits));
 	}
+
+	handleBar(ui.board.bar, ui.pickedIndex);
 
 	handleIndexes(indexes, ui.pickedIndex, (int) (digits), ui.space.indexesTop, ui.space.indexesBottom);
 
@@ -116,10 +126,21 @@ void handlePieces(Placement space) {
 	}
 }
 
-void handleBar() {
+void handleBar(Bar bar, int selected) {
+	int onBar[N_PLAYERS] = {0, 0};
+	for (int i = 0; i < totalPawns; ++i) {
+		if (bar.pawns[i] == nullptr)
+			continue;
+		if (bar.pawns[i]->color == PAWN_WHITE)
+			onBar[0]++;
+		if (bar.pawns[i]->color == PAWN_BLACK)
+			onBar[1]++;
+	}
+
 	for (int i = N_BOARDS - 1; i > 0; --i)
-		drawBar(OFFSET_X + (boardWidth + borders) * i, OFFSET_Y + BOARD_OFFSET_Y + HEADER_OFFSET + INDEX_OFFSET + TEXT_HEIGHT * 2,
-				boardHeight + borders);
+		drawBar(OFFSET_X + (boardWidth + borders) * i,
+				OFFSET_Y + BOARD_OFFSET_Y + HEADER_OFFSET + INDEX_OFFSET + TEXT_HEIGHT * 2,
+				boardHeight + borders, onBar, selected);
 }
 
 void handleDices(Placement space, Pos center, int *dices) {
@@ -135,13 +156,29 @@ void handleDices(Placement space, Pos center, int *dices) {
 	}
 }
 
-void drawBar(int offsetX, int offsetY, int height) {
+void drawBarInfo(Pos pos, const char *label, int value) {
+	if (value > 0) {
+		char *text = joinStrings(label, numberToString(value, 2));
+		drawVertically(pos, text);
+		delete[] text;
+	}
+}
+
+void drawBar(int offsetX, int offsetY, int height, int onBar[2], int selected) {
+	attron(COLOR_PAIR(FOREGROUND));
 	mvprintw(offsetY, offsetX, borderCorner);
 	drawLine(borderVertical, Placement{offsetX, offsetY + 1,
 									   offsetX, offsetY + height - 1});
 	mvprintw(offsetY + height - 1, offsetX, borderCorner);
 
-	mvprintw(offsetY + (height) / 2, offsetX - (int) (sizeof(barLabel)) / 2 + 1, barLabel);
+	drawBarInfo({offsetX, offsetY + BORDER_WIDTH}, "WHT ", onBar[0]);
+	drawBarInfo({offsetX, offsetY + (height) / 2 + BORDER_WIDTH + 1}, "BLC ", onBar[1]);
+
+	UiColorsId color = FOREGROUND;
+	if (onBar[0] || onBar[1] && selected >= 0) {
+		color = selected == nPoints ? FOREGROUND_LIGHT : FOREGROUND_DARK;
+	}
+	printColor(color, offsetX - (int) (sizeof(barLabel)) / 2 + 1, offsetY + (height) / 2, barLabel);
 }
 
 int generateColorsForIndexes(char **text, int count, int pickedIndex, UiColorsId *&colors) {

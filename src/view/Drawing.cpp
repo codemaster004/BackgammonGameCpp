@@ -37,9 +37,9 @@ void drawLine(const char *symbol, Placement pos) {
 void drawLine(Pawn pawn, Placement pos) {
 	for (int y = pos.min.y; y < pos.max.y; y++) {
 		if (pawn.color == PAWN_WHITE) {
-			printColor(BACKGROUND_DARK, pos.min.x, y, pawn1);
+			printColor(BACKGROUND_LIGHT, pos.min.x, y, pawn1);
 		} else if (pawn.color == PAWN_BLACK) {
-			printColor(BACKGROUND_LIGHT, pos.min.x, y, pawn2);
+			printColor(BACKGROUND_DARK, pos.min.x, y, pawn2);
 		}
 	}
 }
@@ -136,3 +136,12 @@ void setColourTheme(short baseRed, short baseGreen, short baseBlue) {
 	setColor(COLOUR_MAIN_DARK, nRed, nGreen, nBlue, (1 - colorDiff));
 	setColor(COLOUR_MAIN_LIGHT, nRed, nGreen, nBlue, (1 + colorDiff));
 }
+
+void drawVertically(Pos pos, const char *text) {
+	int length = (int)(len(text));
+	for (int i = 0; i < length; ++i) {
+		mvprintw(pos.y + i, pos.x, "%c", text[i]);
+	}
+}
+
+

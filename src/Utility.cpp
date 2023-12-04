@@ -89,6 +89,17 @@ void revertTable(char **from, char **to) {
 	}
 }
 
+void joinStrings(char *&buffer, const char **data, int count) {
+	int index = 0;
+	for (int i = 0; i < count; ++i) {
+
+		uint length = len(data[i]);
+		for (int j = 0; j < length - 1; ++j)
+			buffer[index++] = data[i][j];
+
+	}
+}
+
 char *joinStrings(const char *string1, int len1, const char *string2, int len2) {
 	char *fullString = new char [len1 + len2];
 	for (int i = 0; i < len1; ++i) {
@@ -98,4 +109,10 @@ char *joinStrings(const char *string1, int len1, const char *string2, int len2) 
 		fullString[len1 + i] = string2[i];
 	}
 	return fullString;
+}
+
+char *joinStrings(const char*string1, const char *string2) {
+	uint len1 = len(string1);
+	uint len2 = len(string2);
+	return joinStrings(string1, (int)(len1) - 1, string2, (int) (len2) - 1);
 }
