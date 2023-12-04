@@ -20,6 +20,7 @@ enum MoveToPoint {
 	POSSIBLE,
 	CAPTURE,
 	NOT_ALLOWED,
+	ESCAPE_BOARD,
 };
 
 enum PawnColor {
@@ -31,6 +32,7 @@ enum MoveStatus {
 	MOVE_SUCCESSFUL,
 	PAWNS_ON_BAR,
 	MOVE_FAILED,
+	MOVE_TO_COURT,
 };
 
 typedef struct {
@@ -52,6 +54,8 @@ MoveStatus moveBarToPoint(Board &game, Move move, int indexOnBar);
 MoveStatus movePointToPoint(Board &game, Move move);
 
 MoveStatus movePawn(Board &game, Move move);
+
+void movePointToCourt(Board &game, Point *point);
 
 bool enumToBool(MoveToPoint value);
 

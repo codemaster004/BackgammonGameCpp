@@ -24,9 +24,6 @@ int canBeMoved(Board &game, int pointIndex, int moveBy) {
 	// Handle move in both direction based on Pawn "Color"
 	short direction = game.points[pointIndex].pawns[0]->moveDirection;
 	int destinationIndex = pointIndex + moveBy * direction;
-	// Moving outside of range
-	if (destinationIndex >= nPoints || destinationIndex < 0)
-		return -1;
 
 	// We check all the index Pawn can be moved by player from pos A to B
 	return destinationIndex;
@@ -53,13 +50,18 @@ MoveToPoint canMoveTo(Board &game, Pawn *pawn, int toIndex) {
 	// Check if Point is blocked by opponent
 	if (destinationSize > CAPTURE_THRESHOLD)
 		return BLOCKED;
-	return CAPTURE; // We know Point has an opponents Pawn, but we can Capture it
+	// We know Point has an opponents Pawn, but we can Capture it
+	return CAPTURE;
 }
 
 MoveToPoint determineMoveType(Board &game, int pointIndex, int moveBy) {
 	int destination = canBeMoved(game, pointIndex, moveBy);
 	if (destination < 0 || destination > nPoints) {
-		return NOT_ALLOWED;
+		if (pawnsOnHomeBoard(game) >= ESCAPE_THRESHOLD && game.points[pointIndex].pawns[0]->isHome) {
+			return ESCAPE_BOARD;
+		} else {
+			return NOT_ALLOWED;
+		}
 	}
 	return canMoveTo(game, game.points[pointIndex].pawns[0], destination);
 }
@@ -73,6 +75,12 @@ void movePointToBar(Board &game, Point *point) {
 		game.bar.pawns[game.bar.pawnsInside++] = point->pawns[i];
 	}
 	point->pawnsInside -= CAPTURE_THRESHOLD;
+}
+
+void movePointToCourt(Board &game, Point *point) {
+	Pawn *pawn = point->pawns[--point->pawnsInside];
+	Court *court = pawnsCourt(game, pawn);
+	court->pawns[court->pawnsInside++] = pawn;
 }
 
 int hasPawnsOnBar(Bar &bar, int playerId) {
@@ -96,6 +104,8 @@ MoveStatus moveBarToPoint(Board &game, Move move, int indexOnBar) {
 
 	short direction = findMoveDirection(game.bar.pawns, game.bar.pawnsInside, game.currentPlayerId);
 	int toIndex = (int)((move.from + move.by * direction) % nPoints);
+	if (direction > 0)
+		toIndex--;
 	Point *toPoint = &game.points[toIndex];
 
 	MoveToPoint moveType = canMoveTo(game, game.bar.pawns[indexOnBar], toIndex);
@@ -112,19 +122,31 @@ MoveStatus moveBarToPoint(Board &game, Move move, int indexOnBar) {
 	return MOVE_SUCCESSFUL;
 }
 
+void checkNewPoint(Point *toPoint, int pointIndex) {
+	toPoint->pawns[toPoint->pawnsInside - 1]->isHome = isHomeBoard(pointIndex, nPoints, toPoint->pawns[toPoint->pawnsInside - 1]->moveDirection);
+}
+
 MoveStatus movePointToPoint(Board &game, Move move) {
 	MoveToPoint moveType = determineMoveType(game, move.from, move.by);
 	if (!enumToBool(moveType))
 		return MOVE_FAILED;
 
-	int toIndex = move.from + move.by * game.points[move.from].pawns[0]->moveDirection;
+	short direction = game.points[move.from].pawns[0]->moveDirection;
+	int toIndex = move.from + move.by * direction;
 	Point *toPoint = &game.points[toIndex];
 	Point *fromPoint = &game.points[move.from];
+
+	if (moveType == ESCAPE_BOARD) {
+		movePointToCourt(game, fromPoint);
+		return MOVE_TO_COURT;
+	}
+
 	if (moveType == CAPTURE)
 		movePointToBar(game, toPoint);
 
 	toPoint->pawns[toPoint->pawnsInside++] = fromPoint->pawns[--fromPoint->pawnsInside];
 	fromPoint->pawns[fromPoint->pawnsInside] = nullptr;
+	checkNewPoint(toPoint, toIndex);
 	return MOVE_SUCCESSFUL;
 }
 

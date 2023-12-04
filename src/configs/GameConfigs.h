@@ -8,13 +8,17 @@
 #include "../Utility.h"
 #include "../viewModel/Space.h"
 
-#define DEBUG_MODE true
+#define DEBUG_MODE false
 
 #define N_BOARDS 2
 #define POINTS_PER_BOARD 6
 #define PAWNS_PER_POINT 6
 #define PAWNS_PER_PLAYER 15
 #define N_DICES 2
+
+#define CAPTURE_THRESHOLD 1
+#define ESCAPE_THRESHOLD 15
+
 /// Magical Line of PAIN & SUFFERING
 /// Do NOT change any settings under this line
 /// If you do the world as we know it will cease to exist
@@ -24,8 +28,6 @@
 #define N_STARTING_POS 4
 
 #define MAX_NAME_LENGTH 16
-
-#define CAPTURE_THRESHOLD 1
 
 const uint nPoints = N_BOARDS * POINTS_PER_BOARD * 2;
 const uint totalPawns = N_PLAYERS * PAWNS_PER_PLAYER;

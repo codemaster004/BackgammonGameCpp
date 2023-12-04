@@ -22,6 +22,9 @@ void gameSetUp(Board &game) {
 	for (int & dice : game.dices) {
 		dice = 0;
 	}
+	for (int i = 0; i < N_PLAYERS; ++i) {
+		game.courts[i].owner = &game.players[i];
+	}
 
 	for (int i = 0; i < PAWNS_PER_PLAYER; ++i) {
 		game.pawns[i] = Pawn{.ownerId=game.players[0].id, .id=i, .isHome=false, .color=PAWN_WHITE, .moveDirection=1};
