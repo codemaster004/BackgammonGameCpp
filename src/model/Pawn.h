@@ -13,6 +13,7 @@ typedef struct Point Point;
 typedef struct Move {
 	int from;
 	int by;
+	int movesLeft;
 } Move;
 
 enum MoveToPoint {

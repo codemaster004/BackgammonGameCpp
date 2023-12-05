@@ -45,6 +45,7 @@ void resetMenuTo(UserInterface &ui, MenuMode mode) {
 	ui.menu.mode = mode;
 	ui.needToRefresh = true;
 	ui.menu.selected = 0;
+	resetMessages(ui);
 }
 
 
@@ -102,21 +103,28 @@ void createErrorMessage(UserInterface &ui, MoveStatus errorId) {
 
 void pickDiceController(int input, UserInterface &ui) {
 	// TODO: rewrite for N dices
+	int *dice = ui.board.dices;
 	switch (input) {
 		case '1':
-			ui.currentMove.by = ui.board.dices[0];
-			ui.board.dices[0] = 0;
+			ui.currentMove.by = dice[0];
+			ui.currentMove.movesLeft = 1;
+			dice[0] = 0;
 			resetMenuTo(ui, PICK_POINT);
 			break;
 		case '2':
-			ui.currentMove.by = ui.board.dices[1];
-			ui.board.dices[1] = 0;
+			ui.currentMove.by = dice[1];
+			ui.currentMove.movesLeft = 1;
+			dice[1] = 0;
 			resetMenuTo(ui, PICK_POINT);
 			break;
 		case '0':
 			ui.currentMove.by = ui.board.dices[0] + ui.board.dices[1];
-			ui.board.dices[0] = 0;
-			ui.board.dices[1] = 0;
+			if (dice[0] == dice[1]) {
+				ui.currentMove.movesLeft = 4;
+				ui.currentMove.by = dice[0];
+			}
+			dice[0] = 0;
+			dice[1] = 0;
 			resetMenuTo(ui, PICK_POINT);
 			break;
 		case '-':
@@ -133,21 +141,23 @@ void pickDiceController(int input, UserInterface &ui) {
 }
 
 void pickPointController(int input, UserInterface &ui) {
-	MoveStatus moveValid;
+	MoveStatus moveError;
 	switch (input) {
 		case ' ':
 			ui.currentMove.from = ui.pickedIndex;
-			moveValid = movePawn(ui.board, ui.currentMove);
-			if(moveValid) {
-				createErrorMessage(ui, moveValid);
-			} else {
+			moveError = movePawn(ui.board, ui.currentMove);
+			if(moveError) {
+				createErrorMessage(ui, moveError);
+			} else if (!--ui.currentMove.movesLeft) {
 				resetMenuTo(ui, PICK_DICE);
+			} else {
+				resetMenuTo(ui, PICK_POINT);
 			}
 			break;
 		case '-':
-			setBasicGameState(ui);
-			clearDices(ui.board.dices);
-			changePlayers(ui.board);
+			ui.currentMove.from = ui.pickedIndex;
+			ui.currentMove = {0, 0};
+			resetMenuTo(ui, PICK_DICE);
 			break;
 		case KEY_BACKSPACE:
 		case 0x7F:
