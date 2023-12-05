@@ -16,7 +16,7 @@ typedef struct Move {
 	int movesLeft;
 } Move;
 
-enum MoveToPoint {
+enum MoveType {
 	BLOCKED,
 	POSSIBLE,
 	CAPTURE,

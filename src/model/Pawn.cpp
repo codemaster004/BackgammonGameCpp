@@ -35,7 +35,7 @@ int canBeMoved(Board &game, int pointIndex, int moveBy) {
  * 	POSSIBLE - can move to this Point
  * 	CAPTURE - can move and a Capture will happen
  */
-MoveToPoint canMoveTo(Board &game, Pawn *pawn, int toIndex) {
+MoveType canMoveTo(Board &game, Pawn *pawn, int toIndex) {
 	// Consider the destination indexes are already check
 	int destinationSize = game.points[toIndex].pawnsInside;
 	// Moving to full Point
@@ -54,7 +54,7 @@ MoveToPoint canMoveTo(Board &game, Pawn *pawn, int toIndex) {
 	return CAPTURE;
 }
 
-MoveToPoint determineMoveType(Board &game, int pointIndex, int moveBy) {
+MoveType determineMoveType(Board &game, int pointIndex, int moveBy) {
 	int destination = canBeMoved(game, pointIndex, moveBy);
 	if (destination < 0 || destination > nPoints) {
 		if (pawnsOnHomeBoard(game) >= ESCAPE_THRESHOLD && game.points[pointIndex].pawns[0]->isHome) {
@@ -66,7 +66,7 @@ MoveToPoint determineMoveType(Board &game, int pointIndex, int moveBy) {
 	return canMoveTo(game, game.points[pointIndex].pawns[0], destination);
 }
 
-bool enumToBool(MoveToPoint value) {
+bool enumToBool(MoveType value) {
 	return !(value == BLOCKED || value == NOT_ALLOWED);
 }
 
@@ -98,7 +98,7 @@ short findMoveDirection(Pawn **pawns, int count, int playerId) {
 	return 0;
 }
 
-MoveStatus moveBarToPoint(Board &game, Move move, int indexOnBar) {
+MoveStatus moveBarToPoint(Board &game, Move move, int indexOnBar, MoveMade &history) {
 	if (!removingFromBar(game, move))
 		return PAWNS_ON_BAR;
 
@@ -108,7 +108,7 @@ MoveStatus moveBarToPoint(Board &game, Move move, int indexOnBar) {
 		toIndex--;
 	Point *toPoint = &game.points[toIndex];
 
-	MoveToPoint moveType = canMoveTo(game, game.bar.pawns[indexOnBar], toIndex);
+	MoveType moveType = canMoveTo(game, game.bar.pawns[indexOnBar], toIndex);
 	if (!enumToBool(moveType))
 		return MOVE_FAILED;
 
@@ -126,8 +126,8 @@ void checkNewPoint(Point *toPoint, int pointIndex) {
 	toPoint->pawns[toPoint->pawnsInside - 1]->isHome = isHomeBoard(pointIndex, nPoints, toPoint->pawns[toPoint->pawnsInside - 1]->moveDirection);
 }
 
-MoveStatus movePointToPoint(Board &game, Move move) {
-	MoveToPoint moveType = determineMoveType(game, move.from, move.by);
+MoveStatus movePointToPoint(Board &game, Move move, MoveMade &history) {
+	MoveType moveType = determineMoveType(game, move.from, move.by);
 	if (!enumToBool(moveType))
 		return MOVE_FAILED;
 
@@ -150,13 +150,12 @@ MoveStatus movePointToPoint(Board &game, Move move) {
 	return MOVE_SUCCESSFUL;
 }
 
-// TODO: N pawnsId to move
-MoveStatus movePawn(Board &game, Move move) {
+MoveStatus movePawn(Board &game, Move move, MoveMade &history) {
 	int indexOnBar = hasPawnsOnBar(game);
 	if (indexOnBar >= 0) {
-		return moveBarToPoint(game, move, indexOnBar);
+		return moveBarToPoint(game, move, indexOnBar, history);
 	} else {
-		return movePointToPoint(game, move);
+		return movePointToPoint(game, move, history);
 	}
 }
 
