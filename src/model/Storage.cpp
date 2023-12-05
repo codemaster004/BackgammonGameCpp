@@ -29,6 +29,32 @@ int hasPawnsOnBar(Board &game) {
 	return -1;
 }
 
+bool isHomeBoard(int index, int listSize, int direction) {
+	if (direction == 1) {
+		return index >= listSize - 6 && index < listSize;
+	} else if (direction == -1) {
+		return index >= 0 && index < 6;
+	}
+	return false;
+}
+
+int pawnsOnHomeBoard(Board &game) {
+	int count = 0;
+	for (auto pawn: game.pawns)
+		if (pawn.ownerId == game.currentPlayerId && pawn.isHome)
+			count++;
+	return count;
+}
+
+Court *pawnsCourt(Board &game, Pawn *pawn) {
+	for (auto & court : game.courts) {
+		if (court.owner->id == pawn->ownerId) {
+			return &court;
+		}
+	}
+	return nullptr;
+}
+
 void serialisePoint(Point point, uint8_t *buffer, size_t &offset) {
 	serializeInt(point.pawnsInside, buffer, offset);
 	for (auto &pawn : point.pawns) {

@@ -8,7 +8,7 @@
 
 Placement initGameSpace() {
 	Placement space{.min={OFFSET_X, OFFSET_Y}};
-	space.max = {space.min.x + N_BOARDS * (boardWidth + borders + BAR_WIDTH) - BAR_WIDTH + DICE_WIDTH + BORDER_WIDTH - 1,
+	space.max = {space.min.x + N_BOARDS * (boardWidth + borders + BAR_WIDTH) - BAR_WIDTH + DICE_WIDTH + BORDER_WIDTH + TEXT_WIDTH + COURT_OFFSET_X - 1,
 				 space.min.y + boardHeight + borders - 1};
 
 	return space;
@@ -16,7 +16,7 @@ Placement initGameSpace() {
 
 Placement initBoard(Placement game) {
 	Placement space = game;
-	space.min = {space.min.x + BOARD_OFFSET_X,
+	space.min = {space.min.x + BOARD_OFFSET_X + DICE_WIDTH + borders - 1,
 				 space.min.y + BOARD_OFFSET_Y + HEADER_OFFSET + INDEX_OFFSET + TEXT_HEIGHT * 2};
 	space.max = {space.min.x + boardWidth + borders - 1,
 				 space.min.y + boardHeight + borders - 1};
@@ -25,10 +25,10 @@ Placement initBoard(Placement game) {
 
 Placement initDice(Placement game) {
 	Placement space{
-		.min={game.max.x - DICE_WIDTH - borders + 1,
+		.min={game.min.x,
 			  game.min.y + BOARD_OFFSET_Y + HEADER_OFFSET + INDEX_OFFSET + TEXT_HEIGHT * 2},
 	};
-	space.max={game.max.x, space.min.y + boardHeight + borders - 1};
+	space.max={space.min.x + BORDER_WIDTH + borders + 1, space.min.y + boardHeight + borders - 1};
 	return space;
 }
 

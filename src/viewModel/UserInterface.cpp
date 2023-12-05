@@ -9,6 +9,7 @@
 #include "../configs/MenuConfigs.h"
 #include "UserInterface.h"
 #include "../view/Handeler.h"
+#include "../controller/InputControll.h"
 
 UserInterface initUI() {
 	auto ui = UserInterface{
@@ -20,6 +21,7 @@ UserInterface initUI() {
 		.pickedIndex=-1,
 		.infoMess="",
 		.errorMess="",
+		.history=MoveMade{},
 	};
 	ui.space.board = initBoard(ui.space.gameSpace);
 	Placement board = ui.space.board;
@@ -34,8 +36,8 @@ UserInterface initUI() {
 
 void setBasicGameState(UserInterface &ui) {
 	clearDices(ui.board.dices);
-	ui.menu.mode = DEFAULT;
-	ui.needToRefresh = true;
+	ui.currentMove = {0, 0, 0};
+	resetMenuTo(ui, DEFAULT);
 	resetMessages(ui);
 }
 

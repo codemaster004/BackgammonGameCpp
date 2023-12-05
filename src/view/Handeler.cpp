@@ -37,7 +37,7 @@ Placement initTextSpace(Pos center, char **values, int nElements) {
 }
 
 void generateHeader(UserInterface &ui) {
-	const char *title[3] = {ui.gameName, ui.authorName, ui.authorId};
+	const char *title[3] = {ui.authorId, ui.authorName, ui.gameName};
 
 	Placement textSpace = ui.space.gameSpace;
 	textSpace.min.y = ui.space.gameSpace.min.y + HEADER_OFFSET;
@@ -83,6 +83,15 @@ void generateBasicBoard(UserInterface &ui) {
 	attroff(COLOR_PAIR(FOREGROUND));
 }
 
+void handleCourt(UserInterface ui) {
+	Pos courtTop = {ui.space.gameSpace.max.x, ui.space.boardCenter.y - COURT_OFFSET_Y - 5};
+	Pos courtBottom = {ui.space.gameSpace.max.x, ui.space.boardCenter.y + COURT_OFFSET_Y};
+	attron(A_BOLD);
+	drawVerticalInfo(courtTop, "WHI ", ui.board.courts[0].pawnsInside, FOREGROUND_LIGHT, true);
+	drawVerticalInfo(courtBottom, "BLC ", ui.board.courts[1].pawnsInside, FOREGROUND_DARK, true);
+	attroff(A_BOLD);
+}
+
 void generateInteractiveUI(UserInterface &ui) {
 
 	// Indexes
@@ -99,6 +108,8 @@ void generateInteractiveUI(UserInterface &ui) {
 	handleMenu(ui.menu, Pos{ui.space.boardCenter.x, ui.space.board.max.y + MENU_TOP_SPACING});
 
 	handlePawnPlacement(ui.board, ui.space.board);
+
+	handleCourt(ui);
 
 	handleMessages(ui);
 
@@ -138,7 +149,7 @@ void handleBar(Bar bar, int selected) {
 	}
 
 	for (int i = N_BOARDS - 1; i > 0; --i)
-		drawBar(OFFSET_X + (boardWidth + borders) * i,
+		drawBar(OFFSET_X + (boardWidth + borders) * i + DICE_WIDTH + borders - 1,
 				OFFSET_Y + BOARD_OFFSET_Y + HEADER_OFFSET + INDEX_OFFSET + TEXT_HEIGHT * 2,
 				boardHeight + borders, onBar, selected);
 }
@@ -154,31 +165,6 @@ void handleDices(Placement space, Pos center, int *dices) {
 		mvaddch(space.min.y + BORDER_WIDTH, space.min.x + BORDER_WIDTH + DICE_WIDTH / 2, dices[i] + 48);
 		space.min.y += DICE_HEIGHT + BORDER_WIDTH;
 	}
-}
-
-void drawBarInfo(Pos pos, const char *label, int value) {
-	if (value > 0) {
-		char *text = joinStrings(label, numberToString(value, 2));
-		drawVertically(pos, text);
-		delete[] text;
-	}
-}
-
-void drawBar(int offsetX, int offsetY, int height, int onBar[2], int selected) {
-	attron(COLOR_PAIR(FOREGROUND));
-	mvprintw(offsetY, offsetX, borderCorner);
-	drawLine(borderVertical, Placement{offsetX, offsetY + 1,
-									   offsetX, offsetY + height - 1});
-	mvprintw(offsetY + height - 1, offsetX, borderCorner);
-
-	drawBarInfo({offsetX, offsetY + BORDER_WIDTH}, "WHT ", onBar[0]);
-	drawBarInfo({offsetX, offsetY + (height) / 2 + BORDER_WIDTH + 1}, "BLC ", onBar[1]);
-
-	UiColorsId color = FOREGROUND;
-	if (onBar[0] || onBar[1] && selected >= 0) {
-		color = selected == nPoints ? FOREGROUND_LIGHT : FOREGROUND_DARK;
-	}
-	printColor(color, offsetX - (int) (sizeof(barLabel)) / 2 + 1, offsetY + (height) / 2, barLabel);
 }
 
 int generateColorsForIndexes(char **text, int count, int pickedIndex, UiColorsId *&colors) {
@@ -236,15 +222,17 @@ void handleMenu(Menu menu, Pos center) {
 	Placement menuSpace = initMenuSpace(center, menu.elements, menu.elementsCount);
 
 	for (int i = 0; i < menu.elementsCount; ++i) {
+		UiColorsId color;
 		if (menu.selected == -1) {
-			printColor(FOREGROUND, menuSpace.min.x, menuSpace.min.y, menu.elements[i].value);
+			color = FOREGROUND;
 		} else {
 			if (menu.elements[i].id == menu.selected) {
-				printColor(FOREGROUND_LIGHT, menuSpace.min.x, menuSpace.min.y, menu.elements[i].value);
+				color = FOREGROUND_LIGHT;
 			} else {
-				printColor(FOREGROUND_DARK, menuSpace.min.x, menuSpace.min.y, menu.elements[i].value);
+				color = FOREGROUND_DARK;
 			}
 		}
+		printColor(color, menuSpace.min.x, menuSpace.min.y, menu.elements[i].value);
 
 		menuSpace.min.x += (int) (len(menu.elements[i].value) - 1) + OPTION_SPACING;
 	}

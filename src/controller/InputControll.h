@@ -22,6 +22,4 @@ void pickPointController(int input, UserInterface &ui);
 
 void inputController(int input, UserInterface &ui);
 
-MoveStatus movePawn(Board &game, Move move);
-
 #endif //BACKGAMMONGAME_INPUTCONTROLL_H

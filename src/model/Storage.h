@@ -28,6 +28,12 @@ bool removingFromBar(Board &game, Move move);
 
 int hasPawnsOnBar(Board &game);
 
+bool isHomeBoard(int index, int listSize, int direction);
+
+int pawnsOnHomeBoard(Board &game);
+
+Court *pawnsCourt(Board &game, Pawn *pawn);
+
 /// Serialize Point
 void serialisePoint(Point point, uint8_t *buffer, size_t &offset);
 

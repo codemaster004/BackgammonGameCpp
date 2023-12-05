@@ -19,6 +19,8 @@ void startScreen(int argc, char **argv);
 
 int getInput(int argc, char **argv);
 
+void interface(UserInterface &ui);
+
 int main(int argc, char **argv) {
 	startScreen(argc, argv);
 
@@ -44,22 +46,7 @@ int main(int argc, char **argv) {
 		if (UI.gameEnded)
 			break;
 
-		if (UI.needToRefresh) {
-			delete[] UI.menu.elements;
-			clear();
-			redefineMenu(UI);
-			UI.needToRefresh = false;
-		}
-
-		if (UI.state == GAME_PLAY) {
-			generateBasicBoard(UI);
-			generateInteractiveUI(UI);
-		} else if (UI.state == WELCOME_SCREEN) {
-			starterScreen(UI);
-		}
-
-		// Refresh the screen to show changes
-		refresh();
+		interface(UI);
 	} while ((ch = getInput(argc, argv)) != 'q');
 	 delete[] UI.menu.elements;
 
@@ -88,15 +75,32 @@ void startScreen(int argc, char **argv) {
 
 	start_color();
 
-	// TODO: CLEAN UP!!!
 	setColourTheme(COLOR_THEME);
 
-	// TODO: SEparete function
 	init_pair(FOREGROUND, COLOUR_MAIN, COLOR_BLACK);
 	init_pair(FOREGROUND_LIGHT, COLOUR_MAIN_LIGHT, COLOR_BLACK);
 	init_pair(FOREGROUND_DARK, COLOUR_MAIN_DARK, COLOR_BLACK);
 	init_pair(BACKGROUND_LIGHT, COLOR_BLACK, COLOUR_MAIN_LIGHT);
 	init_pair(BACKGROUND_DARK, COLOR_BLACK, COLOUR_MAIN_DARK);
+}
+
+void interface(UserInterface &ui) {
+	if (ui.needToRefresh) {
+		delete[] ui.menu.elements;
+		clear();
+		redefineMenu(ui);
+		ui.needToRefresh = false;
+	}
+
+	if (ui.state == GAME_PLAY) {
+		generateBasicBoard(ui);
+		generateInteractiveUI(ui);
+	} else if (ui.state == WELCOME_SCREEN) {
+		starterScreen(ui);
+	}
+
+	// Refresh the screen to show changes
+	refresh();
 }
 
 /**
@@ -105,16 +109,15 @@ void startScreen(int argc, char **argv) {
  * TODO: [x] Saving game state to a file (2pt)
  * TODO: [x] Loading game state from file + next move (2pt)
  * TODO: [x] Ability to capture pawnsId (1pt)
- * TODO: [ ] Removing pawnsId ?bar or court? (1pt)
- * TODO: [ ] ?Game simulation from any point till the end? (2pt)
- * TODO: [ ] Remember and save game past moves (1pt)
+ * TODO: [x] Removing pawnsId ?bar or court? (1pt)
+ * TODO: [x] ?Game simulation from any point till the end? (2pt)
+ * TODO: [x] Remember and save game past moves (1pt)
  * TODO: [ ] Visualisation of game play (backwards) from loaded state (2pt)
  * TODO: [ ] Complete UI (1pt)
  * TODO: [ ] Player Rankings "Hall of Fame" (1pt)
  */
 
 /*
- * ! Function (main) character count: 626
  * ! Function (redefineMenu) character count: 754
  * ! Function (handleIndexes) character count: 798
  * ! Function (handlePawnPlacement) character count: 761
