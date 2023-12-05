@@ -18,7 +18,7 @@ void gameSetUp(Board &game) {
 	game.players[1] = Player {
 		1, {"You"}, PAWN_BLACK, false
 	};
-	game.currentPlayerId = 0;
+	game.currentPlayerId = rand() % 2;
 	for (int & dice : game.dices) {
 		dice = 0;
 	}
