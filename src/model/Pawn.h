@@ -5,6 +5,8 @@
 #ifndef BACKGAMMONGAME_PAWN_H
 #define BACKGAMMONGAME_PAWN_H
 
+#include "History.h"
+
 typedef struct Player Player;
 typedef struct Board Board;
 typedef struct Bar Bar;
@@ -46,19 +48,19 @@ typedef struct {
 
 int canBeMoved(Board &game, int pointIndex, int moveBy);
 
-MoveToPoint canMoveTo(Board &game, Pawn *pawn, int toIndex);
+MoveType canMoveTo(Board &game, Pawn *pawn, int toIndex);
 
-MoveToPoint determineMoveType(Board &game, int pointIndex, int moveBy);
+MoveType determineMoveType(Board &game, int pointIndex, int moveBy);
 
-MoveStatus moveBarToPoint(Board &game, Move move, int indexOnBar);
+MoveStatus moveBarToPoint(Board &game, Move move, int indexOnBar, MoveMade &history);
 
-MoveStatus movePointToPoint(Board &game, Move move);
+MoveStatus movePointToPoint(Board &game, Move move, MoveMade &history);
 
-MoveStatus movePawn(Board &game, Move move);
+MoveStatus movePawn(Board &game, Move move, MoveMade &history);
 
 void movePointToCourt(Board &game, Point *point);
 
-bool enumToBool(MoveToPoint value);
+bool enumToBool(MoveType value);
 
 void movePointToBar(Board &game, Point *point);
 

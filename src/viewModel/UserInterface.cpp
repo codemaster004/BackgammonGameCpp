@@ -21,6 +21,7 @@ UserInterface initUI() {
 		.pickedIndex=-1,
 		.infoMess="",
 		.errorMess="",
+		.history=MoveMade{},
 	};
 	ui.space.board = initBoard(ui.space.gameSpace);
 	Placement board = ui.space.board;
