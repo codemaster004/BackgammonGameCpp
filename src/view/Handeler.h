@@ -16,8 +16,6 @@ void handleBar(Bar bar, int selected);
 
 void handleDices(Placement space, Pos center, int *dices);
 
-void drawBar(int offsetX, int offsetY, int height, int onBar[2], int selected);
-
 void handleMenu(Menu menu, Pos center);
 
 void handleIndexes(char **indexes, int pickedIndex, int digits, Placement posTop, Placement posBot);

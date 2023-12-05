@@ -34,6 +34,8 @@ add_executable(BackgammonGame src/main.cpp
         src/Base64.cpp
         src/Base64.h
         src/configs/MenuConfigs.h
+        src/model/History.cpp
+        src/model/History.h
 )
 
 target_link_libraries(BackgammonGame ncurses)

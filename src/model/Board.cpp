@@ -54,20 +54,18 @@ void clearDices(int *dices) {
 
 /// Place Pawns on the board with default configuration
 void placePawns(Board &gameBoard) {
-	int pawnIndex = 0;
+	int i = 0;
+	int end = nPoints - 1;
 	for (auto pos: startingPos) {
 		gameBoard.points[pos->x].pawnsInside = pos->y;
+		gameBoard.points[end - pos->x].pawnsInside = pos->y;
 		for (int j = 0; j < pos->y; ++j) {
-			gameBoard.points[pos->x].pawns[j] = &gameBoard.pawns[pawnIndex++];
-		}
-	}
+			int mid = PAWNS_PER_PLAYER + i;
+			gameBoard.pawns[mid].isHome = isHomeBoard(end - pos->x, nPoints, gameBoard.pawns[mid].moveDirection);
+			gameBoard.points[end - pos->x].pawns[j] = &gameBoard.pawns[mid];
 
-	pawnIndex = 0;
-	int endIndex = nPoints - 1;
-	for (auto pos: startingPos) {
-		gameBoard.points[endIndex - pos->x].pawnsInside = pos->y;
-		for (int j = 0; j < pos->y; ++j) {
-			gameBoard.points[endIndex - pos->x].pawns[j] = &gameBoard.pawns[PAWNS_PER_PLAYER + pawnIndex++];
+			gameBoard.pawns[i].isHome = isHomeBoard(pos->x, nPoints, gameBoard.pawns[i].moveDirection);
+			gameBoard.points[pos->x].pawns[j] = &gameBoard.pawns[i++];
 		}
 	}
 }

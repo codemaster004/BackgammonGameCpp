@@ -5,6 +5,10 @@
 #ifndef BACKGAMMONGAME_PAWN_H
 #define BACKGAMMONGAME_PAWN_H
 
+#include "cstdint"
+
+#include "History.h"
+
 typedef struct Player Player;
 typedef struct Board Board;
 typedef struct Bar Bar;
@@ -13,13 +17,15 @@ typedef struct Point Point;
 typedef struct Move {
 	int from;
 	int by;
+	int movesLeft;
 } Move;
 
-enum MoveToPoint {
+enum MoveType {
 	BLOCKED,
 	POSSIBLE,
 	CAPTURE,
 	NOT_ALLOWED,
+	ESCAPE_BOARD,
 };
 
 enum PawnColor {
@@ -31,32 +37,34 @@ enum MoveStatus {
 	MOVE_SUCCESSFUL,
 	PAWNS_ON_BAR,
 	MOVE_FAILED,
+	MOVE_TO_COURT,
 };
 
 typedef struct {
 	int ownerId;
 	int id;
 	bool isHome;
-	bool isOnBar;
 	PawnColor color;
 	short moveDirection;
 } Pawn;
 
 int canBeMoved(Board &game, int pointIndex, int moveBy);
 
-MoveToPoint canMoveTo(Board &game, Pawn *pawn, int toIndex);
+MoveType canMoveTo(Board &game, Pawn *pawn, int toIndex);
 
-MoveToPoint determineMoveType(Board &game, int pointIndex, int moveBy);
+MoveType determineMoveType(Board &game, int pointIndex, int moveBy);
 
-MoveStatus moveBarToPoint(Board &game, Move move, int indexOnBar);
+MoveStatus moveBarToPoint(Board &game, Move move, int indexOnBar, MoveMade &history);
 
-MoveStatus movePointToPoint(Board &game, Move move);
+MoveStatus movePointToPoint(Board &game, Move move, MoveMade &history);
 
-MoveStatus movePawn(Board &game, Move move);
+MoveStatus movePawn(Board &game, Move move, MoveMade &history);
 
-bool enumToBool(MoveToPoint value);
+void movePointToCourt(Board &game, MoveMade &history, int fromIndex);
 
-void movePointToBar(Board &game, Point *point);
+bool enumToBool(MoveType value);
+
+void movePointToBar(Board &game, MoveMade &history, int fromIndex, int toIndex);
 
 int hasPawnsOnBar(Bar &bar, int playerId);
 

@@ -6,6 +6,7 @@
 #define BACKGAMMONGAME_PLAYER_H
 
 #include "../configs/GameConfigs.h"
+#include "Pawn.h"
 
 
 typedef struct Board Board;
@@ -13,7 +14,7 @@ typedef struct Board Board;
 typedef struct Player {
 	int id;
 	char name[MAX_NAME_LENGTH];
-	bool isHisTurn;
+	PawnColor color;
 	int points;
 } Player;
 

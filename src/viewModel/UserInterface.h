@@ -9,6 +9,7 @@
 #include "../configs/UIConfigs.h"
 #include "../model/Board.h"
 #include "Space.h"
+#include "../model/History.h"
 
 enum MenuMode {
 	DEFAULT,
@@ -61,6 +62,7 @@ typedef struct {
 	int pickedIndex;
 	char infoMess[MAX_MESSAGE_LEN];
 	char errorMess[MAX_MESSAGE_LEN];
+	MadeMove history;
 } UserInterface;
 
 UserInterface initUI();
