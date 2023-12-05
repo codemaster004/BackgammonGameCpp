@@ -5,6 +5,8 @@
 #ifndef BACKGAMMONGAME_HISTORY_H
 #define BACKGAMMONGAME_HISTORY_H
 
+#include "cstdint"
+
 enum MoveDirection {
 	POINT_TO_POINT=1,
 	POINT_TO_BAR,
@@ -18,6 +20,7 @@ typedef struct MoveMade {
 	int from;
 	int to;
 	int moveOrder;
+	int pawnId;
 	MoveMade *prevMove;
 } MadeMove;
 
@@ -27,6 +30,8 @@ void removeAfter(MoveMade *latestMove);
 
 MoveMade *getFist(MoveMade head);
 
+void serializeMove(MoveMade value, uint8_t *buffer, size_t &offset);
 
+void saveHistoryToFile(char filename[], MoveMade head);
 
 #endif //BACKGAMMONGAME_HISTORY_H

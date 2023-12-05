@@ -18,7 +18,8 @@ void gameSetUp(Board &game) {
 	game.players[1] = Player {
 		1, {"You"}, PAWN_BLACK, false
 	};
-	game.currentPlayerId = rand() % 2;
+//	game.currentPlayerId = rand() % 2;
+	game.currentPlayerId = 0;
 	for (int & dice : game.dices) {
 		dice = 0;
 	}
@@ -71,6 +72,7 @@ void gamePlayController(int input, UserInterface &ui) {
 	switch (input) {
 		case 's':
 			saveToFile(name, ui.board);
+			saveHistoryToFile("he", ui.history);
 			break;
 		case 'u':
 			break;
@@ -122,6 +124,8 @@ void pickDiceController(int input, UserInterface &ui) {
 			if (dice[0] == dice[1]) {
 				ui.currentMove.movesLeft = 4;
 				ui.currentMove.by = dice[0];
+			} else {
+				ui.currentMove.movesLeft = 1;
 			}
 			dice[0] = 0;
 			dice[1] = 0;

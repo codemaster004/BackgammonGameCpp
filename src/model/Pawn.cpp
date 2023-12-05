@@ -8,6 +8,7 @@
 
 #include "Pawn.h"
 #include "SerializeToFile.h"
+#include "History.h"
 
 
 int canBeMoved(Board &game, int pointIndex, int moveBy) {
@@ -70,16 +71,20 @@ bool enumToBool(MoveType value) {
 	return !(value == BLOCKED || value == NOT_ALLOWED);
 }
 
-void movePointToBar(Board &game, Point *point) {
+void movePointToBar(Board &game, MoveMade &history, int fromIndex) {
+	Point *fromPoint = &game.points[fromIndex];
 	for (int i = 0; i < CAPTURE_THRESHOLD; ++i) {
-		game.bar.pawns[game.bar.pawnsInside++] = point->pawns[i];
+		addAfter({.type=POINT_TO_BAR, .from=fromIndex, .to=game.bar.pawnsInside, .pawnId=fromPoint->pawns[i]->id}, &history);
+		game.bar.pawns[game.bar.pawnsInside++] = fromPoint->pawns[i];
 	}
-	point->pawnsInside -= CAPTURE_THRESHOLD;
+	fromPoint->pawnsInside -= CAPTURE_THRESHOLD;
 }
 
-void movePointToCourt(Board &game, Point *point) {
+void movePointToCourt(Board &game, MoveMade &history, int fromIndex) {
+	Point *point = &game.points[fromIndex];
 	Pawn *pawn = point->pawns[--point->pawnsInside];
 	Court *court = pawnsCourt(game, pawn);
+	addAfter({POINT_TO_COURT, fromIndex, court->pawnsInside, 0, pawn->id}, &history);
 	court->pawns[court->pawnsInside++] = pawn;
 }
 
@@ -98,6 +103,15 @@ short findMoveDirection(Pawn **pawns, int count, int playerId) {
 	return 0;
 }
 
+void moveBarToPoint(Board &game, MoveMade &history, int fromIndex, int toIndex) {
+	Point *toPoint = &game.points[toIndex];
+	toPoint->pawns[toPoint->pawnsInside++] = game.bar.pawns[fromIndex];
+	game.bar.pawnsInside--;
+	addAfter({BAR_TO_POINT, fromIndex, fromIndex, toIndex, game.bar.pawns[fromIndex]->id}, &history);
+
+	game.bar.pawns[fromIndex] = nullptr;
+}
+
 MoveStatus moveBarToPoint(Board &game, Move move, int indexOnBar, MoveMade &history) {
 	if (!removingFromBar(game, move))
 		return PAWNS_ON_BAR;
@@ -106,24 +120,32 @@ MoveStatus moveBarToPoint(Board &game, Move move, int indexOnBar, MoveMade &hist
 	int toIndex = (int)((move.from + move.by * direction) % nPoints);
 	if (direction > 0)
 		toIndex--;
-	Point *toPoint = &game.points[toIndex];
 
 	MoveType moveType = canMoveTo(game, game.bar.pawns[indexOnBar], toIndex);
 	if (!enumToBool(moveType))
 		return MOVE_FAILED;
 
 	if (moveType == CAPTURE)
-		movePointToBar(game, toPoint);
+		movePointToBar(game, history, toIndex);
 
-	toPoint->pawns[toPoint->pawnsInside++] = game.bar.pawns[indexOnBar];
-	game.bar.pawnsInside--;
-	game.bar.pawns[indexOnBar] = nullptr;
+	moveBarToPoint(game, history, indexOnBar, toIndex);
 
 	return MOVE_SUCCESSFUL;
 }
 
 void checkNewPoint(Point *toPoint, int pointIndex) {
 	toPoint->pawns[toPoint->pawnsInside - 1]->isHome = isHomeBoard(pointIndex, nPoints, toPoint->pawns[toPoint->pawnsInside - 1]->moveDirection);
+}
+
+void movePointToPoint(Board &game, MoveMade &history, int fromIndex, int toIndex) {
+	Point *toPoint = &game.points[toIndex];
+	Point *fromPoint = &game.points[fromIndex];
+	Pawn *pawn = fromPoint->pawns[--fromPoint->pawnsInside];
+
+	addAfter({.type=POINT_TO_POINT, .from=fromIndex, .to=toIndex, .moveOrder=0, .pawnId=pawn->id}, &history);
+	toPoint->pawns[toPoint->pawnsInside++] = pawn;
+	fromPoint->pawns[fromPoint->pawnsInside] = nullptr;
+	checkNewPoint(toPoint, toIndex);
 }
 
 MoveStatus movePointToPoint(Board &game, Move move, MoveMade &history) {
@@ -133,20 +155,17 @@ MoveStatus movePointToPoint(Board &game, Move move, MoveMade &history) {
 
 	short direction = game.points[move.from].pawns[0]->moveDirection;
 	int toIndex = move.from + move.by * direction;
-	Point *toPoint = &game.points[toIndex];
-	Point *fromPoint = &game.points[move.from];
 
 	if (moveType == ESCAPE_BOARD) {
-		movePointToCourt(game, fromPoint);
+		movePointToCourt(game, history, move.from);
 		return MOVE_TO_COURT;
 	}
 
-	if (moveType == CAPTURE)
-		movePointToBar(game, toPoint);
+	int additionalMove = 0;
+	if (moveType == CAPTURE && ++additionalMove)
+		movePointToBar(game, history, toIndex);
 
-	toPoint->pawns[toPoint->pawnsInside++] = fromPoint->pawns[--fromPoint->pawnsInside];
-	fromPoint->pawns[fromPoint->pawnsInside] = nullptr;
-	checkNewPoint(toPoint, toIndex);
+	movePointToPoint(game, history, move.from, toIndex);
 	return MOVE_SUCCESSFUL;
 }
 

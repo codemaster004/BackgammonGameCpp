@@ -5,6 +5,8 @@
 #ifndef BACKGAMMONGAME_PAWN_H
 #define BACKGAMMONGAME_PAWN_H
 
+#include "cstdint"
+
 #include "History.h"
 
 typedef struct Player Player;
@@ -58,11 +60,11 @@ MoveStatus movePointToPoint(Board &game, Move move, MoveMade &history);
 
 MoveStatus movePawn(Board &game, Move move, MoveMade &history);
 
-void movePointToCourt(Board &game, Point *point);
+void movePointToCourt(Board &game, MoveMade &history, int fromIndex);
 
 bool enumToBool(MoveType value);
 
-void movePointToBar(Board &game, Point *point);
+void movePointToBar(Board &game, MoveMade &history, int fromIndex, int toIndex);
 
 int hasPawnsOnBar(Bar &bar, int playerId);
 
