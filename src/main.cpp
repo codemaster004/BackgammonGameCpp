@@ -111,7 +111,7 @@ void interface(UserInterface &ui) {
  * TODO: [x] Ability to capture pawnsId (1pt)
  * TODO: [x] Removing pawnsId ?bar or court? (1pt)
  * TODO: [x] ?Game simulation from any point till the end? (2pt)
- * TODO: [ ] Remember and save game past moves (1pt)
+ * TODO: [x] Remember and save game past moves (1pt)
  * TODO: [ ] Visualisation of game play (backwards) from loaded state (2pt)
  * TODO: [ ] Complete UI (1pt)
  * TODO: [ ] Player Rankings "Hall of Fame" (1pt)
