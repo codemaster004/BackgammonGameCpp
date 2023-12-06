@@ -55,6 +55,11 @@ MoveType canMoveTo(Board &game, Pawn *pawn, int toIndex) {
 	return CAPTURE;
 }
 
+Pawn *getPawn(Board &game, int pointIndex) {
+	Point *fromPoint = &game.points[pointIndex];
+	return fromPoint->pawns[--fromPoint->pawnsInside];
+}
+
 MoveType determineMoveType(Board &game, int pointIndex, int moveBy) {
 	int destination = canBeMoved(game, pointIndex, moveBy);
 	if (destination < 0 || destination > nPoints) {
@@ -71,6 +76,7 @@ bool enumToBool(MoveType value) {
 	return !(value == BLOCKED || value == NOT_ALLOWED);
 }
 
+// TODO: rewrite move for out from here
 void movePointToBar(Board &game, MoveMade &history, int fromIndex) {
 	Point *fromPoint = &game.points[fromIndex];
 	for (int i = 0; i < CAPTURE_THRESHOLD; ++i) {
@@ -137,12 +143,11 @@ void checkNewPoint(Point *toPoint, int pointIndex) {
 	toPoint->pawns[toPoint->pawnsInside - 1]->isHome = isHomeBoard(pointIndex, nPoints, toPoint->pawns[toPoint->pawnsInside - 1]->moveDirection);
 }
 
-void movePointToPoint(Board &game, MoveMade &history, int fromIndex, int toIndex) {
+void movePointToPoint(Board &game, int fromIndex, int toIndex) {
 	Point *toPoint = &game.points[toIndex];
 	Point *fromPoint = &game.points[fromIndex];
 	Pawn *pawn = fromPoint->pawns[--fromPoint->pawnsInside];
 
-	addAfter({.type=POINT_TO_POINT, .from=fromIndex, .to=toIndex, .moveOrder=0, .pawnId=pawn->id}, &history);
 	toPoint->pawns[toPoint->pawnsInside++] = pawn;
 	fromPoint->pawns[fromPoint->pawnsInside] = nullptr;
 	checkNewPoint(toPoint, toIndex);
@@ -162,10 +167,12 @@ MoveStatus movePointToPoint(Board &game, Move move, MoveMade &history) {
 	}
 
 	int additionalMove = 0;
-	if (moveType == CAPTURE && ++additionalMove)
+	if (moveType == CAPTURE && ++additionalMove) {
 		movePointToBar(game, history, toIndex);
+	}
 
-	movePointToPoint(game, history, move.from, toIndex);
+	addAfter({.type=POINT_TO_POINT, .from=move.from, .to=toIndex, .moveOrder=additionalMove}, &history);
+	movePointToPoint(game, move.from, toIndex);
 	return MOVE_SUCCESSFUL;
 }
 
@@ -175,6 +182,29 @@ MoveStatus movePawn(Board &game, Move move, MoveMade &history) {
 		return moveBarToPoint(game, move, indexOnBar, history);
 	} else {
 		return movePointToPoint(game, move, history);
+	}
+}
+
+void reverseMove(Board &game, MoveMade &head) {
+	if (!head.moveOrder)
+		return;
+	MoveMade *tempMove = head.prevMove;
+	for (int i = 0; i <= tempMove->moveOrder; ++i) {
+		switch (tempMove->type) {
+			case POINT_TO_POINT:
+				movePointToPoint(game, tempMove->to, tempMove->from);
+				break;
+			case POINT_TO_BAR:
+				break;
+			case BAR_TO_POINT:
+				break;
+			case POINT_TO_COURT:
+				break;
+			case COURT_TO_POINT:
+				break;
+		}
+		removeAfter(&head);
+		removeAfter(&head);
 	}
 }
 

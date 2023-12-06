@@ -75,6 +75,7 @@ void gamePlayController(int input, UserInterface &ui) {
 			saveHistoryToFile("he", ui.history);
 			break;
 		case 'u':
+			reverseMove(ui.board, ui.history);
 			break;
 		case 'r':
 			for (int & dice : ui.board.dices) {

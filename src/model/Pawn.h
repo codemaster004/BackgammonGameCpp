@@ -48,6 +48,8 @@ typedef struct {
 	short moveDirection;
 } Pawn;
 
+Pawn *getPawn(Board &game, int pointIndex);
+
 int canBeMoved(Board &game, int pointIndex, int moveBy);
 
 MoveType canMoveTo(Board &game, Pawn *pawn, int toIndex);
@@ -64,11 +66,11 @@ void movePointToCourt(Board &game, MoveMade &history, int fromIndex);
 
 bool enumToBool(MoveType value);
 
-void movePointToBar(Board &game, MoveMade &history, int fromIndex, int toIndex);
-
 int hasPawnsOnBar(Bar &bar, int playerId);
 
 short findMoveDirection(Pawn **pawns, int count, int playerId);
+
+void reverseMove(Board &game, MoveMade &head);
 
 /// Handle Serialization of Pawn object
 void serialisePawn(Pawn pawn, uint8_t *buffer, size_t &offset);
