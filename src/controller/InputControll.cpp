@@ -151,7 +151,7 @@ void pickPointController(int input, UserInterface &ui) {
 	switch (input) {
 		case ' ':
 			ui.currentMove.from = ui.pickedIndex;
-			moveError = movePawn(ui.board, ui.currentMove, ui.history);
+			moveError = handlePawnMovement(ui.board, ui.currentMove, ui.history);
 			if(moveError) {
 				createErrorMessage(ui, moveError);
 			} else if (!--ui.currentMove.movesLeft) {

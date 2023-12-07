@@ -60,9 +60,7 @@ MoveStatus moveBarToPoint(Board &game, Move move, int indexOnBar, MoveMade &hist
 
 MoveStatus movePointToPoint(Board &game, Move move, MoveMade &history);
 
-MoveStatus movePawn(Board &game, Move move, MoveMade &history);
-
-void movePointToCourt(Board &game, MoveMade &history, int fromIndex);
+MoveStatus handlePawnMovement(Board &game, Move move, MoveMade &history);
 
 bool enumToBool(MoveType value);
 
@@ -71,6 +69,8 @@ int hasPawnsOnBar(Bar &bar, int playerId);
 short findMoveDirection(Pawn **pawns, int count, int playerId);
 
 void reverseMove(Board &game, MoveMade &head);
+
+void checkNewPoint(Point *toPoint, int pointIndex);
 
 /// Handle Serialization of Pawn object
 void serialisePawn(Pawn pawn, uint8_t *buffer, size_t &offset);
