@@ -63,13 +63,16 @@ void deserializeHistory(const uint8_t *buffer, size_t limit, MoveMade &history) 
 
 void saveHistoryToFile(char filename[], MoveMade &head) {
 	auto *bufferTable = new uint8_t[head.moveOrder*4];
+	const char *hisDir = "../moves/";
 
 	size_t index = 0;
 	serializeHistory(head, bufferTable, index);
 	char *encodedFile = encodeBase64(bufferTable, index);
 	delete[] bufferTable;
 
-	FILE *file = fopen("../games/History.txt", "w");
+	char *path = joinStrings(hisDir, filename);
+	FILE *file = fopen(path, "w");
+	delete[] path;
 
 	int encodedLen = finalEncodedDataLen((int) (index));
 	if (file != nullptr) {
@@ -86,8 +89,11 @@ void saveHistoryToFile(char filename[], MoveMade &head) {
 void loadHistoryFromFile(char filename[], MoveMade &head) {
 	ByteContainer bufferTable;
 	initByteContainer(bufferTable);
+	const char *hisDir = "../moves/";
 
-	FILE *file = fopen("../games/History.txt", "r");
+	char *path = joinStrings(hisDir, filename);
+	FILE *file = fopen(path, "r");
+	delete[] path;
 
 	int ch;
 	while ((ch = fgetc(file)) != EOF) {

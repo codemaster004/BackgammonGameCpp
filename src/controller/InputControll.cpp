@@ -61,7 +61,7 @@ void newGameController(int input, UserInterface &ui) {
 			ui.state = GAME_PLAY;
 			resetMenuTo(ui, DEFAULT);
 			loadFromFile(name, ui.board);
-			loadHistoryFromFile("he", ui.history);
+			loadHistoryFromFile(name, ui.history);
 			break;
 		default:
 			break;
@@ -73,7 +73,7 @@ void gamePlayController(int input, UserInterface &ui) {
 	switch (input) {
 		case 's':
 			saveToFile(name, ui.board);
-			saveHistoryToFile("he", ui.history);
+			saveHistoryToFile(name, ui.history);
 			break;
 		case 'u':
 			reverseMove(ui.board, ui.history);
