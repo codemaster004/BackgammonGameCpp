@@ -8,6 +8,7 @@
 void initByteContainer(ByteContainer &self, int size, int partitionSize)  {
 	self.partitionSize = partitionSize;
 	self.nPartitions = size / partitionSize + 1;
+	self.dataCount = 0;
 
 	self.data = new uint8_t *[self.nPartitions];
 	for (size_t i = 0; i < self.nPartitions; ++i) {
@@ -41,7 +42,7 @@ void addElement(ByteContainer &self, uint8_t byte) {
 
 	if (rowIndex >= self.nPartitions) {
 		// Expand the first dimension if needed
-		expandFirstDimension();
+		expandFirstDimension(self);
 	}
 
 	self.data[rowIndex][columnIndex] = byte;

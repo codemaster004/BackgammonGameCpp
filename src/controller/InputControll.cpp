@@ -61,6 +61,7 @@ void newGameController(int input, UserInterface &ui) {
 			ui.state = GAME_PLAY;
 			resetMenuTo(ui, DEFAULT);
 			loadFromFile(name, ui.board);
+			loadHistoryFromFile("he", ui.history);
 			break;
 		default:
 			break;

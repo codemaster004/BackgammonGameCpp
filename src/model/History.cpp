@@ -8,13 +8,14 @@
 #include "../Base64.h"
 #include "../ByteContainer.h"
 
+#define MOVE_SIZE (sizeof(int) * 5)
+
 
 void addAfter(MoveMade data, MoveMade *lastMove) {
 	auto move = new MoveMade [1];
 	*move = data;
 	move->prevMove = lastMove->prevMove;
 	lastMove->prevMove = move;
-	lastMove->moveOrder++;
 }
 
 void removeAfter(MoveMade *latestMove) {
@@ -50,10 +51,13 @@ void serializeHistory(MoveMade &head, uint8_t *buffer, size_t &offset) {
 
 void deserializeHistory(const uint8_t *buffer, size_t limit, MoveMade &history) {
 	size_t index = 0;
-	while (index < limit) {
+	MoveMade *tail = &history;
+	while (index < limit / MOVE_SIZE * MOVE_SIZE) {
 		MoveMade tempMove = {};
 		deserializeMove(buffer, index, &tempMove);
-		addAfter(tempMove, &history);
+		addAfter(tempMove, tail);
+		history.moveOrder++;
+		tail = tail->prevMove;
 	}
 }
 
@@ -89,8 +93,7 @@ void loadHistoryFromFile(char filename[], MoveMade &head) {
 	while ((ch = fgetc(file)) != EOF) {
 		addElement(bufferTable, ch);
 	}
-	fclose
-	(file);
+	fclose(file);
 	size_t size = bufferTable.dataCount;
 	auto transformedTable = new char [size];
 	flatten(bufferTable, transformedTable);
@@ -98,7 +101,7 @@ void loadHistoryFromFile(char filename[], MoveMade &head) {
 	destroyByteContainer(bufferTable);
 
 	uint8_t *decoded = decodeBase64(transformedTable, size);
-	;
+
 	deserializeHistory(decoded, finalDecodedDataLen((int)(size)), head);
 
 //	uint8_t *decodedBoard = 0;

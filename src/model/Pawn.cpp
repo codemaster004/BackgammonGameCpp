@@ -81,6 +81,7 @@ void movePointToBar(Board &game, MoveMade &history, int fromIndex) {
 	Point *fromPoint = &game.points[fromIndex];
 	for (int i = 0; i < CAPTURE_THRESHOLD; ++i) {
 		addAfter({.type=POINT_TO_BAR, .from=fromIndex, .to=game.bar.pawnsInside, .pawnId=fromPoint->pawns[i]->id}, &history);
+		history.moveOrder++;
 		game.bar.pawns[game.bar.pawnsInside++] = fromPoint->pawns[i];
 	}
 	fromPoint->pawnsInside -= CAPTURE_THRESHOLD;
@@ -91,6 +92,7 @@ void movePointToCourt(Board &game, MoveMade &history, int fromIndex) {
 	Pawn *pawn = point->pawns[--point->pawnsInside];
 	Court *court = pawnsCourt(game, pawn);
 	addAfter({POINT_TO_COURT, fromIndex, court->pawnsInside, 0, pawn->id}, &history);
+	history.moveOrder++;
 	court->pawns[court->pawnsInside++] = pawn;
 }
 
@@ -114,7 +116,7 @@ void moveBarToPoint(Board &game, MoveMade &history, int fromIndex, int toIndex) 
 	toPoint->pawns[toPoint->pawnsInside++] = game.bar.pawns[fromIndex];
 	game.bar.pawnsInside--;
 	addAfter({BAR_TO_POINT, fromIndex, fromIndex, toIndex, game.bar.pawns[fromIndex]->id}, &history);
-
+	history.moveOrder++;
 	game.bar.pawns[fromIndex] = nullptr;
 }
 
@@ -172,6 +174,7 @@ MoveStatus movePointToPoint(Board &game, Move move, MoveMade &history) {
 	}
 
 	addAfter({.type=POINT_TO_POINT, .from=move.from, .to=toIndex, .moveOrder=additionalMove}, &history);
+	history.moveOrder++;
 	movePointToPoint(game, move.from, toIndex);
 	return MOVE_SUCCESSFUL;
 }

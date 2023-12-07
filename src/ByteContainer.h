@@ -16,7 +16,7 @@ typedef struct ByteContainer {
 	size_t dataCount;
 } ByteContainer;
 
-void expandFirstDimension();
+void expandFirstDimension(ByteContainer &self);
 
 void initByteContainer(ByteContainer &self, int size=1, int partitionSize=64);
 
