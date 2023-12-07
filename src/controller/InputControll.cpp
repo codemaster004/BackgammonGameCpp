@@ -46,6 +46,7 @@ void resetMenuTo(UserInterface &ui, MenuMode mode) {
 	ui.menu.mode = mode;
 	ui.needToRefresh = true;
 	ui.menu.selected = 0;
+	ui.pickedIndex = -1;
 	resetMessages(ui);
 }
 
