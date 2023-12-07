@@ -25,15 +25,10 @@
 /////////////////////////////////////////////////////////
 
 #define N_PLAYERS 2
-#define N_STARTING_POS 4
 
 #define MAX_NAME_LENGTH 16
 
 const uint nPoints = N_BOARDS * POINTS_PER_BOARD * 2;
 const uint totalPawns = N_PLAYERS * PAWNS_PER_PLAYER;
-
-const Pos startingPos[N_STARTING_POS][2] = {{0, 2}, {11, 5},{16, 3}, {18, 5}};
-
-const char savesDir[] = "../games/";
 
 #endif //BACKGAMMONGAME_GAMECONFIGS_H

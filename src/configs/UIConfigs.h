@@ -50,10 +50,12 @@ enum UiColorsId {
 	BACKGROUND_DARK
 };
 
+// TODO change to char
 const char borderHorizon[] = { "=" };
 const char borderVertical[] = { "|" };
 const char borderCorner[] = { "+" };
 
+// TODO: wtf i do now
 const char barLabel[] = {"[BAR]"};
 
 const char piece1[] = { "/\\" };
