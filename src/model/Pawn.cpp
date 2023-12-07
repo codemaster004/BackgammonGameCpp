@@ -56,9 +56,11 @@ MoveType canMoveTo(Board &game, Pawn *pawn, int toIndex) {
 	return CAPTURE;
 }
 
-Pawn *getPawn(Board &game, int pointIndex) {
-	Point *fromPoint = &game.points[pointIndex];
-	return fromPoint->pawns[--fromPoint->pawnsInside];
+Pawn *getPawn(Board &game, int id) {
+	for ( auto &pawn : game.pawns)
+		if (pawn.id == id)
+			return &pawn;
+	return nullptr;
 }
 
 MoveType determineMoveType(Board &game, int pointIndex, int moveBy) {
@@ -151,6 +153,11 @@ MoveStatus handlePawnMovement(Board &game, Move move, MoveMade &history) {
 void reverseMove(Board &game, MoveMade &head) {
 	if (!head.moveOrder)
 		return;
+
+	Pawn *pawn = getPawn(game, head.prevMove->pawnId);
+	if (pawn != nullptr)
+		game.currentPlayerId = pawn->ownerId;
+
 	MoveMade *tempMove = head.prevMove;
 	for (int i = 0; i <= tempMove->moveOrder; ++i) {
 		switch (tempMove->type) {

@@ -48,7 +48,7 @@ typedef struct {
 	short moveDirection;
 } Pawn;
 
-Pawn *getPawn(Board &game, int pointIndex);
+Pawn *getPawn(Board &game, int id);
 
 int canBeMoved(Board &game, int pointIndex, int moveBy);
 
