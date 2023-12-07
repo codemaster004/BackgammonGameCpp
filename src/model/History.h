@@ -32,6 +32,8 @@ MoveMade *getFist(MoveMade head);
 
 void serializeMove(MoveMade value, uint8_t *buffer, size_t &offset);
 
-void saveHistoryToFile(char filename[], MoveMade head);
+void deserializeHistory(const uint8_t *buffer, size_t &offset, MoveMade &history);
+
+void saveHistoryToFile(char filename[], MoveMade &head);
 
 #endif //BACKGAMMONGAME_HISTORY_H

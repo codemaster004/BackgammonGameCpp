@@ -54,3 +54,9 @@ uint8_t getByte(ByteContainer &self, size_t index) {
 
 	return self.data[rowIndex][columnIndex];
 }
+
+void flatten(ByteContainer &self, char *buffer) {
+	for (int i = 0; i < self.dataCount; ++i) {
+		buffer[i] = (char)(getByte(self, i));
+	}
+}

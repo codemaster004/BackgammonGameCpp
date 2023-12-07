@@ -6,6 +6,7 @@
 #include "History.h"
 #include "SerializeToFile.h"
 #include "../Base64.h"
+#include "../ByteContainer.h"
 
 
 void addAfter(MoveMade data, MoveMade *lastMove) {
@@ -31,7 +32,15 @@ void serializeMove(MoveMade *move, uint8_t *buffer, size_t &offset) {
 	serializeInt(move->pawnId, buffer, offset);
 }
 
-void serializeHistory(MoveMade head, uint8_t *buffer, size_t &offset) {
+void deserializeMove(const uint8_t *buffer, size_t &offset, MoveMade *move) {
+	move->type = (MoveDirection) (deserializeInt(buffer, offset));
+	move->from = deserializeInt(buffer, offset);
+	move->to = deserializeInt(buffer, offset);
+	move->moveOrder = deserializeInt(buffer, offset);
+	move->pawnId = deserializeInt(buffer, offset);
+}
+
+void serializeHistory(MoveMade &head, uint8_t *buffer, size_t &offset) {
 	MoveMade *element = head.prevMove;
 	for (int _ = 0; _ < head.moveOrder; ++_) {
 		serializeMove(element, buffer, offset);
@@ -39,7 +48,16 @@ void serializeHistory(MoveMade head, uint8_t *buffer, size_t &offset) {
 	}
 }
 
-void saveHistoryToFile(char filename[], MoveMade head) {
+void deserializeHistory(const uint8_t *buffer, size_t limit, MoveMade &history) {
+	size_t index = 0;
+	while (index < limit) {
+		MoveMade tempMove = {};
+		deserializeMove(buffer, index, &tempMove);
+		addAfter(tempMove, &history);
+	}
+}
+
+void saveHistoryToFile(char filename[], MoveMade &head) {
 	auto *bufferTable = new uint8_t[head.moveOrder*4];
 
 	size_t index = 0;
@@ -59,5 +77,29 @@ void saveHistoryToFile(char filename[], MoveMade head) {
 	}
 
 	delete[] encodedFile;
+}
 
+void loadHistoryFromFile(char filename[], MoveMade &head) {
+	ByteContainer bufferTable;
+	initByteContainer(bufferTable);
+
+	FILE *file = fopen("../games/History.txt", "r");
+
+	int ch;
+	while ((ch = fgetc(file)) != EOF) {
+		addElement(bufferTable, ch);
+	}
+	fclose
+	(file);
+	size_t size = bufferTable.dataCount;
+	auto transformedTable = new char [size];
+	flatten(bufferTable, transformedTable);
+
+	destroyByteContainer(bufferTable);
+
+	uint8_t *decoded = decodeBase64(transformedTable, size);
+	;
+	deserializeHistory(decoded, finalDecodedDataLen((int)(size)), head);
+
+//	uint8_t *decodedBoard = 0;
 }

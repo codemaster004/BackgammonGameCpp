@@ -22,8 +22,10 @@ void initByteContainer(ByteContainer &self, int size=1, int partitionSize=64);
 
 void destroyByteContainer(ByteContainer &self);
 
-void addElement(uint8_t byte);
+void addElement(ByteContainer &self, uint8_t byte);
 
-uint8_t getByte(size_t index);
+uint8_t getByte(ByteContainer &self, size_t index);
+
+void flatten(ByteContainer &self, char *buffer);
 
 #endif //BACKGAMMONGAME_BYTECONTAINER_H
