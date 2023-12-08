@@ -54,6 +54,7 @@ void clearDices(int *dices) {
 
 /// Place Pawns on the board with default configuration
 void placePawns(Board &gameBoard) {
+	const Pos startingPos[][2] = {{0, 2}, {11, 5},{16, 3}, {18, 5}};
 	int i = 0;
 	int end = nPoints - 1;
 	for (auto pos: startingPos) {

@@ -34,6 +34,14 @@ int pawnsOnHomeBoard(Board &game);
 
 Court *pawnsCourt(Board &game, Pawn *pawn);
 
+void moveBarToPoint(Board &game, MoveMade &history, int fromIndex, int toIndex, int order=0);
+
+void movePointToPoint(Board &game, MoveMade &history, int fromIndex, int toIndex, int order=0);
+
+void movePointToCourt(Board &game, MoveMade &history, int fromIndex, int order=0);
+
+void movePointToBar(Board &game, MoveMade &history, int fromIndex, int order=0);
+
 /// Serialize Point
 void serialisePoint(Point point, uint8_t *buffer, size_t &offset);
 

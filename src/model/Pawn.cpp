@@ -9,6 +9,7 @@
 #include "Pawn.h"
 #include "SerializeToFile.h"
 #include "History.h"
+#include "Storage.h"
 
 
 int canBeMoved(Board &game, int pointIndex, int moveBy) {
@@ -55,6 +56,13 @@ MoveType canMoveTo(Board &game, Pawn *pawn, int toIndex) {
 	return CAPTURE;
 }
 
+Pawn *getPawn(Board &game, int id) {
+	for ( auto &pawn : game.pawns)
+		if (pawn.id == id)
+			return &pawn;
+	return nullptr;
+}
+
 MoveType determineMoveType(Board &game, int pointIndex, int moveBy) {
 	int destination = canBeMoved(game, pointIndex, moveBy);
 	if (destination < 0 || destination > nPoints) {
@@ -71,23 +79,6 @@ bool enumToBool(MoveType value) {
 	return !(value == BLOCKED || value == NOT_ALLOWED);
 }
 
-void movePointToBar(Board &game, MoveMade &history, int fromIndex) {
-	Point *fromPoint = &game.points[fromIndex];
-	for (int i = 0; i < CAPTURE_THRESHOLD; ++i) {
-		addAfter({.type=POINT_TO_BAR, .from=fromIndex, .to=game.bar.pawnsInside, .pawnId=fromPoint->pawns[i]->id}, &history);
-		game.bar.pawns[game.bar.pawnsInside++] = fromPoint->pawns[i];
-	}
-	fromPoint->pawnsInside -= CAPTURE_THRESHOLD;
-}
-
-void movePointToCourt(Board &game, MoveMade &history, int fromIndex) {
-	Point *point = &game.points[fromIndex];
-	Pawn *pawn = point->pawns[--point->pawnsInside];
-	Court *court = pawnsCourt(game, pawn);
-	addAfter({POINT_TO_COURT, fromIndex, court->pawnsInside, 0, pawn->id}, &history);
-	court->pawns[court->pawnsInside++] = pawn;
-}
-
 int hasPawnsOnBar(Bar &bar, int playerId) {
 	int count = 0;
 	for (int i = 0; i < bar.pawnsInside; ++i)
@@ -101,15 +92,6 @@ short findMoveDirection(Pawn **pawns, int count, int playerId) {
 		if (pawns[i]->ownerId == playerId)
 			return pawns[i]->moveDirection;
 	return 0;
-}
-
-void moveBarToPoint(Board &game, MoveMade &history, int fromIndex, int toIndex) {
-	Point *toPoint = &game.points[toIndex];
-	toPoint->pawns[toPoint->pawnsInside++] = game.bar.pawns[fromIndex];
-	game.bar.pawnsInside--;
-	addAfter({BAR_TO_POINT, fromIndex, fromIndex, toIndex, game.bar.pawns[fromIndex]->id}, &history);
-
-	game.bar.pawns[fromIndex] = nullptr;
 }
 
 MoveStatus moveBarToPoint(Board &game, Move move, int indexOnBar, MoveMade &history) {
@@ -137,17 +119,6 @@ void checkNewPoint(Point *toPoint, int pointIndex) {
 	toPoint->pawns[toPoint->pawnsInside - 1]->isHome = isHomeBoard(pointIndex, nPoints, toPoint->pawns[toPoint->pawnsInside - 1]->moveDirection);
 }
 
-void movePointToPoint(Board &game, MoveMade &history, int fromIndex, int toIndex) {
-	Point *toPoint = &game.points[toIndex];
-	Point *fromPoint = &game.points[fromIndex];
-	Pawn *pawn = fromPoint->pawns[--fromPoint->pawnsInside];
-
-	addAfter({.type=POINT_TO_POINT, .from=fromIndex, .to=toIndex, .moveOrder=0, .pawnId=pawn->id}, &history);
-	toPoint->pawns[toPoint->pawnsInside++] = pawn;
-	fromPoint->pawns[fromPoint->pawnsInside] = nullptr;
-	checkNewPoint(toPoint, toIndex);
-}
-
 MoveStatus movePointToPoint(Board &game, Move move, MoveMade &history) {
 	MoveType moveType = determineMoveType(game, move.from, move.by);
 	if (!enumToBool(moveType))
@@ -162,19 +133,51 @@ MoveStatus movePointToPoint(Board &game, Move move, MoveMade &history) {
 	}
 
 	int additionalMove = 0;
-	if (moveType == CAPTURE && ++additionalMove)
+	if (moveType == CAPTURE && ++additionalMove) {
 		movePointToBar(game, history, toIndex);
+	}
 
-	movePointToPoint(game, history, move.from, toIndex);
+	movePointToPoint(game, history, move.from, toIndex, additionalMove);
 	return MOVE_SUCCESSFUL;
 }
 
-MoveStatus movePawn(Board &game, Move move, MoveMade &history) {
+MoveStatus handlePawnMovement(Board &game, Move move, MoveMade &history) {
 	int indexOnBar = hasPawnsOnBar(game);
 	if (indexOnBar >= 0) {
 		return moveBarToPoint(game, move, indexOnBar, history);
 	} else {
 		return movePointToPoint(game, move, history);
+	}
+}
+
+void reverseMove(Board &game, MoveMade &head) {
+	if (!head.moveOrder)
+		return;
+
+	Pawn *pawn = getPawn(game, head.prevMove->pawnId);
+	if (pawn != nullptr)
+		game.currentPlayerId = pawn->ownerId;
+
+	MoveMade *tempMove = head.prevMove;
+	int totalMoves = tempMove->moveOrder;
+	for (int i = 0; i <= totalMoves; ++i) {
+		switch (tempMove->type) {
+			case POINT_TO_POINT:
+				movePointToPoint(game, head, tempMove->to, tempMove->from, -1);
+				break;
+			case POINT_TO_BAR:
+				moveBarToPoint(game, head, tempMove->to, tempMove->from, -1);
+				break;
+			case BAR_TO_POINT:
+				movePointToBar(game, head, tempMove->to, -1);
+				break;
+			case POINT_TO_COURT:
+				break;
+			case COURT_TO_POINT:
+				break;
+		}
+		tempMove = tempMove->prevMove;
+		removeAfter(&head);
 	}
 }
 
