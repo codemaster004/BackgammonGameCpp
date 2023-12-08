@@ -118,7 +118,6 @@ void interface(UserInterface &ui) {
  */
 
 /*
- * ! Function (redefineMenu) character count: 754
- * ! Function (handleIndexes) character count: 798
- * ! Function (handlePawnPlacement) character count: 761
+ * ! Function (redefineMenu) character count: 714
+ * ! Function (pickDiceController) character count: 620
  */

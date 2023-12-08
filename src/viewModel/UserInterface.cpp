@@ -19,8 +19,6 @@ UserInterface initUI() {
 		.space=GameSpace{.gameSpace=initGameSpace()},
 		.currentMove=initMove(),
 		.pickedIndex=-1,
-		.infoMess="",
-		.errorMess="",
 		.history=MoveMade{},
 	};
 	ui.space.board = initBoard(ui.space.gameSpace);
@@ -103,7 +101,70 @@ void createDiceMenu(UserInterface &ui, char **&options, char *&keys) {
 	keys[limit - 1] = '-';
 }
 
-void initMenuElement(UserInterface &ui, char **options, const char keys[]) {}
+void initMenuElement(UserInterface &ui, char **options, const char keys[]) {
+	ui.menu.elements = new MenuElement[ui.menu.count];
+	for (int i = 0; i < ui.menu.count; ++i) {
+		ui.menu.elements[i] = MenuElement{.id=i, .key=keys[i], .value=options[i]};
+	}
+}
+
+void populateOptions(char **&options, const char *origin[], int limit) {
+	options = new char *[limit];
+	for (int i = 0; i < limit; ++i) {
+		uint length = len(origin[i]);
+		options[i] = new char[length];
+		for (int j = 0; j < length; ++j) {
+			options[i][j] = origin[i][j];
+		}
+	}
+}
+
+void populateKeys(char *&keys, const char origin[], int limit) {
+	keys = new char [limit];
+	for (int i = 0; i < limit; ++i) {
+		keys[i] = origin[i];
+	}
+}
+
+void createOptions(char **&opts, int n, MenuMode mode) {
+	const char *basic[] = {"(R)oll", "(U)ndo", "(S)ave", "(Q)uit"};
+	const char *start[] = {"(N)ew Game", "(L)oad Game", "(Q)uit"};
+	const char *point[] = {"Pick Piece (Space)", "End Turn (-)"};
+
+	switch (mode) {
+		case DEFAULT:
+			populateOptions(opts, basic, n);
+			break;
+		case PICK_POINT:
+			populateOptions(opts, point, n);
+			break;
+		case PICK_DICE:
+			break;
+		case STARTING_GAME:
+			populateOptions(opts, start, n);
+			break;
+	}
+}
+
+void createKeys(char *&keys, int n, MenuMode mode) {
+	const char basic[] = {'r', 'u', 's', 'q'};
+	const char start[] = {'n', 'l', 'q'};
+	const char point[] = {' ', '-'};
+
+	switch (mode) {
+		case DEFAULT:
+			populateKeys(keys, basic, n);
+			break;
+		case PICK_POINT:
+			populateKeys(keys, point, n);
+			break;
+		case PICK_DICE:
+			break;
+		case STARTING_GAME:
+			populateKeys(keys, start, n);
+			break;
+	}
+}
 
 void redefineMenu(UserInterface &ui) {
 	ui.menu.selected = 0;
@@ -114,18 +175,12 @@ void redefineMenu(UserInterface &ui) {
 	switch (ui.menu.mode) {
 		case DEFAULT:
 			ui.menu.count = N_GAME_MENU_OPTIONS;
-			options = (char **)(menuGameOptions);
-			keys = (char *) (menuGameKeys);
 			break;
 		case STARTING_GAME:
 			ui.menu.count = N_STARTER_MENU_OPTIONS;
-			options = (char **)(menuStarterOptions);
-			keys = (char *) (menuStarterKeys);
 			break;
 		case PICK_POINT:
 			ui.menu.count = N_PIECE_MENU_OPTIONS;
-			options = (char **)(menuPieceOptions);
-			keys = (char *) (menuPieceKeys);
 			ui.menu.selected = -1;
 			ui.pickedIndex = 0;
 			break;
@@ -133,12 +188,10 @@ void redefineMenu(UserInterface &ui) {
 			createDiceMenu(ui, options, keys);
 			break;
 	}
+	createOptions(options, ui.menu.count, ui.menu.mode);
+	createKeys(keys, ui.menu.count, ui.menu.mode);
 	// Convert to objects
 	initMenuElement(ui, options, keys);
-	ui.menu.elements = new MenuElement [ui.menu.count];
-	for (int i = 0; i < ui.menu.count; ++i) {
-		ui.menu.elements[i] = MenuElement {.id=i, .key=keys[i], .value=options[i]};
-	}
 }
 
 Move initMove() {
