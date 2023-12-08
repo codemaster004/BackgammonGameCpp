@@ -57,14 +57,14 @@ Court *pawnsCourt(Board &game, Pawn *pawn) {
 }
 
 void movePointToPoint(Board &game, MoveMade &history, int fromIndex, int toIndex, int order) {
-	if (order >= 0) {
-		addAfter({.type=POINT_TO_POINT, .from=fromIndex, .to=toIndex, .moveOrder=order}, &history);
-		history.moveOrder++;
-	}
-
 	Point *toPoint = &game.points[toIndex];
 	Point *fromPoint = &game.points[fromIndex];
 	Pawn *pawn = fromPoint->pawns[--fromPoint->pawnsInside];
+
+	if (order >= 0) {
+		addAfter({.type=POINT_TO_POINT, .from=fromIndex, .to=toIndex, .moveOrder=order, .pawnId=pawn->id}, &history);
+		history.moveOrder++;
+	}
 
 	toPoint->pawns[toPoint->pawnsInside++] = pawn;
 	fromPoint->pawns[fromPoint->pawnsInside] = nullptr;

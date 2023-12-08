@@ -62,15 +62,15 @@ void deserializeHistory(const uint8_t *buffer, size_t limit, MoveMade &history) 
 }
 
 void saveHistoryToFile(char filename[], MoveMade &head) {
-	auto *bufferTable = new uint8_t[head.moveOrder*4];
-	const char *hisDir = "../moves/";
+	const char hisDir[] = "../moves/";
+	auto *bufferTable = new uint8_t[head.moveOrder*MOVE_SIZE];
 
 	size_t index = 0;
 	serializeHistory(head, bufferTable, index);
 	char *encodedFile = encodeBase64(bufferTable, index);
 	delete[] bufferTable;
 
-	char *path = joinStrings(hisDir, filename);
+	char *path = joinStrings(hisDir, sizeof(hisDir) - 1, filename, 9);
 	FILE *file = fopen(path, "w");
 	delete[] path;
 
