@@ -4,7 +4,6 @@
 // Maybe keep pawn color as enum?
 
 #include "cstring"
-#include "cstdint"
 
 #include "Pawn.h"
 #include "SerializeToFile.h"
@@ -63,6 +62,78 @@ Pawn *getPawn(Board &game, int id) {
 	return nullptr;
 }
 
+void resizeTable(int *&table, int &size, int increase=1) {
+	int newSize = size + increase;
+	// Create a new array with size increased by 1
+	int *newArray = new int[newSize];
+
+	// Copy the elements from the old array to the new array
+	for (int i = 0; i < size; ++i) {
+		newArray[i] = table[i];
+	}
+
+	// Initialize the new element
+	for (int i = size; i < newSize; ++i) {
+		newArray[i] = 0;
+	}
+
+	// Delete the old array
+	delete[] table;
+
+	// Update the original array pointer and size
+	table = newArray;
+	size = newSize;
+}
+
+int *findPlayerIndexes(Board &game, int playerId, int &count, int limit=0) {
+	auto indexes = new int [count];
+	for (int i = 0; i < nPoints; ++i) {
+		Point point = game.points[i];
+		if (!limit || point.pawnsInside <= limit) {
+			if (point.pawnsInside > 0 && point.pawns[0]->ownerId == playerId) {
+				resizeTable(indexes, count, 1);
+				indexes[count - 1] = i;
+			}
+		}
+	}
+
+	return indexes;
+}
+
+void initTable(int *&table, int count, int value) {
+	for (int i = 0; i < count; ++i) {
+		table[i] = value;
+	}
+}
+
+int *forceCapture(Board &game, int moveBy, int direction, int &count) {
+	// search for all indexes of the player pawns
+	int playerCount = 0;
+	int *playerIndexes = findPlayerIndexes(game, game.currentPlayerId, playerCount);
+
+	// find opponents indexes with < CAPTURE THRESHOLD
+	int opponentCount = 0;
+	int *opponentIndexes = findPlayerIndexes(game, (game.currentPlayerId + 1) % N_PLAYERS, opponentCount, CAPTURE_THRESHOLD);
+
+	// allocate here maybe return count
+	auto capturingMoves = new int [count];
+
+	for (int i = 0; i < playerCount; ++i) {
+		for (int j = 0; j < opponentCount; ++j) {
+			// Checking all possibilities
+			if (playerIndexes[i] + moveBy * direction == opponentIndexes[j]) {
+				resizeTable(capturingMoves, count, 1);
+				capturingMoves[count - 1] = playerIndexes[i];
+			}
+		}
+	}
+
+	delete[] playerIndexes;
+	delete[] opponentIndexes;
+
+	return capturingMoves;
+}
+
 MoveType determineMoveType(Board &game, int pointIndex, int moveBy) {
 	int destination = canBeMoved(game, pointIndex, moveBy);
 	if (destination < 0 || destination > nPoints) {
@@ -70,6 +141,21 @@ MoveType determineMoveType(Board &game, int pointIndex, int moveBy) {
 			return ESCAPE_BOARD;
 		} else {
 			return NOT_ALLOWED;
+		}
+	}
+	int captureCount = 0;
+	int *captureIndexes = forceCapture(game, moveBy, pointIndex > destination ? -1 : 1, captureCount);
+	// capturing a pawn is possible in this move
+	if (captureCount > 0) {
+		bool forced = false;
+		for (int i = 0; i < captureCount; ++i)
+			if (captureIndexes[i] == pointIndex)
+				forced = true;
+		delete[] captureIndexes;
+
+		// the player does not want to capture
+		if (!forced) {
+			return CAPTURE_POSSIBLE;
 		}
 	}
 	return canMoveTo(game, game.points[pointIndex].pawns[0], destination);
@@ -123,6 +209,8 @@ MoveStatus movePointToPoint(Board &game, Move move, MoveMade &history) {
 	MoveType moveType = determineMoveType(game, move.from, move.by);
 	if (!enumToBool(moveType))
 		return MOVE_FAILED;
+	if (moveType == CAPTURE_POSSIBLE)
+		return FORCE_CAPTURE;
 
 	short direction = game.points[move.from].pawns[0]->moveDirection;
 	int toIndex = move.from + move.by * direction;
@@ -150,6 +238,24 @@ MoveStatus handlePawnMovement(Board &game, Move move, MoveMade &history) {
 	}
 }
 
+void reverseMove(Board &game, MoveMade &head, MoveMade *move) {
+	switch (move->type) {
+		case POINT_TO_POINT:
+			movePointToPoint(game, head, move->to, move->from, -1);
+			break;
+		case POINT_TO_BAR:
+			moveBarToPoint(game, head, move->to, move->from, -1);
+			break;
+		case BAR_TO_POINT:
+			movePointToBar(game, head, move->to, -1);
+			break;
+		case POINT_TO_COURT:
+			break;
+		case COURT_TO_POINT:
+			break;
+	}
+}
+
 void reverseMove(Board &game, MoveMade &head) {
 	if (!head.moveOrder)
 		return;
@@ -161,21 +267,7 @@ void reverseMove(Board &game, MoveMade &head) {
 	MoveMade *tempMove = head.prevMove;
 	int totalMoves = tempMove->moveOrder;
 	for (int i = 0; i <= totalMoves; ++i) {
-		switch (tempMove->type) {
-			case POINT_TO_POINT:
-				movePointToPoint(game, head, tempMove->to, tempMove->from, -1);
-				break;
-			case POINT_TO_BAR:
-				moveBarToPoint(game, head, tempMove->to, tempMove->from, -1);
-				break;
-			case BAR_TO_POINT:
-				movePointToBar(game, head, tempMove->to, -1);
-				break;
-			case POINT_TO_COURT:
-				break;
-			case COURT_TO_POINT:
-				break;
-		}
+		reverseMove(game, head, tempMove);
 		tempMove = tempMove->prevMove;
 		removeAfter(&head);
 	}

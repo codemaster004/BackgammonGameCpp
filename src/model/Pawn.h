@@ -26,6 +26,7 @@ enum MoveType {
 	CAPTURE,
 	NOT_ALLOWED,
 	ESCAPE_BOARD,
+	CAPTURE_POSSIBLE,
 };
 
 enum PawnColor {
@@ -38,6 +39,7 @@ enum MoveStatus {
 	PAWNS_ON_BAR,
 	MOVE_FAILED,
 	MOVE_TO_COURT,
+	FORCE_CAPTURE,
 };
 
 typedef struct {
