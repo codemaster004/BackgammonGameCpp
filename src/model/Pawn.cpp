@@ -159,7 +159,8 @@ void reverseMove(Board &game, MoveMade &head) {
 		game.currentPlayerId = pawn->ownerId;
 
 	MoveMade *tempMove = head.prevMove;
-	for (int i = 0; i <= tempMove->moveOrder; ++i) {
+	int totalMoves = tempMove->moveOrder;
+	for (int i = 0; i <= totalMoves; ++i) {
 		switch (tempMove->type) {
 			case POINT_TO_POINT:
 				movePointToPoint(game, head, tempMove->to, tempMove->from, -1);
@@ -175,6 +176,7 @@ void reverseMove(Board &game, MoveMade &head) {
 			case COURT_TO_POINT:
 				break;
 		}
+		tempMove = tempMove->prevMove;
 		removeAfter(&head);
 	}
 }
