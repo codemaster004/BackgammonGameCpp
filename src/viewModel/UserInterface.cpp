@@ -80,7 +80,7 @@ void createDiceOption(UserInterface ui, char **&options, int index, int value) {
 
 void createDiceMenu(UserInterface &ui, char **&options, char *&keys) {
 	int limit = calcDiceLimit(ui);
-	ui.menu.elementsCount = limit;
+	ui.menu.count = limit;
 	options = new char* [limit];
 	keys = new char [limit];
 
@@ -110,19 +110,20 @@ void redefineMenu(UserInterface &ui) {
 	char **options = nullptr;
 	char *keys = nullptr;
 
+	// TODO: SHORTEN SEPARATE
 	switch (ui.menu.mode) {
 		case DEFAULT:
-			ui.menu.elementsCount = N_GAME_MENU_OPTIONS;
+			ui.menu.count = N_GAME_MENU_OPTIONS;
 			options = (char **)(menuGameOptions);
 			keys = (char *) (menuGameKeys);
 			break;
 		case STARTING_GAME:
-			ui.menu.elementsCount = N_STARTER_MENU_OPTIONS;
+			ui.menu.count = N_STARTER_MENU_OPTIONS;
 			options = (char **)(menuStarterOptions);
 			keys = (char *) (menuStarterKeys);
 			break;
 		case PICK_POINT:
-			ui.menu.elementsCount = N_PIECE_MENU_OPTIONS;
+			ui.menu.count = N_PIECE_MENU_OPTIONS;
 			options = (char **)(menuPieceOptions);
 			keys = (char *) (menuPieceKeys);
 			ui.menu.selected = -1;
@@ -134,8 +135,8 @@ void redefineMenu(UserInterface &ui) {
 	}
 	// Convert to objects
 	initMenuElement(ui, options, keys);
-	ui.menu.elements = new MenuElement [ui.menu.elementsCount];
-	for (int i = 0; i < ui.menu.elementsCount; ++i) {
+	ui.menu.elements = new MenuElement [ui.menu.count];
+	for (int i = 0; i < ui.menu.count; ++i) {
 		ui.menu.elements[i] = MenuElement {.id=i, .key=keys[i], .value=options[i]};
 	}
 }

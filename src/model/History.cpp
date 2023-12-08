@@ -99,6 +99,7 @@ void loadHistoryFromFile(char filename[], MoveMade &head) {
 	while ((ch = fgetc(file)) != EOF) {
 		addElement(bufferTable, ch);
 	}
+
 	fclose(file);
 	size_t size = bufferTable.dataCount;
 	auto transformedTable = new char [size];
@@ -110,5 +111,4 @@ void loadHistoryFromFile(char filename[], MoveMade &head) {
 
 	deserializeHistory(decoded, finalDecodedDataLen((int)(size)), head);
 
-//	uint8_t *decodedBoard = 0;
 }

@@ -103,11 +103,14 @@ void createErrorMessage(UserInterface &ui, MoveStatus errorId) {
 		messageSet(ui.errorMess, "Invalid Point");
 	} else if (errorId == PAWNS_ON_BAR) {
 		messageSet(ui.errorMess, "Pawns on Bar");
+	} else if (errorId == FORCE_CAPTURE) {
+		messageSet(ui.errorMess, "No Free Will");
 	}
 }
 
 void pickDiceController(int input, UserInterface &ui) {
 	// TODO: rewrite for N dices
+	// TODO: SHORTEN
 	int *dice = ui.board.dices;
 	switch (input) {
 		case '1':
@@ -211,23 +214,15 @@ void inputController(int input, UserInterface &ui) {
 			}
 			break;
 		case KEY_UP:
-			if (ui.menu.mode == PICK_POINT) {
-				ui.pickedIndex = newSelected(ui.pickedIndex, 1, nPoints + 1);
-			}
-			break;
 		case KEY_DOWN:
 			if (ui.menu.mode == PICK_POINT) {
-				ui.pickedIndex = newSelected(ui.pickedIndex, -1, nPoints + 1);
+				ui.pickedIndex = newSelected(ui.pickedIndex, input == KEY_UP ? 1 : -1, nPoints + 1);
 			}
 			break;
 		case KEY_LEFT:
-			if (ui.menu.mode != PICK_POINT) {
-				ui.menu.selected = newSelected(ui.menu.selected, -1, ui.menu.elementsCount);
-			}
-			break;
 		case KEY_RIGHT:
 			if (ui.menu.mode != PICK_POINT) {
-				ui.menu.selected = newSelected(ui.menu.selected, 1, ui.menu.elementsCount);
+				ui.menu.selected = newSelected(ui.menu.selected, input == KEY_RIGHT ? 1 : -1, ui.menu.count);
 			}
 			break;
 		default:

@@ -191,37 +191,43 @@ int generateColorsForIndexes(char **text, int count, int pickedIndex, UiColorsId
 	}
 }
 
+void handleIndexes(Placement posBot, Placement posTop, int selected, int width, char **indexes, int offsetTop, int offsetBot) {
+	UiColorsId *colors = nullptr;
+
+	int nColours = generateColorsForIndexes(&indexes[offsetTop], POINTS_PER_BOARD, selected, colors);
+	drawCenteredText(posBot, pieceSpacing, width,
+					 &indexes[offsetTop], POINTS_PER_BOARD, colors, nColours);
+	delete[] colors;
+
+	colors = nullptr;
+	nColours = generateColorsForIndexes(&indexes[offsetBot], POINTS_PER_BOARD, selected, colors);
+	drawCenteredText(posTop, pieceSpacing, width,
+					 &indexes[offsetBot], POINTS_PER_BOARD, colors, nColours);
+	delete[] colors;
+}
+
 // TODO: REWRITE
 void handleIndexes(char **indexes, int pickedIndex, int digits, Placement posTop, Placement posBot) {
 	revertTable(indexes, indexes + nPoints / 2);
 
+	int indexWidth = pieceWidth * POINTS_PER_BOARD + pieceSpacing * (POINTS_PER_BOARD - 1);
+	Pos indexChange = {indexWidth + BORDER_WIDTH * 2 + BAR_WIDTH + pieceSpacing / 2 * 2, 0};
+	posTop.max.x = posTop.min.x + indexWidth;
+	posBot.max.x = posBot.min.x + indexWidth;
 	for (int i = 0; i < N_BOARDS; ++i) {
-		// TODO: this value as default with for one
-		posTop.max.x = posTop.min.x + pieceWidth * POINTS_PER_BOARD + pieceSpacing * (POINTS_PER_BOARD - 1);
-		posBot.max.x = posTop.max.x;
 
-		UiColorsId *colors = nullptr;
+		handleIndexes(posBot, posTop, pickedIndex, (int) (digits),
+					  indexes, i * POINTS_PER_BOARD, (int)(nPoints) / 2 + i * POINTS_PER_BOARD);
 
-		int nColours = generateColorsForIndexes(&indexes[i * POINTS_PER_BOARD], POINTS_PER_BOARD, pickedIndex, colors);
-		drawCenteredText(posBot, pieceSpacing, (int) (digits),
-						 &indexes[i * POINTS_PER_BOARD], POINTS_PER_BOARD, colors, nColours);
-		delete[] colors;
-
-		colors = nullptr;
-		nColours = generateColorsForIndexes(&indexes[nPoints / 2 + i * POINTS_PER_BOARD], POINTS_PER_BOARD, pickedIndex, colors);
-		drawCenteredText(posTop, pieceSpacing, (int) (digits),
-						 &indexes[nPoints / 2 + i * POINTS_PER_BOARD], POINTS_PER_BOARD, colors, nColours);
-		delete[] colors;
-
-		posTop.min.x = posTop.max.x + BORDER_WIDTH * 2 + BAR_WIDTH + pieceSpacing / 2 * 2;
-		posBot.min.x = posTop.min.x;
+		moveSpace(posTop, indexChange);
+		moveSpace(posBot, indexChange);
 	}
 }
 
 void handleMenu(Menu menu, Pos center) {
-	Placement menuSpace = initMenuSpace(center, menu.elements, menu.elementsCount);
+	Placement menuSpace = initMenuSpace(center, menu.elements, menu.count);
 
-	for (int i = 0; i < menu.elementsCount; ++i) {
+	for (int i = 0; i < menu.count; ++i) {
 		UiColorsId color;
 		if (menu.selected == -1) {
 			color = FOREGROUND;
@@ -238,30 +244,35 @@ void handleMenu(Menu menu, Pos center) {
 	}
 }
 
+void placePawns(Board &game, Placement &space, int indexTop, int indexBot) {
+
+	int count = game.points[indexTop].pawnsInside;
+	if (count) {
+		space.max.y = space.min.y + count;
+		drawLine(*game.points[indexTop].pawns[0], space);
+	}
+
+
+	count = game.points[indexBot].pawnsInside;
+	if (count) {
+		space.max.y = space.min.y + count;
+		moveSpace(space, Pos {0, boardHeight - count});
+		drawLine(*game.points[indexBot].pawns[0], space);
+		moveSpace(space, Pos {0, - boardHeight + count});
+	}
+}
+
 void handlePawnPlacement(Board &game, Placement space) {
 	space.min.x += BORDER_WIDTH + pieceSpacing / 2;
 	space.min.y += BORDER_WIDTH;
 	space.max.x = space.min.x;
 	int change = pieceWidth + pieceSpacing;
+
+	int base = POINTS_PER_BOARD * N_BOARDS;
 	for (int i = 0; i < N_BOARDS; ++i) {
 		for (int j = 0; j < POINTS_PER_BOARD; ++j) {
-			int indexTop = POINTS_PER_BOARD * N_BOARDS + i * POINTS_PER_BOARD + j;
-			int count = game.points[indexTop].pawnsInside;
-			if (count) {
-				space.max.y = space.min.y + count;
-				drawLine(*game.points[indexTop].pawns[0], space);
-			}
-
-			int indexBot = POINTS_PER_BOARD * N_BOARDS - (i * POINTS_PER_BOARD + j) - 1;
-			count = game.points[indexBot].pawnsInside;
-			if (count) {
-				space.max.y = space.min.y + count;
-				moveSpace(space, Pos {0, boardHeight - count});
-				drawLine(*game.points[indexBot].pawns[0], space);
-				moveSpace(space, Pos {0, - boardHeight + count});
-			}
-
-//			drawLine(pawn1, space);
+			int offset = i * POINTS_PER_BOARD + j;
+			placePawns(game, space, base + offset, base - offset - 1);
 			moveSpace(space, Pos{change, 0});
 		}
 		moveSpace(space, Pos{pieceSpacing / 2 * 2 + borders + BAR_WIDTH - pieceSpacing, 0});

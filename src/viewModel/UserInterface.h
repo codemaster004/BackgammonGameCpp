@@ -42,7 +42,7 @@ typedef struct {
 typedef struct Menu {
 	MenuMode mode;
 	MenuElement *elements;
-	int elementsCount;
+	int count;
 	int selected;
 } Menu;
 
