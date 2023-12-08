@@ -134,6 +134,22 @@ int *forceCapture(Board &game, int moveBy, int direction, int &count) {
 	return capturingMoves;
 }
 
+MoveType checkForCapture(const int *indexes, int count, int picked) {
+	if (count > 0) {
+		// capturing a pawn is possible in this move
+		bool forced = false;
+		for (int i = 0; i < count; ++i)
+			if (indexes[i] == picked)
+				forced = true;
+		delete[] indexes;
+
+		if (!forced)
+			// the player does not want to capture
+			return CAPTURE_POSSIBLE;
+	}
+	return POSSIBLE;
+}
+
 MoveType determineMoveType(Board &game, int pointIndex, int moveBy) {
 	int destination = canBeMoved(game, pointIndex, moveBy);
 	if (destination < 0 || destination > nPoints) {
@@ -145,19 +161,10 @@ MoveType determineMoveType(Board &game, int pointIndex, int moveBy) {
 	}
 	int captureCount = 0;
 	int *captureIndexes = forceCapture(game, moveBy, pointIndex > destination ? -1 : 1, captureCount);
-	// capturing a pawn is possible in this move
-	if (captureCount > 0) {
-		bool forced = false;
-		for (int i = 0; i < captureCount; ++i)
-			if (captureIndexes[i] == pointIndex)
-				forced = true;
-		delete[] captureIndexes;
+	MoveType forceMove = checkForCapture(captureIndexes, captureCount, pointIndex);
+	if (forceMove == CAPTURE_POSSIBLE)
+		return CAPTURE_POSSIBLE;
 
-		// the player does not want to capture
-		if (!forced) {
-			return CAPTURE_POSSIBLE;
-		}
-	}
 	return canMoveTo(game, game.points[pointIndex].pawns[0], destination);
 }
 
