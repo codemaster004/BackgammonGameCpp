@@ -108,8 +108,7 @@ void drawSpreadText(Placement pos, char **text, int count, int selected) {
 	Placement tempPos = pos;
 	tempPos.max.x = tempPos.min.x + textSpace;
 
-	UiColorsId *colors;
-	colors = new UiColorsId[count];
+	auto *colors = new UiColorsId [count];
 	for (int i = 0; i < count; ++i) {
 		if (selected < 0) {
 			colors[i] = FOREGROUND;

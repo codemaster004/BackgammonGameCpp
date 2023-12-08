@@ -6,6 +6,7 @@
 #define BACKGAMMONGAME_MENUCONFIGS_H
 
 #define N_GAME_MENU_OPTIONS 4
+// TODO: MOVE ALL THIS
 const char *menuGameOptions[N_GAME_MENU_OPTIONS] = {"(R)oll", "(U)ndo", "(S)ave", "(Q)uit"};
 const char menuGameKeys[N_GAME_MENU_OPTIONS] = {'r', 'u', 's', 'q'};
 

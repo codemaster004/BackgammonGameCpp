@@ -8,6 +8,7 @@
 #include "Storage.h"
 #include "SerializeToFile.h"
 #include "Player.h"
+#include "Pawn.h"
 
 bool removingFromBar(Board &game, Move move) {
 	if (hasPawnsOnBar(game.bar, game.currentPlayerId)) {
@@ -53,6 +54,58 @@ Court *pawnsCourt(Board &game, Pawn *pawn) {
 		}
 	}
 	return nullptr;
+}
+
+void movePointToPoint(Board &game, MoveMade &history, int fromIndex, int toIndex, int order) {
+	Point *toPoint = &game.points[toIndex];
+	Point *fromPoint = &game.points[fromIndex];
+	Pawn *pawn = fromPoint->pawns[--fromPoint->pawnsInside];
+
+	if (order >= 0) {
+		addAfter({.type=POINT_TO_POINT, .from=fromIndex, .to=toIndex, .moveOrder=order, .pawnId=pawn->id}, &history);
+		history.moveOrder++;
+	}
+
+	toPoint->pawns[toPoint->pawnsInside++] = pawn;
+	fromPoint->pawns[fromPoint->pawnsInside] = nullptr;
+	checkNewPoint(toPoint, toIndex);
+}
+
+void moveBarToPoint(Board &game, MoveMade &history, int fromIndex, int toIndex, int order) {
+	if (order >= 0) {
+		addAfter({BAR_TO_POINT, fromIndex, toIndex, order, game.bar.pawns[fromIndex]->id}, &history);
+		history.moveOrder++;
+	}
+
+	Point *toPoint = &game.points[toIndex];
+	toPoint->pawns[toPoint->pawnsInside++] = game.bar.pawns[fromIndex];
+	game.bar.pawnsInside--;
+	game.bar.pawns[fromIndex] = nullptr;
+}
+
+void movePointToCourt(Board &game, MoveMade &history, int fromIndex, int order) {
+	Point *point = &game.points[fromIndex];
+	Pawn *pawn = point->pawns[--point->pawnsInside];
+	Court *court = pawnsCourt(game, pawn);
+	court->pawns[court->pawnsInside++] = pawn;
+
+	if (order >= 0) {
+		addAfter({POINT_TO_COURT, fromIndex, court->pawnsInside - 1, order, pawn->id}, &history);
+		history.moveOrder++;
+	}
+}
+
+void movePointToBar(Board &game, MoveMade &history, int fromIndex, int order) {
+	Point *fromPoint = &game.points[fromIndex];
+	for (int i = 0; i < CAPTURE_THRESHOLD; ++i) {
+		if (order >= 0) {
+			addAfter({.type=POINT_TO_BAR, .from=fromIndex, .to=game.bar.pawnsInside, .moveOrder=order,
+						 .pawnId=fromPoint->pawns[i]->id}, &history);
+			history.moveOrder++;
+		}
+		game.bar.pawns[game.bar.pawnsInside++] = fromPoint->pawns[i];
+	}
+	fromPoint->pawnsInside -= CAPTURE_THRESHOLD;
 }
 
 void serialisePoint(Point point, uint8_t *buffer, size_t &offset) {

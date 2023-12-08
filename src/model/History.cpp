@@ -6,6 +6,9 @@
 #include "History.h"
 #include "SerializeToFile.h"
 #include "../Base64.h"
+#include "../ByteContainer.h"
+
+#define MOVE_SIZE (sizeof(int) * 5)
 
 
 void addAfter(MoveMade data, MoveMade *lastMove) {
@@ -13,7 +16,6 @@ void addAfter(MoveMade data, MoveMade *lastMove) {
 	*move = data;
 	move->prevMove = lastMove->prevMove;
 	lastMove->prevMove = move;
-	lastMove->moveOrder++;
 }
 
 void removeAfter(MoveMade *latestMove) {
@@ -31,7 +33,15 @@ void serializeMove(MoveMade *move, uint8_t *buffer, size_t &offset) {
 	serializeInt(move->pawnId, buffer, offset);
 }
 
-void serializeHistory(MoveMade head, uint8_t *buffer, size_t &offset) {
+void deserializeMove(const uint8_t *buffer, size_t &offset, MoveMade *move) {
+	move->type = (MoveDirection) (deserializeInt(buffer, offset));
+	move->from = deserializeInt(buffer, offset);
+	move->to = deserializeInt(buffer, offset);
+	move->moveOrder = deserializeInt(buffer, offset);
+	move->pawnId = deserializeInt(buffer, offset);
+}
+
+void serializeHistory(MoveMade &head, uint8_t *buffer, size_t &offset) {
 	MoveMade *element = head.prevMove;
 	for (int _ = 0; _ < head.moveOrder; ++_) {
 		serializeMove(element, buffer, offset);
@@ -39,15 +49,30 @@ void serializeHistory(MoveMade head, uint8_t *buffer, size_t &offset) {
 	}
 }
 
-void saveHistoryToFile(char filename[], MoveMade head) {
-	auto *bufferTable = new uint8_t[head.moveOrder*4];
+void deserializeHistory(const uint8_t *buffer, size_t limit, MoveMade &history) {
+	size_t index = 0;
+	MoveMade *tail = &history;
+	while (index < limit / MOVE_SIZE * MOVE_SIZE) {
+		MoveMade tempMove = {};
+		deserializeMove(buffer, index, &tempMove);
+		addAfter(tempMove, tail);
+		history.moveOrder++;
+		tail = tail->prevMove;
+	}
+}
+
+void saveHistoryToFile(char filename[], MoveMade &head) {
+	const char hisDir[] = "../moves/";
+	auto *bufferTable = new uint8_t[head.moveOrder*MOVE_SIZE];
 
 	size_t index = 0;
 	serializeHistory(head, bufferTable, index);
 	char *encodedFile = encodeBase64(bufferTable, index);
 	delete[] bufferTable;
 
-	FILE *file = fopen("../games/History.txt", "w");
+	char *path = joinStrings(hisDir, sizeof(hisDir) - 1, filename, 9);
+	FILE *file = fopen(path, "w");
+	delete[] path;
 
 	int encodedLen = finalEncodedDataLen((int) (index));
 	if (file != nullptr) {
@@ -59,5 +84,31 @@ void saveHistoryToFile(char filename[], MoveMade head) {
 	}
 
 	delete[] encodedFile;
+}
 
+void loadHistoryFromFile(char filename[], MoveMade &head) {
+	ByteContainer bufferTable;
+	initByteContainer(bufferTable);
+	const char *hisDir = "../moves/";
+
+	char *path = joinStrings(hisDir, filename);
+	FILE *file = fopen(path, "r");
+	delete[] path;
+
+	int ch;
+	while ((ch = fgetc(file)) != EOF) {
+		addElement(bufferTable, ch);
+	}
+	fclose(file);
+	size_t size = bufferTable.dataCount;
+	auto transformedTable = new char [size];
+	flatten(bufferTable, transformedTable);
+
+	destroyByteContainer(bufferTable);
+
+	uint8_t *decoded = decodeBase64(transformedTable, size);
+
+	deserializeHistory(decoded, finalDecodedDataLen((int)(size)), head);
+
+//	uint8_t *decodedBoard = 0;
 }
