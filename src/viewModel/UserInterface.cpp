@@ -13,9 +13,9 @@
 
 UserInterface initUI() {
 	auto ui = UserInterface{
-		.gameName=gameName,
-		.authorId=creatorId,
-		.authorName=creatorName,
+		.gameName="Backgammon",
+		.authorId="s197712",
+		.authorName="Filip Dabkowski",
 		.space=GameSpace{.gameSpace=initGameSpace()},
 		.currentMove=initMove(),
 		.pickedIndex=-1,

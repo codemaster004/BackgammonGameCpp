@@ -12,7 +12,7 @@
 
 #define N_BOARDS 2
 #define POINTS_PER_BOARD 6
-#define PAWNS_PER_POINT 6
+#define PAWNS_PER_POINT 15
 #define PAWNS_PER_PLAYER 15
 #define N_DICES 2
 

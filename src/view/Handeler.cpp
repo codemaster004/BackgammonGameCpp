@@ -255,14 +255,14 @@ void handleMenu(Menu menu, Pos center) {
 
 void placePawns(Board &game, Placement &space, int indexTop, int indexBot) {
 
-	int count = game.points[indexTop].pawnsInside;
+	int count = min(game.points[indexTop].pawnsInside, POINT_HEIGHT);
 	if (count) {
 		space.max.y = space.min.y + count;
 		drawLinePawn(*game.points[indexTop].pawns[0], space);
 	}
 
 
-	count = game.points[indexBot].pawnsInside;
+	count = min(game.points[indexBot].pawnsInside, POINT_HEIGHT);
 	if (count) {
 		space.max.y = space.min.y + count;
 		moveSpace(space, Pos {0, boardHeight - count});

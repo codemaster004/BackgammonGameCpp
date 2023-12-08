@@ -89,10 +89,10 @@ void drawBorders(Placement pos) {
 
 void drawPiece(const char *symbol, int offsetX, int offsetY) {
 	int totalOffset = offsetX + pieceSpacing / 2;
-	for (int i = 0; i < PAWNS_PER_POINT; i += 2) {
+	for (int i = 0; i < POINTS_PER_BOARD; i += 2) {
 		Placement offset = {
 			.min = Pos{.x = totalOffset, .y = offsetY},
-			.max = Pos{.x = totalOffset, .y = offsetY + PAWNS_PER_POINT}
+			.max = Pos{.x = totalOffset, .y = offsetY + POINT_HEIGHT}
 		};
 
 		drawLineString(symbol, offset);
@@ -111,8 +111,8 @@ void drawPieces(int offsetX, int offsetY) {
 	drawPiece(reversePiece, offsetX + pieceWidth + pieceSpacing, offsetY);
 
 	drawPiece(piece1, offsetX + pieceWidth + pieceSpacing,
-			  offsetY + PAWNS_PER_POINT + pieceSpacing);
-	drawPiece(piece2, offsetX, offsetY + PAWNS_PER_POINT + pieceSpacing);
+			  offsetY + POINT_HEIGHT + pieceSpacing);
+	drawPiece(piece2, offsetX, offsetY + POINT_HEIGHT + pieceSpacing);
 }
 
 void drawCenteredText(Placement pos, int spacing, int len, char **text, int count, UiColorsId *colors, int nColors) {
@@ -182,7 +182,10 @@ void drawVerticalInfo(Pos pos, const char *label, int value, UiColorsId color, b
 	}
 }
 
+// TODO: SHORTEN
 void drawBar(int offsetX, int offsetY, int height, int onBar[2], int selected) {
+	const char barLabel[] = {"[BAR]"};
+
 	attron(COLOR_PAIR(FOREGROUND));
 	mvprintw(offsetY, offsetX, "%c", borderCorner);
 	drawLine(borderVertical, Placement{offsetX, offsetY + 1,
