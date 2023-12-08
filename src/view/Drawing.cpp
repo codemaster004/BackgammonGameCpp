@@ -21,7 +21,26 @@ void printColor(UiColorsId color, int x, int y, char text) {
 	attroff(COLOR_PAIR(color));
 }
 
-void drawLine(const char *symbol, Placement pos) {
+void drawLine(char symbol, Placement pos) {
+	int deltaX = pos.max.x - pos.min.x;
+	int deltaY = pos.max.y - pos.min.y;
+
+	int steps = max(abs(deltaX), abs(deltaY));
+
+	float xIncrement = (float) (deltaX) / (float) (steps);
+	float yIncrement = (float) (deltaY) / (float) (steps);
+
+	auto x = (float) (pos.min.x);
+	auto y = (float) (pos.min.y);
+
+	for (int i = 0; i < steps; ++i) {
+		mvprintw((int) (y), (int) (x), "%c", symbol);
+		x += xIncrement;
+		y += yIncrement;
+	}
+}
+
+void drawLineString(const char symbol[], Placement pos) {
 	int deltaX = pos.max.x - pos.min.x;
 	int deltaY = pos.max.y - pos.min.y;
 
@@ -40,7 +59,10 @@ void drawLine(const char *symbol, Placement pos) {
 	}
 }
 
-void drawLine(Pawn pawn, Placement pos) {
+void drawLinePawn(Pawn pawn, Placement pos) {
+	const char pawn1[] = { ")(" };
+	const char pawn2[] = { "[]" };
+
 	for (int y = pos.min.y; y < pos.max.y; y++) {
 		if (pawn.color == PAWN_WHITE) {
 			printColor(BACKGROUND_LIGHT, pos.min.x, y, pawn1);
@@ -51,10 +73,10 @@ void drawLine(Pawn pawn, Placement pos) {
 }
 
 void drawCorners(Placement pos) {
-	mvprintw(pos.min.y, pos.min.x, borderCorner);
-	mvprintw(pos.min.y, pos.max.x, borderCorner);
-	mvprintw(pos.max.y, pos.min.x, borderCorner);
-	mvprintw(pos.max.y, pos.max.x, borderCorner);
+	mvprintw(pos.min.y, pos.min.x, "%c", borderCorner);
+	mvprintw(pos.min.y, pos.max.x, "%c", borderCorner);
+	mvprintw(pos.max.y, pos.min.x, "%c", borderCorner);
+	mvprintw(pos.max.y, pos.max.x, "%c", borderCorner);
 }
 
 void drawBorders(Placement pos) {
@@ -72,13 +94,16 @@ void drawPiece(const char *symbol, int offsetX, int offsetY) {
 			.min = Pos{.x = totalOffset, .y = offsetY},
 			.max = Pos{.x = totalOffset, .y = offsetY + PAWNS_PER_POINT}
 		};
-		// placement
-		drawLine(symbol, offset);
+
+		drawLineString(symbol, offset);
 		totalOffset += (pieceWidth + pieceSpacing) * 2;
 	}
 }
 
 void drawPieces(int offsetX, int offsetY) {
+	const char piece1[] = { "/\\" };
+	const char piece2[] = { "''" };
+
 	char *reversePiece = reverseString(piece1);
 	drawPiece(reversePiece, offsetX, offsetY);
 
@@ -159,10 +184,10 @@ void drawVerticalInfo(Pos pos, const char *label, int value, UiColorsId color, b
 
 void drawBar(int offsetX, int offsetY, int height, int onBar[2], int selected) {
 	attron(COLOR_PAIR(FOREGROUND));
-	mvprintw(offsetY, offsetX, borderCorner);
+	mvprintw(offsetY, offsetX, "%c", borderCorner);
 	drawLine(borderVertical, Placement{offsetX, offsetY + 1,
 									   offsetX, offsetY + height - 1});
-	mvprintw(offsetY + height - 1, offsetX, borderCorner);
+	mvprintw(offsetY + height - 1, offsetX, "%c", borderCorner);
 
 	drawVerticalInfo({offsetX, offsetY + BORDER_WIDTH}, "WHT ", onBar[0]);
 	drawVerticalInfo({offsetX, offsetY + (height) / 2 + BORDER_WIDTH + 1}, "BLC ", onBar[1]);

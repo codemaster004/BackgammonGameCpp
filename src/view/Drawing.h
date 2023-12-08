@@ -11,7 +11,7 @@ void printColor(UiColorsId color, int x, int y, const char *text);
 
 void printColor(UiColorsId color, int x, int y, char text);
 
-void drawLine(const char *symbol, Placement pos);
+void drawLine(char symbol, Placement pos);
 
 void drawCorners(Placement pos);
 
@@ -25,7 +25,7 @@ void drawCenteredText(Placement pos, int spacing, int len, char **text, int coun
 
 void drawSpreadText(Placement pos, char **text, int count, int selected=-1);
 
-void drawLine(Pawn pawn, Placement pos);
+void drawLinePawn(Pawn pawn, Placement pos);
 
 void setColourTheme(short baseRed = 0, short baseGreen = 166, short baseBlue = 0);
 

@@ -44,9 +44,10 @@ void generateHeader(UserInterface &ui) {
 	drawSpreadText(textSpace, (char **) (title), 3);
 }
 
-void generatePlayers(UserInterface &ui) {
-	auto players = new char* [N_PLAYERS];
-	int selected = -1;
+void createPlayerNames(UserInterface ui, char **&players, int &selected) {
+	const char pawn1[] = { ")(" };
+	const char pawn2[] = { "[]" };
+
 	for (int i = 0; i < N_PLAYERS; ++i) {
 		players[i] = new char[MAX_NAME_LENGTH + 4];
 		const char *data[3] = {ui.board.players[i].name, " ", (char *) (ui.board.players[i].id ? pawn2 : pawn1)};
@@ -55,6 +56,14 @@ void generatePlayers(UserInterface &ui) {
 		if (ui.board.players[i].id == ui.board.currentPlayerId)
 			selected = i;
 	}
+}
+
+void generatePlayers(UserInterface &ui) {
+
+
+	auto players = new char* [N_PLAYERS];
+	int selected = -1;
+	createPlayerNames(ui, players, selected);
 
 	Placement textSpace = ui.space.gameSpace;
 	textSpace.min.y = ui.space.gameSpace.min.y + HEADER_OFFSET + 2;
@@ -249,7 +258,7 @@ void placePawns(Board &game, Placement &space, int indexTop, int indexBot) {
 	int count = game.points[indexTop].pawnsInside;
 	if (count) {
 		space.max.y = space.min.y + count;
-		drawLine(*game.points[indexTop].pawns[0], space);
+		drawLinePawn(*game.points[indexTop].pawns[0], space);
 	}
 
 
@@ -257,7 +266,7 @@ void placePawns(Board &game, Placement &space, int indexTop, int indexBot) {
 	if (count) {
 		space.max.y = space.min.y + count;
 		moveSpace(space, Pos {0, boardHeight - count});
-		drawLine(*game.points[indexBot].pawns[0], space);
+		drawLinePawn(*game.points[indexBot].pawns[0], space);
 		moveSpace(space, Pos {0, - boardHeight + count});
 	}
 }

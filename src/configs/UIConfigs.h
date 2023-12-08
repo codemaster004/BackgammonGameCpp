@@ -33,6 +33,8 @@
 #define COURT_OFFSET_X 1
 #define COURT_OFFSET_Y 2
 
+#define PIECE_HEIGHT 6
+
 #define COLOR_THEME 230, 120, 220
 
 #define MAX_MESSAGE_LEN 25
@@ -51,17 +53,12 @@ enum UiColorsId {
 };
 
 // TODO change to char
-const char borderHorizon[] = { "=" };
-const char borderVertical[] = { "|" };
-const char borderCorner[] = { "+" };
+const char borderHorizon = '=';
+const char borderVertical = '|';
+const char borderCorner = '+';
 
 // TODO: wtf i do now
 const char barLabel[] = {"[BAR]"};
-
-const char piece1[] = { "/\\" };
-const char piece2[] = { "''" };
-const char pawn1[] = { ")(" };
-const char pawn2[] = { "[]" };
 
 const int pieceWidth = 2;
 const int pieceSpacing = 3;
