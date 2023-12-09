@@ -82,7 +82,7 @@ void gamePlayController(int input, UserInterface &ui) {
 		case 'r':
 			for (int & dice : ui.board.dices) {
 				dice = rand() % 6 + 1;
-				dice = 6;
+//				dice = 6;
 			}
 			resetMenuTo(ui, PICK_DICE);
 			break;
