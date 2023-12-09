@@ -14,14 +14,34 @@
 #include "view/Handeler.h"
 #include "view/Drawing.h"
 
-void startScreen(int argc, char **argv);
 
-int getInput(int argc, char **argv);
+/**
+ * @brief Sets up the start screen with ncurses and initializes random seed and color pairs.
+ * @param argc The count of command-line arguments.
+ */
+void startScreen(int argc);
 
+/**
+ * @brief Retrieves input from the user. If more than one argument is passed (--no-gui), ncurses getch is used, otherwise getchar.
+ * @param argc The count of command-line arguments.
+ * @return The character code of the key pressed.
+ */
+int getInput(int argc);
+
+/**
+ * @brief Updates the user interface based on the current game state.
+ * @param ui Reference to the UserInterface object.
+ */
 void interface(UserInterface &ui);
 
+/**
+ * @brief Entry point of the application. Initializes the game and handles the main game loop.
+ * @param argc Argument count.
+ * @param argv Argument table of "strings".
+ * @return Integer indicating the exit status.
+ */
 int main(int argc, char **argv) {
-	startScreen(argc, argv);
+	startScreen(argc);
 
 	UserInterface UI = initUI();
 	UI.board = Board{};
@@ -46,7 +66,7 @@ int main(int argc, char **argv) {
 			break;
 
 		interface(UI);
-	} while ((ch = getInput(argc, argv)) != 'q');
+	} while ((ch = getInput(argc)) != 'q');
 	 delete[] UI.menu.elements;
 
 	// Finish curses mode
@@ -55,14 +75,14 @@ int main(int argc, char **argv) {
 	return 0;
 }
 
-int getInput(int argc, char **argv) {
+int getInput(int argc) {
 	if (argc > 1)
 		return getch();
 	else
 		return getchar();
 }
 
-void startScreen(int argc, char **argv) {
+void startScreen(int argc) {
 	if (argc > 1)
 		initscr();
 	cbreak();
@@ -114,9 +134,4 @@ void interface(UserInterface &ui) {
  * TODO: [x] Visualisation of game play (backwards) from loaded state (2pt)
  * TODO: [ ] Complete UI (1pt)
  * TODO: [ ] Player Rankings "Hall of Fame" (1pt)
- */
-
-/*
- * ! Function (redefineMenu) character count: 714
- * ! Function (pickDiceController) character count: 620
  */
