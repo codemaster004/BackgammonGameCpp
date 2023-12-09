@@ -111,28 +111,31 @@ void initTable(int *&table, int count, int value) {
 	}
 }
 
-int *forceCapture(Board &game, int moveBy, int direction, int &count) {
-	// search for all indexes of the player pawns
-	int playerCount = 0;
-	int *playerIndexes = findPlayerIndexes(game, game.currentPlayerId, playerCount);
-
-	// find opponents indexes with < CAPTURE THRESHOLD
-	int opponentCount = 0;
-	int opponentId = getOpponent(game, game.currentPlayerId)->id;
-	int *opponentIndexes = findPlayerIndexes(game, opponentId, opponentCount, CAPTURE_THRESHOLD);
-
-	// allocate here maybe return count
-	auto capturingMoves = new int [count];
-
-	for (int i = 0; i < playerCount; ++i) {
-		for (int j = 0; j < opponentCount; ++j) {
+void findCapturingMoves(const int *playerIndexes, int playerN, const int *opponentIndexes, int opponentN, int *&capturingMoves, int &count, int moveBy) {
+	for (int i = 0; i < playerN; ++i) {
+		for (int j = 0; j < opponentN; ++j) {
 			// Checking all possibilities
-			if (playerIndexes[i] + moveBy * direction == opponentIndexes[j]) {
+			if (playerIndexes[i] + moveBy == opponentIndexes[j]) {
 				resizeTable(capturingMoves, count, 1);
 				capturingMoves[count - 1] = playerIndexes[i];
 			}
 		}
 	}
+}
+
+int *forceCapture(Board &game, int moveBy, int direction, int &count) {
+	// search for all indexes of the player pawns
+	int playerN = 0;
+	int *playerIndexes = findPlayerIndexes(game, game.currentPlayerId, playerN);
+
+	// find opponents indexes with < CAPTURE THRESHOLD
+	int opponentN = 0;
+	int opponentId = getOpponent(game, game.currentPlayerId)->id;
+	int *opponentIndexes = findPlayerIndexes(game, opponentId, opponentN, CAPTURE_THRESHOLD);
+
+	// allocate here maybe return count
+	auto capturingMoves = new int [count];
+	findCapturingMoves(playerIndexes, playerN, opponentIndexes, opponentN, capturingMoves, count, moveBy * direction);
 
 	delete[] playerIndexes;
 	delete[] opponentIndexes;

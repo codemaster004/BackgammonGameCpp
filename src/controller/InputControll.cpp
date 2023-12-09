@@ -225,7 +225,6 @@ void inputController(int input, UserInterface &ui) {
 			break;
 		case KEY_UP:
 		case KEY_DOWN:
-		case 'j':
 			if (ui.menu.mode == PICK_POINT) {
 				ui.pickedIndex = newSelected(ui.pickedIndex, input == KEY_UP ? 1 : -1, nPoints + 1);
 			}

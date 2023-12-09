@@ -42,6 +42,9 @@ uint len(const char *text) {
 }
 
 uint nDigits(int n, int base) {
+	if (n == 0)
+		return 1;
+
 	uint count = 1;
 	uint i = 1;
 	while (n / count) {
@@ -60,6 +63,7 @@ uint maxInBase(int n, int base) {
 
 char *numberToString(int number, int width) {
 	char *str = new char[width + 1];
+	str[0] = '0'; // Default value
 	str[width] = '\0';
 
 	for (int i = width - 1; i >= 0; --i) {
