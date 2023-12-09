@@ -41,6 +41,8 @@ void setClearBoard(Board &gameBoard) {
 	}
 
 	clearDices(gameBoard.dices);
+
+	gameBoard.winnerPlayerId = -1;
 }
 
 /// Set all Dices to 0
@@ -88,6 +90,7 @@ void serialiseBoard(Board &board, uint8_t *buffer, size_t &offset) {
 	for (auto &dice: board.dices) {
 		serializeInt(dice, buffer, offset);
 	}
+	serializeInt(board.winnerPlayerId, buffer, offset);
 }
 
 /// Deserialize Board object from byte array to object
@@ -109,5 +112,6 @@ Board deserializeBoard(const uint8_t *buffer, size_t &offset, Board &board) {
 	for (auto &dice : board.dices) {
 		dice = deserializeInt(buffer, offset);
 	}
+	board.winnerPlayerId = deserializeInt(buffer, offset);
 	return board;
 }

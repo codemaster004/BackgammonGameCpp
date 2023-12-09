@@ -25,6 +25,7 @@ typedef struct Board {
 	Bar bar;                   ///< The bar used in the game.
 	int dices[N_DICES];        ///< Array of dice values.
 	int currentPlayerId;       ///< ID of the current player.
+	int winnerPlayerId;        ///< ID of the player who won the game.
 } Board;
 
 

@@ -19,7 +19,7 @@
 #define DICES_SIZE INT_SIZE * N_DICES
 
 const int boardSize = PLAYERS_SIZE + PAWNS_SIZE + INT_SIZE + DICES_SIZE +
-					  POINT_SIZE * nPoints + COURT_SIZE * N_PLAYERS + BAR_SIZE;
+					  POINT_SIZE * nPoints + COURT_SIZE * N_PLAYERS + BAR_SIZE + INT_SIZE;
 
 void serializeInt(int value, uint8_t *buffer, size_t &offset) {
 	std::memcpy(buffer + offset, &value, sizeof(int));

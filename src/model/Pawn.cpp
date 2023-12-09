@@ -9,6 +9,7 @@
 #include "SerializeToFile.h"
 #include "History.h"
 #include "Storage.h"
+#include "../viewModel/UserInterface.h"
 
 
 int canBeMoved(Board &game, int pointIndex, int moveBy) {
@@ -259,9 +260,14 @@ void checkNewPoint(Point *toPoint, int pointIndex) {
 	toPoint->pawns[toPoint->pawnsInside - 1]->isHome = isHomeBoard(pointIndex, nPoints, toPoint->pawns[toPoint->pawnsInside - 1]->moveDirection);
 }
 
+void checkWinningCondition(Board &game) {
+
+}
+
 MoveStatus handleMoving(Board &game, MoveMade &history, MoveType moveType, Move move, int toIndex) {
 	if (moveType == ESCAPE_BOARD) {
 		movePointToCourt(game, history, move.from);
+		checkWinningCondition(game);
 		return MOVE_TO_COURT;
 	}
 
