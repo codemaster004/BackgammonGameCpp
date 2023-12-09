@@ -17,14 +17,14 @@ bool removingFromBar(Board &game, Move move) {
 	return false;
 }
 
-int hasPawnsOnBar(Board &game) {
+int pawnIndexOnBar(Board &game, int playerId) {
 	if (game.bar.pawnsInside <= 0)
 		return -1;
 
 	for (int i = totalPawns - 1; i >= 0 ; --i) {
 		if (game.bar.pawns[i] == nullptr)
 			continue;
-		if (game.bar.pawns[i]->ownerId == game.currentPlayerId)
+		if (game.bar.pawns[i]->ownerId == playerId)
 			return i;
 	}
 	return -1;
@@ -58,6 +58,15 @@ bool canBeEscaping(Board &game, int index) {
 Court *pawnsCourt(Board &game, Pawn *pawn) {
 	for (auto & court : game.courts) {
 		if (court.owner->id == pawn->ownerId) {
+			return &court;
+		}
+	}
+	return nullptr;
+}
+
+Court *playersCourt(Board &game, int playerId) {
+	for (auto & court : game.courts) {
+		if (court.owner->id == playerId) {
 			return &court;
 		}
 	}

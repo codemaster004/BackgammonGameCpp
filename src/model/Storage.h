@@ -46,13 +46,15 @@ typedef struct Court {
 
 bool removingFromBar(Board &game, Move move);
 
-int hasPawnsOnBar(Board &game);
+int pawnIndexOnBar(Board &game, int playerId);
 
 bool isHomeBoard(int index, int listSize, int direction);
 
 int pawnsOnHomeBoard(Board &game);
 
 Court *pawnsCourt(Board &game, Pawn *pawn);
+
+Court *playersCourt(Board &game, int playerId);
 
 void moveBarToPoint(Board &game, MoveMade &history, int fromIndex, int toIndex, int order=0);
 

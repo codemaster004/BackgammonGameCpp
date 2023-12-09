@@ -20,8 +20,24 @@ void serialisePlayer(Player player, uint8_t *buffer, size_t &offset) {
 	offset += sizeof(Player);
 }
 
+Player *getPlayer(Board &game, int playerId) {
+	for (auto &player: game.players)
+		if (player.id == playerId)
+			return &player;
+
+	return nullptr;
+}
+
+Player *getOpponent(Board &game, int playerId) {
+	for (auto &player: game.players)
+		if (player.id != playerId)
+			return &player;
+
+	return nullptr;
+}
+
 void serialisePlayerPointer(Player *player, uint8_t *buffer, size_t &offset) {
-	if (player == nullptr){
+	if (player == nullptr) {
 		serializeInt(-1, buffer, offset);
 	} else {
 		serializeInt(player->id, buffer, offset);
@@ -39,7 +55,7 @@ Player *deserializePlayerPointer(Board &board, const uint8_t *buffer, size_t &of
 	int id = deserializeInt(buffer, offset);
 	if (id == -1)
 		return nullptr;
-	for (Player &player : board.players)
+	for (Player &player: board.players)
 		if (player.id == id)
 			return &player;
 	return nullptr;

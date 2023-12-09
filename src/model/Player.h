@@ -27,6 +27,10 @@ typedef struct Player {
 
 void changePlayers(Board &game);
 
+Player *getPlayer(Board &game, int playerId);
+
+Player *getOpponent(Board &game, int playerId);
+
 /// Handle Serialization of Player object
 void serialisePlayer(Player player, uint8_t *buffer, size_t &offset);
 

@@ -306,7 +306,7 @@ MoveStatus movePointToPoint(Board &game, Move move, MoveMade &history) {
 }
 
 MoveStatus handlePawnMovement(Board &game, Move move, MoveMade &history) {
-	int indexOnBar = hasPawnsOnBar(game);
+	int indexOnBar = pawnIndexOnBar(game, game.currentPlayerId);
 	if (indexOnBar >= 0) {
 		return moveBarToPoint(game, move, indexOnBar, history);
 	} else {

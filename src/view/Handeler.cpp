@@ -23,7 +23,7 @@ Placement initMenuSpace(Pos center, MenuElement values[], int nElements) {
 	};
 }
 
-Placement initTextSpace(Pos center, char **values, int nElements) {
+[[maybe_unused]] Placement initTextSpace(Pos center, char **values, int nElements) {
 	uint realLen = OPTION_SPACING * (nElements - 1);
 	for (int i = 0; i < nElements; ++i) {
 		realLen += len(values[i]) - 1;
@@ -53,12 +53,13 @@ void createPlayerNames(UserInterface ui, char **&players, int &selected) {
 	for (int i = 0; i < N_PLAYERS; ++i) {
 		players[i] = new char[MAX_NAME_LENGTH + 4];
 
+		int playerPoints = ui.board.players[i].points;
 		const char *data[count] = {
 			(char *) (ui.board.players[i].id ? pawn2 : pawn1),
 			" ",
 			ui.board.players[i].name,
 			": ",
-			numberToString(ui.board.players[0].points, 2),
+			numberToString(playerPoints, (int)(nDigits(playerPoints, 10))),
 		};
 
 		joinStrings(players[i], data, count);
@@ -110,8 +111,22 @@ void handleCourt(UserInterface ui) {
 	attroff(A_BOLD);
 }
 
+void givePointsForWinning(UserInterface &ui) {
+	Player *winner = getPlayer(ui.board, ui.board.winnerPlayerId);
+	Player *opponent = getOpponent(ui.board, winner->id);
+	Court *opponentsCourt = playersCourt(ui.board, opponent->id);
+	if (opponentsCourt->pawnsInside == 0) {
+		winner->points += 2;
+	} else if (hasPawnsOnBar(ui.board.bar, opponent->id)) {
+		winner->points += 3;
+	} else {
+		winner->points += 1;
+	}
+}
+
 void handleGameWon(UserInterface &ui) {
 	resetMenuTo(ui, GAME_WON);
+	givePointsForWinning(ui);
 	ui.menu.selected = -1;
 	messageSet(ui.infoMess, "Game Won");
 }
@@ -163,12 +178,12 @@ void handlePieces(Placement space) {
 
 void handleBar(Bar bar, int selected) {
 	int onBar[N_PLAYERS] = {0, 0};
-	for (int i = 0; i < totalPawns; ++i) {
-		if (bar.pawns[i] == nullptr)
+	for (auto & pawn : bar.pawns) {
+		if (pawn == nullptr)
 			continue;
-		if (bar.pawns[i]->color == PAWN_WHITE)
+		if (pawn->color == PAWN_WHITE)
 			onBar[0]++;
-		if (bar.pawns[i]->color == PAWN_BLACK)
+		if (pawn->color == PAWN_BLACK)
 			onBar[1]++;
 	}
 
