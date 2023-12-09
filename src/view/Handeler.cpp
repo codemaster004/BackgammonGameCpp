@@ -6,6 +6,7 @@
 #include "../configs/UIConfigs.h"
 #include "Handeler.h"
 #include "Drawing.h"
+#include "../controller/InputControll.h"
 
 
 Placement initMenuSpace(Pos center, MenuElement values[], int nElements) {
@@ -102,6 +103,8 @@ void handleCourt(UserInterface ui) {
 }
 
 void handleGameWon(UserInterface &ui) {
+	resetMenuTo(ui, GAME_WON);
+	ui.menu.selected = -1;
 	messageSet(ui.infoMess, "Game Won");
 }
 

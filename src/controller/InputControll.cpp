@@ -174,6 +174,19 @@ void pickPointController(int input, UserInterface &ui) {
 	}
 }
 
+void gameWonController(int input, UserInterface &ui) {
+	switch (input) {
+		case 'n':
+			ui.state = GAME_PLAY;
+			resetMenuTo(ui, DEFAULT);
+			setClearBoard(ui.board);
+			gameSetUp(ui.board);
+			break;
+		default:
+			break;
+	}
+}
+
 void handleMenuModes(int input, UserInterface &ui) {
 	switch (ui.menu.mode) {
 		case DEFAULT:
@@ -187,6 +200,9 @@ void handleMenuModes(int input, UserInterface &ui) {
 			break;
 		case STARTING_GAME:
 			newGameController(input, ui);
+			break;
+		case GAME_WON:
+			gameWonController(input, ui);
 			break;
 	}
 }

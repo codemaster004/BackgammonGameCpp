@@ -20,6 +20,7 @@ enum MenuMode {
 	PICK_POINT,     ///< Mode for picking a point on the board.
 	PICK_DICE,      ///< Mode for picking dice.
 	STARTING_GAME,  ///< Mode for starting the game.
+	GAME_WON,       ///< Mode after the game was won.
 };
 
 /**

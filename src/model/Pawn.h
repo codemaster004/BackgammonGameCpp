@@ -78,7 +78,7 @@ Pawn *getPawn(Board &game, int id);
 
 bool statusToBool(MoveStatus type);
 
-int canBeMoved(Board &game, int pointIndex, int moveBy);
+bool canBeMoved(Board &game, int pointIndex);
 
 MoveType canMoveTo(Board &game, Pawn *pawn, int toIndex);
 

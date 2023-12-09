@@ -239,6 +239,7 @@ void createOptions(char **&options, int nOptions, MenuMode mode) {
 	const char *basic[] = {"(R)oll", "(U)ndo", "(S)ave", "(Q)uit"};
 	const char *start[] = {"(N)ew Game", "(L)oad Game", "(Q)uit"};
 	const char *point[] = {"Pick Piece (Space)", "End Turn (-)"};
+	const char *win[] = {"(N)ew Game", "(Q)uit"};
 
 	// Populate the options based on the current menu mode
 	switch (mode) {
@@ -254,6 +255,9 @@ void createOptions(char **&options, int nOptions, MenuMode mode) {
 		case STARTING_GAME:
 			populateOptions(options, start, nOptions);
 			break;
+		case GAME_WON:
+			populateOptions(options, win, nOptions);
+			break;
 	}
 }
 
@@ -265,27 +269,31 @@ void createOptions(char **&options, int nOptions, MenuMode mode) {
  * and utilizes the populateKeys function for actual array population.
  *
  * @param keys Reference to a character array to be populated with keys.
- * @param n The number of keys to populate.
+ * @param nKeys The number of keys to populate.
  * @param mode The current menu mode, which determines the set of keys to use.
  */
-void createKeys(char *&keys, int n, MenuMode mode) {
+void createKeys(char *&keys, int nKeys, MenuMode mode) {
 	const char basic[] = {'r', 'u', 's', 'q'};
 	const char start[] = {'n', 'l', 'q'};
 	const char point[] = {' ', '-'};
+	const char win[] = {'n', 'q'};
 
 	// Populate the keys array based on the current menu mode
 	switch (mode) {
 		case DEFAULT:
-			populateKeys(keys, basic, n);
+			populateKeys(keys, basic, nKeys);
 			break;
 		case PICK_POINT:
-			populateKeys(keys, point, n);
+			populateKeys(keys, point, nKeys);
 			break;
 		case PICK_DICE:
 			// Pick Dice is Handled in main Switch case so in this case do nothing
 			break;
 		case STARTING_GAME:
-			populateKeys(keys, start, n);
+			populateKeys(keys, start, nKeys);
+			break;
+		case GAME_WON:
+			populateKeys(keys, win, nKeys);
 			break;
 	}
 }
@@ -311,6 +319,10 @@ void redefineMenu(UserInterface &ui) {
 			break;
 		case PICK_DICE:
 			createDiceMenu(ui, options, keys);
+			break;
+		case GAME_WON:
+			ui.menu.count = N_WIN_MENU_OPTIONS;
+			ui.menu.selected = -1;
 			break;
 	}
 

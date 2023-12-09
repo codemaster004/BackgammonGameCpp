@@ -12,20 +12,24 @@
 #include "../viewModel/UserInterface.h"
 
 
-int canBeMoved(Board &game, int pointIndex, int moveBy) {
+bool canBeMoved(Board &game, int pointIndex) {
 	// Index out of range
 	if (pointIndex >= nPoints || pointIndex < 0)
-		return -1;
+		return false;
 	// Moving Pawn from an empty Point
 	if (game.points[pointIndex].pawnsInside == 0)
-		return -1;
+		return false;
 	// Moving not your Pawn
 	if (game.points[pointIndex].pawns[0]->ownerId != game.currentPlayerId)
-		return -1;
+		return false;
 
+	return true;
+}
+
+int calculateDestination(Board &game, int index, int moveBy) {
 	// Handle move in both direction based on Pawn "Color"
-	short direction = game.points[pointIndex].pawns[0]->moveDirection;
-	int destinationIndex = pointIndex + moveBy * direction;
+	short direction = game.points[index].pawns[0]->moveDirection;
+	int destinationIndex = index + moveBy * direction;
 
 	// We check all the index Pawn can be moved by player from pos A to B
 	return destinationIndex;
@@ -202,7 +206,11 @@ MoveType checkForcingEscape(Board &game, int fromIndex, int toIndex) {
 }
 
 MoveType determineMoveType(Board &game, int pointIndex, int moveBy) {
-	int destination = canBeMoved(game, pointIndex, moveBy);
+	int destination;
+	if (canBeMoved(game, pointIndex))
+		destination = calculateDestination(game, pointIndex, moveBy);
+	else return NOT_ALLOWED;
+
 	MoveType escapeMode = checkForcingEscape(game, pointIndex, destination);
 	if (escapeMode != POSSIBLE)
 		return escapeMode;
