@@ -10,15 +10,23 @@
 #include "Pawn.h"
 #include "Storage.h"
 
+/**
+ * @brief Represents the game board in Backgammon.
+ *
+ * This structure holds the entire state of the Backgammon game board, including the
+ * players, pawns, points on the board, courts for each player, a bar, the dices,
+ * and the ID of the current player.
+ */
 typedef struct Board {
-	Player players[N_PLAYERS];
-	Pawn pawns[totalPawns];
-	Point points[nPoints];
-	Court courts[N_PLAYERS];
-	Bar bar;
-	int dices[N_DICES];
-	int currentPlayerId;
+	Player players[N_PLAYERS]; ///< Array of players in the game.
+	Pawn pawns[totalPawns];    ///< Array of pawns used in the game.
+	Point points[nPoints];     ///< Points on the board where pawns can be placed.
+	Court courts[N_PLAYERS];   ///< Courts for each player.
+	Bar bar;                   ///< The bar used in the game.
+	int dices[N_DICES];        ///< Array of dice values.
+	int currentPlayerId;       ///< ID of the current player.
 } Board;
+
 
 void setClearBoard(Board &gameBoard);
 

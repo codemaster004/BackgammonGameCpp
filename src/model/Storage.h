@@ -8,21 +8,41 @@
 #include "../configs/GameConfigs.h"
 #include "Pawn.h"
 
+/**
+ * @brief Represents a point on the game board.
+ *
+ * Each point can hold a certain number of pawns. This structure tracks the number of pawns
+ * currently at this point and stores references to these pawns.
+ */
 typedef struct Point {
-	int pawnsInside;
-	Pawn *pawns[PAWNS_PER_POINT];
+	int pawnsInside;               ///< Number of pawns currently at this point.
+	Pawn *pawns[PAWNS_PER_POINT];  ///< Array of pointers to pawns at this point.
 } Point;
 
+/**
+ * @brief Represents the bar area on the game board.
+ *
+ * The bar is a special area where pawns are placed after being hit. This structure tracks
+ * the number of pawns on the bar and stores references to these pawns.
+ */
 typedef struct Bar {
-	int pawnsInside;
-	Pawn *pawns[totalPawns];
+	int pawnsInside;          ///< Number of pawns currently on the bar.
+	Pawn *pawns[totalPawns];  ///< Array of pointers to pawns on the bar.
 } Bar;
 
+/**
+ * @brief Represents a player's court in the game.
+ *
+ * The court is an area where a player collects their pawns that have escaped the Board. This
+ * structure tracks the number of pawns in the court and stores references to these pawns,
+ * as well as a reference to the court's owner.
+ */
 typedef struct Court {
-	int pawnsInside;
-	Pawn *pawns[PAWNS_PER_PLAYER];
-	Player *owner;
+	int pawnsInside;               ///< Number of pawns in the court.
+	Pawn *pawns[PAWNS_PER_PLAYER]; ///< Array of pointers to pawns in the court.
+	Player *owner;                 ///< Pointer to the player who owns this court.
 } Court;
+
 
 bool removingFromBar(Board &game, Move move);
 

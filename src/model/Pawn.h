@@ -14,43 +14,65 @@ typedef struct Board Board;
 typedef struct Bar Bar;
 typedef struct Point Point;
 
+/**
+ * @brief Represents a move in the game.
+ *
+ * This structure holds details about a player's move, including the starting point,
+ * the dice value used, and the remaining moves in the turn.
+ */
 typedef struct Move {
-	int from;
-	int by;
-	int movesLeft;
+	int from;        ///< Starting point of the move.
+	int by;          ///< Dice value used for the move.
+	int movesLeft;   ///< Number of remaining moves in the turn.
 } Move;
 
+/**
+ * @brief Enumerates possible types of moves in the game.
+ */
 enum MoveType {
-	BLOCKED,
-	POSSIBLE,
-	CAPTURE,
-	NOT_ALLOWED,
-	ESCAPE_BOARD,
-	CAPTURE_POSSIBLE,
-	ESCAPE_POSSIBLE,
+	BLOCKED,          ///< Move is blocked by opponent's pawns.
+	POSSIBLE,         ///< Move is possible.
+	CAPTURE,          ///< Move results in a capture.
+	NOT_ALLOWED,      ///< Move is not allowed.
+	ESCAPE_BOARD,     ///< Move leads to escaping the board.
+	CAPTURE_POSSIBLE, ///< Capture is possible.
+	ESCAPE_POSSIBLE,  ///< Escape from board is possible.
 };
 
+/**
+ * @brief Enumerates the colors of pawns in the game.
+ */
 enum PawnColor {
-	PAWN_WHITE,
-	PAWN_BLACK,
+	PAWN_WHITE, ///< White pawn.
+	PAWN_BLACK, ///< Black pawn.
 };
 
+/**
+ * @brief Enumerates the status of a move after being played.
+ */
 enum MoveStatus {
-	MOVE_SUCCESSFUL,
-	PAWNS_ON_BAR,
-	MOVE_FAILED,
-	MOVE_TO_COURT,
-	FORCE_CAPTURE,
-	FORCE_ESCAPE,
+	MOVE_SUCCESSFUL, ///< Move was successful.
+	PAWNS_ON_BAR,    ///< Player has pawns on the bar that must be moved first.
+	MOVE_FAILED,     ///< Move failed.
+	MOVE_TO_COURT,   ///< Move towards the player's court.
+	FORCE_CAPTURE,   ///< Player is forced to capture an opponent's pawn.
+	FORCE_ESCAPE,    ///< Player is forced to escape a pawn from the board.
 };
 
-typedef struct {
-	int ownerId;
-	int id;
-	bool isHome;
-	PawnColor color;
-	short moveDirection;
+/**
+ * @brief Represents a pawn in the game.
+ *
+ * This structure contains details about a pawn, including its owner, ID, home status,
+ * color, and the direction it moves on the board.
+ */
+typedef struct Pawn {
+	int ownerId;          ///< ID of the pawn's owner.
+	int id;               ///< Unique ID of the pawn.
+	bool isHome;          ///< Indicates if the pawn is in its home area.
+	PawnColor color;      ///< Color of the pawn.
+	short moveDirection;  ///< Direction the pawn moves on the board.
 } Pawn;
+
 
 Pawn *getPawn(Board &game, int id);
 

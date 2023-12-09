@@ -11,12 +11,19 @@
 
 typedef struct Board Board;
 
+/**
+ * @brief Represents a player in the game.
+ *
+ * This structure holds information about a player, including their ID, name, color of
+ * their pawns, and the points they have accumulated in the game.
+ */
 typedef struct Player {
-	int id;
-	char name[MAX_NAME_LENGTH];
-	PawnColor color;
-	int points;
+	int id;                   ///< Unique identifier for the player.
+	char name[MAX_NAME_LENGTH]; ///< Name of the player.
+	PawnColor color;         ///< Color of the player's pawns.
+	int points;              ///< Points accumulated by the player.
 } Player;
+
 
 void changePlayers(Board &game);
 
