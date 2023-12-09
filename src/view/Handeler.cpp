@@ -46,13 +46,22 @@ void generateHeader(UserInterface &ui) {
 }
 
 void createPlayerNames(UserInterface ui, char **&players, int &selected) {
-	const char pawn1[] = { ")(" };
-	const char pawn2[] = { "[]" };
+	const char pawn1[] = {")("};
+	const char pawn2[] = {"[]"};
 
+	const int count = 5;
 	for (int i = 0; i < N_PLAYERS; ++i) {
 		players[i] = new char[MAX_NAME_LENGTH + 4];
-		const char *data[3] = {ui.board.players[i].name, " ", (char *) (ui.board.players[i].id ? pawn2 : pawn1)};
-		joinStrings(players[i], data, 3);
+
+		const char *data[count] = {
+			(char *) (ui.board.players[i].id ? pawn2 : pawn1),
+			" ",
+			ui.board.players[i].name,
+			": ",
+			numberToString(ui.board.players[0].points, 2),
+		};
+
+		joinStrings(players[i], data, count);
 
 		if (ui.board.players[i].id == ui.board.currentPlayerId)
 			selected = i;
@@ -61,8 +70,7 @@ void createPlayerNames(UserInterface ui, char **&players, int &selected) {
 
 void generatePlayers(UserInterface &ui) {
 
-
-	auto players = new char* [N_PLAYERS];
+	auto players = new char *[N_PLAYERS];
 	int selected = -1;
 	createPlayerNames(ui, players, selected);
 
@@ -191,15 +199,15 @@ int generateColorsForIndexes(char **text, int count, int pickedIndex, UiColorsId
 		}
 	}
 	if (pickedIndex == -1) {
-		colors = new UiColorsId [1];
+		colors = new UiColorsId[1];
 		colors[0] = FOREGROUND;
 		return 1;
 	} else if (index < 0) {
-		colors = new UiColorsId [1];
+		colors = new UiColorsId[1];
 		colors[0] = FOREGROUND_DARK;
 		return 1;
 	} else {
-		colors = new UiColorsId [count];
+		colors = new UiColorsId[count];
 		for (int i = 0; i < count; ++i) {
 			colors[i] = i == index ? FOREGROUND_LIGHT : FOREGROUND_DARK;
 		}
@@ -207,7 +215,8 @@ int generateColorsForIndexes(char **text, int count, int pickedIndex, UiColorsId
 	}
 }
 
-void handleIndexes(Placement posBot, Placement posTop, int selected, int width, char **indexes, int offsetTop, int offsetBot) {
+void handleIndexes(Placement posBot, Placement posTop, int selected, int width, char **indexes, int offsetTop,
+				   int offsetBot) {
 	UiColorsId *colors = nullptr;
 
 	int nColours = generateColorsForIndexes(&indexes[offsetTop], POINTS_PER_BOARD, selected, colors);
@@ -232,7 +241,7 @@ void handleIndexes(char **indexes, int pickedIndex, int digits, Placement posTop
 	for (int i = 0; i < N_BOARDS; ++i) {
 
 		handleIndexes(posBot, posTop, pickedIndex, (int) (digits),
-					  indexes, i * POINTS_PER_BOARD, (int)(nPoints) / 2 + i * POINTS_PER_BOARD);
+					  indexes, i * POINTS_PER_BOARD, (int) (nPoints) / 2 + i * POINTS_PER_BOARD);
 
 		moveSpace(posTop, indexChange);
 		moveSpace(posBot, indexChange);
@@ -271,9 +280,9 @@ void placePawns(Board &game, Placement &space, int indexTop, int indexBot) {
 	count = min(game.points[indexBot].pawnsInside, POINT_HEIGHT);
 	if (count) {
 		space.max.y = space.min.y + count;
-		moveSpace(space, Pos {0, boardHeight - count});
+		moveSpace(space, Pos{0, boardHeight - count});
 		drawLinePawn(*game.points[indexBot].pawns[0], space);
-		moveSpace(space, Pos {0, - boardHeight + count});
+		moveSpace(space, Pos{0, -boardHeight + count});
 	}
 }
 
@@ -298,14 +307,14 @@ void handleMessages(UserInterface &ui) {
 	Placement textPos = ui.space.board;
 	textPos.min.y += (boardHeight + borders) / 2;
 	UiColorsId colours = {FOREGROUND_DARK};
-	char* tempMessages[1];
+	char *tempMessages[1];
 
 	tempMessages[0] = ui.infoMess;
 	uint length = len(ui.infoMess);
-	drawCenteredText(textPos, 0, (int)(length), tempMessages, 1, &colours, 1);
+	drawCenteredText(textPos, 0, (int) (length), tempMessages, 1, &colours, 1);
 
 	moveSpace(textPos, {(N_BOARDS - 1) * (boardWidth + BAR_WIDTH + borders), 0});
 	tempMessages[0] = ui.errorMess;
 	length = len(ui.errorMess);
-	drawCenteredText(textPos, 0, (int)(length), tempMessages, 1, &colours, 1);
+	drawCenteredText(textPos, 0, (int) (length), tempMessages, 1, &colours, 1);
 }

@@ -13,10 +13,10 @@
 
 void gameSetUp(Board &game) {
 	game.players[0] = Player {
-		0, {"Me"}, PAWN_WHITE, true
+		0, "Me", PAWN_WHITE, 0
 	};
 	game.players[1] = Player {
-		1, {"You"}, PAWN_BLACK, false
+		1, "You", PAWN_BLACK, 0
 	};
 //	game.currentPlayerId = rand() % 2;
 	game.currentPlayerId = 0;
