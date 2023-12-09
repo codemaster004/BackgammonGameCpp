@@ -150,15 +150,62 @@ MoveType checkForCapture(const int *indexes, int count, int picked) {
 	return POSSIBLE;
 }
 
-MoveType determineMoveType(Board &game, int pointIndex, int moveBy) {
-	int destination = canBeMoved(game, pointIndex, moveBy);
-	if (destination < 0 || destination > nPoints) {
-		if (pawnsOnHomeBoard(game) >= ESCAPE_THRESHOLD && game.points[pointIndex].pawns[0]->isHome) {
-			return ESCAPE_BOARD;
+bool statusToBool(MoveStatus type) {
+	return type == MOVE_SUCCESSFUL || type == MOVE_TO_COURT;
+}
+
+int minHomeIndex(int fromIndex) {
+	if (fromIndex >= nPoints / 2) {
+		return nPoints - POINTS_PER_BOARD;
+	} else {
+		return 0;
+	}
+}
+
+void checkForEscape(Board &game, int &minIndex, bool &canEscape, int &minPoint, int &maxPoint, int change) {
+	for (int i = minIndex; i < minIndex + POINTS_PER_BOARD; ++i)
+		if (hasPawnsOnPoint(game, i)) {
+			if (i + change == nPoints)
+				canEscape = true;
+			if (i < minPoint)
+				minPoint = i;
+			if (i > maxPoint)
+				maxPoint = i;
+		}
+}
+
+MoveType checkForcingEscape(Board &game, int fromIndex, int toIndex) {
+	if (!canBeEscaping(game, fromIndex))
+		return NOT_ALLOWED;
+
+	if (toIndex == nPoints || toIndex == -1)
+		return ESCAPE_BOARD;
+
+	int change = toIndex - fromIndex;
+
+	int minIndex = minHomeIndex(fromIndex);
+	bool canEscape = false;
+	int minPoint = nPoints, maxPoint = -1;
+	checkForEscape(game, minIndex, canEscape, minPoint, maxPoint, change);
+	if (canEscape)
+		return ESCAPE_POSSIBLE;
+
+	if (toIndex < 0 || toIndex > nPoints) {
+		if (fromIndex >= nPoints / 2) {
+			return fromIndex == minPoint ? POSSIBLE : ESCAPE_POSSIBLE;
 		} else {
-			return NOT_ALLOWED;
+			return fromIndex == maxPoint ? POSSIBLE : ESCAPE_POSSIBLE;
 		}
 	}
+	return POSSIBLE;
+}
+
+MoveType determineMoveType(Board &game, int pointIndex, int moveBy) {
+	int destination = canBeMoved(game, pointIndex, moveBy);
+	MoveType escapeMode = checkForcingEscape(game, pointIndex, destination);
+	if (moveBy != POSSIBLE)
+		return escapeMode;
+
 	int captureCount = 0;
 	int *captureIndexes = forceCapture(game, moveBy, pointIndex > destination ? -1 : 1, captureCount);
 	MoveType forceMove = checkForCapture(captureIndexes, captureCount, pointIndex);
@@ -212,16 +259,7 @@ void checkNewPoint(Point *toPoint, int pointIndex) {
 	toPoint->pawns[toPoint->pawnsInside - 1]->isHome = isHomeBoard(pointIndex, nPoints, toPoint->pawns[toPoint->pawnsInside - 1]->moveDirection);
 }
 
-MoveStatus movePointToPoint(Board &game, Move move, MoveMade &history) {
-	MoveType moveType = determineMoveType(game, move.from, move.by);
-	if (!enumToBool(moveType))
-		return MOVE_FAILED;
-	if (moveType == CAPTURE_POSSIBLE)
-		return FORCE_CAPTURE;
-
-	short direction = game.points[move.from].pawns[0]->moveDirection;
-	int toIndex = move.from + move.by * direction;
-
+MoveStatus handleMoving(Board &game, MoveMade &history, MoveType moveType, Move move, int toIndex) {
 	if (moveType == ESCAPE_BOARD) {
 		movePointToCourt(game, history, move.from);
 		return MOVE_TO_COURT;
@@ -234,6 +272,22 @@ MoveStatus movePointToPoint(Board &game, Move move, MoveMade &history) {
 
 	movePointToPoint(game, history, move.from, toIndex, additionalMove);
 	return MOVE_SUCCESSFUL;
+}
+
+// TODO: Shorten
+MoveStatus movePointToPoint(Board &game, Move move, MoveMade &history) {
+	MoveType moveType = determineMoveType(game, move.from, move.by);
+	if (!enumToBool(moveType))
+		return MOVE_FAILED;
+	if (moveType == CAPTURE_POSSIBLE)
+		return FORCE_CAPTURE;
+	if (moveType == ESCAPE_POSSIBLE)
+		return  FORCE_ESCAPE;
+
+	short direction = game.points[move.from].pawns[0]->moveDirection;
+	int toIndex = move.from + move.by * direction;
+
+	return handleMoving(game, history, moveType, move, toIndex);
 }
 
 MoveStatus handlePawnMovement(Board &game, Move move, MoveMade &history) {

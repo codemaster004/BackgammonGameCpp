@@ -32,9 +32,9 @@ int hasPawnsOnBar(Board &game) {
 
 bool isHomeBoard(int index, int listSize, int direction) {
 	if (direction == 1) {
-		return index >= listSize - 6 && index < listSize;
+		return index >= listSize - POINTS_PER_BOARD && index < listSize;
 	} else if (direction == -1) {
-		return index >= 0 && index < 6;
+		return index >= 0 && index < POINTS_PER_BOARD;
 	}
 	return false;
 }
@@ -45,6 +45,14 @@ int pawnsOnHomeBoard(Board &game) {
 		if (pawn.ownerId == game.currentPlayerId && pawn.isHome)
 			count++;
 	return count;
+}
+
+int hasPawnsOnPoint(Board &game, int index) {
+	return game.points[index].pawnsInside && game.points[index].pawns[0]->ownerId == game.currentPlayerId;
+}
+
+bool canBeEscaping(Board &game, int index) {
+	return pawnsOnHomeBoard(game) >= ESCAPE_THRESHOLD && game.points[index].pawns[0]->isHome;
 }
 
 Court *pawnsCourt(Board &game, Pawn *pawn) {

@@ -42,6 +42,10 @@ void movePointToCourt(Board &game, MoveMade &history, int fromIndex, int order=0
 
 void movePointToBar(Board &game, MoveMade &history, int fromIndex, int order=0);
 
+int hasPawnsOnPoint(Board &game, int index);
+
+bool canBeEscaping(Board &game, int index);
+
 /// Serialize Point
 void serialisePoint(Point point, uint8_t *buffer, size_t &offset);
 

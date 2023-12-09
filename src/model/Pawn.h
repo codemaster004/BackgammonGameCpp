@@ -27,6 +27,7 @@ enum MoveType {
 	NOT_ALLOWED,
 	ESCAPE_BOARD,
 	CAPTURE_POSSIBLE,
+	ESCAPE_POSSIBLE,
 };
 
 enum PawnColor {
@@ -40,6 +41,7 @@ enum MoveStatus {
 	MOVE_FAILED,
 	MOVE_TO_COURT,
 	FORCE_CAPTURE,
+	FORCE_ESCAPE,
 };
 
 typedef struct {
@@ -51,6 +53,8 @@ typedef struct {
 } Pawn;
 
 Pawn *getPawn(Board &game, int id);
+
+bool statusToBool(MoveStatus type);
 
 int canBeMoved(Board &game, int pointIndex, int moveBy);
 

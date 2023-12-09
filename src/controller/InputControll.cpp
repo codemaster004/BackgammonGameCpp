@@ -82,6 +82,7 @@ void gamePlayController(int input, UserInterface &ui) {
 		case 'r':
 			for (int & dice : ui.board.dices) {
 				dice = rand() % 6 + 1;
+				dice = 2;
 			}
 			resetMenuTo(ui, PICK_DICE);
 			break;
@@ -105,6 +106,8 @@ void createErrorMessage(UserInterface &ui, MoveStatus errorId) {
 		messageSet(ui.errorMess, "Pawns on Bar");
 	} else if (errorId == FORCE_CAPTURE) {
 		messageSet(ui.errorMess, "No Free Will");
+	} else if (errorId == FORCE_ESCAPE) {
+		messageSet(ui.errorMess, "Run You Fool");
 	}
 }
 
@@ -156,7 +159,7 @@ void pickPointController(int input, UserInterface &ui) {
 		case ' ':
 			ui.currentMove.from = ui.pickedIndex;
 			moveError = handlePawnMovement(ui.board, ui.currentMove, ui.history);
-			if(moveError) {
+			if(!statusToBool(moveError)) {
 				createErrorMessage(ui, moveError);
 			} else if (!--ui.currentMove.movesLeft) {
 				resetMenuTo(ui, PICK_DICE);
