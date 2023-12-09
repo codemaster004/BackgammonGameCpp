@@ -176,7 +176,7 @@ void checkForEscape(Board &game, int &minIndex, bool &canEscape, int &minPoint, 
 
 MoveType checkForcingEscape(Board &game, int fromIndex, int toIndex) {
 	if (!canBeEscaping(game, fromIndex))
-		return NOT_ALLOWED;
+		return toIndex < nPoints && toIndex >= 0 ? POSSIBLE : NOT_ALLOWED;
 
 	if (toIndex == nPoints || toIndex == -1)
 		return ESCAPE_BOARD;
@@ -203,7 +203,7 @@ MoveType checkForcingEscape(Board &game, int fromIndex, int toIndex) {
 MoveType determineMoveType(Board &game, int pointIndex, int moveBy) {
 	int destination = canBeMoved(game, pointIndex, moveBy);
 	MoveType escapeMode = checkForcingEscape(game, pointIndex, destination);
-	if (moveBy != POSSIBLE)
+	if (escapeMode != POSSIBLE)
 		return escapeMode;
 
 	int captureCount = 0;

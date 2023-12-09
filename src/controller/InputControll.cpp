@@ -82,7 +82,7 @@ void gamePlayController(int input, UserInterface &ui) {
 		case 'r':
 			for (int & dice : ui.board.dices) {
 				dice = rand() % 6 + 1;
-				dice = 2;
+				dice = 6;
 			}
 			resetMenuTo(ui, PICK_DICE);
 			break;
@@ -115,39 +115,32 @@ void pickDiceController(int input, UserInterface &ui) {
 	// TODO: rewrite for N dices
 	// TODO: SHORTEN
 	int *dice = ui.board.dices;
-	switch (input) {
-		case '1':
-			ui.currentMove.by = dice[0];
+	for (int i = 0; i < N_DICES; ++i) {
+		if (input == '1' + i) {
+			ui.currentMove.by = dice[i];
 			ui.currentMove.movesLeft = 1;
-			dice[0] = 0;
+			dice[i] = 0;
 			resetMenuTo(ui, PICK_POINT);
-			break;
-		case '2':
-			ui.currentMove.by = dice[1];
-			ui.currentMove.movesLeft = 1;
-			dice[1] = 0;
-			resetMenuTo(ui, PICK_POINT);
-			break;
-		case '0':
-			ui.currentMove.by = ui.board.dices[0] + ui.board.dices[1];
-			if (dice[0] == dice[1]) {
-				ui.currentMove.movesLeft = 4;
-				ui.currentMove.by = dice[0];
-			} else {
-				ui.currentMove.movesLeft = 1;
-			}
-			dice[0] = 0;
-			dice[1] = 0;
-			resetMenuTo(ui, PICK_POINT);
-			break;
-		case '-':
-			setBasicGameState(ui);
-			clearDices(ui.board.dices);
-			changePlayers(ui.board);
-			break;
-		default:
-			break;
+		}
 	}
+
+	if (input == '0') {
+		ui.currentMove.by = dice[0] + dice[1];
+		if (dice[0] == dice[1]) {
+			ui.currentMove.movesLeft = 4;
+			ui.currentMove.by = dice[0];
+		} else {
+			ui.currentMove.movesLeft = 1;
+		}
+		dice[0] = 0;
+		dice[1] = 0;
+		resetMenuTo(ui, PICK_POINT);
+	} else if (input == '-') {
+		setBasicGameState(ui);
+		clearDices(ui.board.dices);
+		changePlayers(ui.board);
+	}
+
 	if (ui.currentMove.by != 0) {
 		createDiceMessage(ui);
 	}
