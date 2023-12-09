@@ -118,7 +118,8 @@ int *forceCapture(Board &game, int moveBy, int direction, int &count) {
 
 	// find opponents indexes with < CAPTURE THRESHOLD
 	int opponentCount = 0;
-	int *opponentIndexes = findPlayerIndexes(game, (game.currentPlayerId + 1) % N_PLAYERS, opponentCount, CAPTURE_THRESHOLD);
+	int opponentId = getOpponent(game, game.currentPlayerId)->id;
+	int *opponentIndexes = findPlayerIndexes(game, opponentId, opponentCount, CAPTURE_THRESHOLD);
 
 	// allocate here maybe return count
 	auto capturingMoves = new int [count];
@@ -230,16 +231,22 @@ bool enumToBool(MoveType value) {
 
 int hasPawnsOnBar(Bar &bar, int playerId) {
 	int count = 0;
-	for (int i = 0; i < bar.pawnsInside; ++i)
-		if (bar.pawns[i]->ownerId == playerId)
+	for (auto & pawn : bar.pawns) {
+		if (pawn == nullptr)
+			continue;
+		if (pawn->ownerId == playerId)
 			count++;
+	}
 	return count;
 }
 
 short findMoveDirection(Pawn **pawns, int count, int playerId) {
-	for (int i = 0; i < count; ++i)
+	for (int i = 0; i < count; ++i) {
+		if (pawns[i] == nullptr)
+			continue;
 		if (pawns[i]->ownerId == playerId)
 			return pawns[i]->moveDirection;
+	}
 	return 0;
 }
 
@@ -247,7 +254,7 @@ MoveStatus moveBarToPoint(Board &game, Move move, int indexOnBar, MoveMade &hist
 	if (!removingFromBar(game, move))
 		return PAWNS_ON_BAR;
 
-	short direction = findMoveDirection(game.bar.pawns, game.bar.pawnsInside, game.currentPlayerId);
+	short direction = game.bar.pawns[indexOnBar]->moveDirection;
 	int toIndex = (int)((move.from + move.by * direction) % nPoints);
 	if (direction > 0)
 		toIndex--;

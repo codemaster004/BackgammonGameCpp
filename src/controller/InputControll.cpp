@@ -16,7 +16,7 @@ void gameSetUp(Board &game) {
 		0, "Me", PAWN_WHITE, 0
 	};
 	game.players[1] = Player {
-		1, "You", PAWN_BLACK, 0
+		3, "You", PAWN_BLACK, 0
 	};
 //	game.currentPlayerId = rand() % 2;
 	game.currentPlayerId = 0;
@@ -225,6 +225,7 @@ void inputController(int input, UserInterface &ui) {
 			break;
 		case KEY_UP:
 		case KEY_DOWN:
+		case 'j':
 			if (ui.menu.mode == PICK_POINT) {
 				ui.pickedIndex = newSelected(ui.pickedIndex, input == KEY_UP ? 1 : -1, nPoints + 1);
 			}

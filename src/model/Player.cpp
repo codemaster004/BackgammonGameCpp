@@ -11,8 +11,7 @@
 
 
 void changePlayers(Board &game) {
-	game.currentPlayerId += 1;
-	game.currentPlayerId %= N_PLAYERS;
+	game.currentPlayerId = getOpponent(game, game.currentPlayerId)->id;
 }
 
 void serialisePlayer(Player player, uint8_t *buffer, size_t &offset) {
