@@ -64,6 +64,8 @@ int main(int argc, char **argv) {
 		inputController(ch, UI);
 		if (UI.gameEnded)
 			break;
+		if (UI.board.winnerPlayerId != -1)
+			handleGameWon(UI);
 
 		interface(UI);
 	} while ((ch = getInput(argc)) != 'q');

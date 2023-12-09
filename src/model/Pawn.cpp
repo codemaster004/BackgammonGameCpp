@@ -193,9 +193,9 @@ MoveType checkForcingEscape(Board &game, int fromIndex, int toIndex) {
 
 	if (toIndex < 0 || toIndex > nPoints) {
 		if (fromIndex >= nPoints / 2) {
-			return fromIndex == minPoint ? POSSIBLE : ESCAPE_POSSIBLE;
+			return fromIndex == minPoint ? ESCAPE_BOARD : ESCAPE_POSSIBLE;
 		} else {
-			return fromIndex == maxPoint ? POSSIBLE : ESCAPE_POSSIBLE;
+			return fromIndex == maxPoint ? ESCAPE_BOARD : ESCAPE_POSSIBLE;
 		}
 	}
 	return POSSIBLE;
@@ -260,14 +260,16 @@ void checkNewPoint(Point *toPoint, int pointIndex) {
 	toPoint->pawns[toPoint->pawnsInside - 1]->isHome = isHomeBoard(pointIndex, nPoints, toPoint->pawns[toPoint->pawnsInside - 1]->moveDirection);
 }
 
-void checkWinningCondition(Board &game) {
-
+void checkWinningCondition(Board &game, int pointIndex) {
+	Court *playerCourt = pawnsCourt(game, game.points[pointIndex].pawns[0]);
+	if (playerCourt->pawnsInside == PAWNS_PER_PLAYER)
+		game.winnerPlayerId = game.currentPlayerId;
 }
 
 MoveStatus handleMoving(Board &game, MoveMade &history, MoveType moveType, Move move, int toIndex) {
 	if (moveType == ESCAPE_BOARD) {
 		movePointToCourt(game, history, move.from);
-		checkWinningCondition(game);
+		checkWinningCondition(game, move.from);
 		return MOVE_TO_COURT;
 	}
 

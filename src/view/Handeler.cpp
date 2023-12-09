@@ -101,6 +101,10 @@ void handleCourt(UserInterface ui) {
 	attroff(A_BOLD);
 }
 
+void handleGameWon(UserInterface &ui) {
+	messageSet(ui.infoMess, "Game Won");
+}
+
 void generateInteractiveUI(UserInterface &ui) {
 
 	// Indexes

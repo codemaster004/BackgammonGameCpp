@@ -28,4 +28,6 @@ void generateInteractiveUI(UserInterface &ui);
 
 void handlePawnPlacement(Board &game, Placement space);
 
+void handleGameWon(UserInterface &ui);
+
 #endif //BACKGAMMONGAME_HANDELER_H
