@@ -182,10 +182,16 @@ void drawVerticalInfo(Pos pos, const char *label, int value, UiColorsId color, b
 	}
 }
 
-// TODO: SHORTEN
-void drawBar(int offsetX, int offsetY, int height, int onBar[2], int selected) {
+void drawBarPoint(int offsetX, int offsetY, int height, const int onBar[2], int pickedPoint) {
 	const char barLabel[] = {"[BAR]"};
+	UiColorsId color = FOREGROUND;
+	if (onBar[0] || onBar[1] && pickedPoint >= 0) {
+		color = pickedPoint == nPoints ? FOREGROUND_LIGHT : FOREGROUND_DARK;
+	}
+	printColor(color, offsetX - (int) (sizeof(barLabel)) / 2 + 1, offsetY + (height) / 2, barLabel);
+}
 
+void drawBar(int offsetX, int offsetY, int height, int onBar[2], int selected) {
 	attron(COLOR_PAIR(FOREGROUND));
 	mvprintw(offsetY, offsetX, "%c", borderCorner);
 	drawLine(borderVertical, Placement{offsetX, offsetY + 1,
@@ -195,9 +201,5 @@ void drawBar(int offsetX, int offsetY, int height, int onBar[2], int selected) {
 	drawVerticalInfo({offsetX, offsetY + BORDER_WIDTH}, "WHT ", onBar[0]);
 	drawVerticalInfo({offsetX, offsetY + (height) / 2 + BORDER_WIDTH + 1}, "BLC ", onBar[1]);
 
-	UiColorsId color = FOREGROUND;
-	if (onBar[0] || onBar[1] && selected >= 0) {
-		color = selected == nPoints ? FOREGROUND_LIGHT : FOREGROUND_DARK;
-	}
-	printColor(color, offsetX - (int) (sizeof(barLabel)) / 2 + 1, offsetY + (height) / 2, barLabel);
+	drawBarPoint(offsetX, offsetY, height, onBar, selected);
 }
