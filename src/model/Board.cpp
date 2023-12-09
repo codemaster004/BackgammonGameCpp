@@ -1,8 +1,6 @@
 //
 // Created by Filip Dabkowski on 12/11/2023.
 //
-// TODO: Create a structure for keeping moves already mad in the game?
-// Use enum for color pallet
 
 #include "cstring"
 #include "cstdint"

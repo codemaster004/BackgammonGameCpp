@@ -274,7 +274,6 @@ MoveStatus handleMoving(Board &game, MoveMade &history, MoveType moveType, Move 
 	return MOVE_SUCCESSFUL;
 }
 
-// TODO: Shorten
 MoveStatus movePointToPoint(Board &game, Move move, MoveMade &history) {
 	MoveType moveType = determineMoveType(game, move.from, move.by);
 	if (!enumToBool(moveType))

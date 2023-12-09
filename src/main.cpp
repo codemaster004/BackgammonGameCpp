@@ -123,12 +123,12 @@ void interface(UserInterface &ui) {
 }
 
 /**
- * TODO: [x] Basic Board UI (1pt)
- * TODO: [x] Visualisation of game state (1pt)
- * TODO: [x] Saving game state to a file (2pt)
- * TODO: [x] Loading game state from file + next move (2pt)
- * TODO: [x] Ability to capture pawnsId (1pt)
- * TODO: [x] Removing pawnsId ?bar or court? (1pt)
+ * DONE: [x] Basic Board UI (1pt)
+ * DONE: [x] Visualisation of game state (1pt)
+ * DONE: [x] Saving game state to a file (2pt)
+ * DONE: [x] Loading game state from file + next move (2pt)
+ * DONE: [x] Ability to capture pawnsId (1pt)
+ * DONE: [x] Removing pawnsId ?bar or court? (1pt)
  * TODO: [x] ?Game simulation from any point till the end? (2pt)
  * TODO: [x] Remember and save game past moves (1pt)
  * TODO: [x] Visualisation of game play (backwards) from loaded state (2pt)

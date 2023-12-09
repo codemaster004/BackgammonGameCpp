@@ -112,8 +112,6 @@ void createErrorMessage(UserInterface &ui, MoveStatus errorId) {
 }
 
 void pickDiceController(int input, UserInterface &ui) {
-	// TODO: rewrite for N dices
-	// TODO: SHORTEN
 	int *dice = ui.board.dices;
 	for (int i = 0; i < N_DICES; ++i) {
 		if (input == '1' + i) {

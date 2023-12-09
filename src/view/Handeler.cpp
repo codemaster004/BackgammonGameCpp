@@ -215,7 +215,6 @@ void handleIndexes(Placement posBot, Placement posTop, int selected, int width, 
 	delete[] colors;
 }
 
-// TODO: REWRITE
 void handleIndexes(char **indexes, int pickedIndex, int digits, Placement posTop, Placement posBot) {
 	revertTable(indexes, indexes + nPoints / 2);
 
