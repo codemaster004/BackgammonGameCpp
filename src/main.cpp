@@ -95,6 +95,7 @@ void interface(UserInterface &ui) {
 		ui.needToRefresh = false;
 	}
 
+	attron(COLOR_PAIR(FOREGROUND));
 	if (ui.state == GAME_PLAY) {
 		generateBasicBoard(ui);
 		generateInteractiveUI(ui);
@@ -140,7 +141,6 @@ void startScreen(int argc) {
 void handleHallOfFame(UserInterface &ui) {
 	Placement pos = createCentersPlacement(ui.space.boardCenter, MAX_NAME_LENGTH + 10, N_ALL_PLAYERS * (TEXT_HEIGHT + VERTICAL_SPACING) + borders + VERTICAL_SPACING);
 
-	attron(COLOR_PAIR(FOREGROUND));
 	drawBorders(pos);
 	pos.min.y += BORDER_WIDTH + VERTICAL_SPACING;
 	char **text = new char *[N_ALL_PLAYERS];

@@ -46,6 +46,12 @@ int toNumber(const uint8_t *byteBlock, int blockSize) {
 }
 
 void toBase64(int block, char *finalData, int &offset, int padding) {
+	const char base64table[baseSize] = {
+		'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q',
+		'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
+		'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y',
+		'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'
+	};
 	for (int i = 4 - 1; i >= 0; --i) {
 		int mask = createBitMask(6, i * 6);
 		int encoded = (block & mask) >> i * 6;
@@ -75,6 +81,12 @@ char *encodeBase64(uint8_t *data, size_t length) {
 }
 
 int fromBase64(const char *base, int &padding) {
+	const char base64table[baseSize] = {
+		'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q',
+		'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
+		'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y',
+		'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'
+	};
 	int block = 0;
 	for (int i = 0; i < 4; ++i) {
 		if (base[i] == '=') {
