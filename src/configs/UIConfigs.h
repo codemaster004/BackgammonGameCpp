@@ -32,14 +32,13 @@
 #define BOARD_OFFSET_X 0
 #define COURT_OFFSET_X 1
 #define COURT_OFFSET_Y 2
+#define VERTICAL_SPACING 1
 
-#define COLOR_THEME 230, 120, 220
+#define POINT_HEIGHT 6
+
+#define COLOR_THEME 255,110,10
 
 #define MAX_MESSAGE_LEN 25
-
-const char gameName[] = "Backgammon";
-const char creatorId[] = "s197712";
-const char creatorName[] = "Filip Dabkowski";
 
 
 enum UiColorsId {
@@ -50,18 +49,9 @@ enum UiColorsId {
 	BACKGROUND_DARK
 };
 
-// TODO change to char
-const char borderHorizon[] = { "=" };
-const char borderVertical[] = { "|" };
-const char borderCorner[] = { "+" };
-
-// TODO: wtf i do now
-const char barLabel[] = {"[BAR]"};
-
-const char piece1[] = { "/\\" };
-const char piece2[] = { "''" };
-const char pawn1[] = { ")(" };
-const char pawn2[] = { "[]" };
+const char borderHorizon = '=';
+const char borderVertical = '|';
+const char borderCorner = '+';
 
 const int pieceWidth = 2;
 const int pieceSpacing = 3;
@@ -72,6 +62,6 @@ const float colorDiff = 0.3;
 const int borders = BORDER_WIDTH * 2;
 
 const int boardWidth = POINTS_PER_BOARD * pieceWidth + pieceSpacing * (POINTS_PER_BOARD - 1) + pieceSpacing / 2 * 2;
-const int boardHeight = PAWNS_PER_POINT * 2 + pieceSpacing;
+const int boardHeight = POINT_HEIGHT * 2 + pieceSpacing;
 
 #endif //BACKGAMMONGAME_UICONFIGS_H
