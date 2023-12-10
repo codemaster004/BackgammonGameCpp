@@ -9,8 +9,148 @@
 #include "SerializeToFile.h"
 #include "History.h"
 #include "Storage.h"
-#include "../viewModel/UserInterface.h"
 
+
+// PRIVATE FUNCTION HEADERS //
+
+bool canBeMoved(Board &game, int pointIndex);
+
+int calculateDestination(Board &game, int index, int moveBy);
+
+/**
+ * @brief function checks for what kind of move will happen
+ *
+ * BLOCKED - can not move to this Point
+ * POSSIBLE - can move to this Point
+ * CAPTURE - can move and a Capture will happen
+ */
+MoveType canMoveTo(Board &game, Pawn *pawn, int toIndex);
+
+int *findPlayerIndexes(Board &game, int playerId, int &count, int limit=0);
+
+void findCapturingMoves(const int *playerIndexes, int playerN, const int *opponentIndexes, int opponentN, int *&capturingMoves, int &count, int moveBy);
+
+int *forceCapture(Board &game, int moveBy, int direction, int &count);
+
+MoveType checkForCapture(Board &game, int from, int moveBy, int destination);
+
+MoveType checkForcingEscape(Board &game, int fromIndex, int toIndex);
+
+int minHomeIndex(int fromIndex);
+
+void checkForEscape(Board &game, int &minIndex, bool &canEscape, int &minPoint, int &maxPoint, int change);
+
+MoveType determineMoveType(Board &game, int pointIndex, int moveBy);
+
+bool enumToBool(MoveType value);
+
+void reverseMove(Board &game, MoveMade &head, MoveMade *move);
+
+MoveStatus handleMoveBarToPoint(Board &game, Move move, int indexOnBar, MoveMade &history);
+
+MoveStatus handleMovePointToPoint(Board &game, Move move, MoveMade &history);
+
+// PUBLIC FUNCTION DECLARATIONS //
+
+Pawn *getPawn(Board &game, int id) {
+	// Iterate through pawns in the game
+	for (auto &pawn : game.pawns) {
+		// Return a pointer to the pawn if the ID matches
+		if (pawn.id == id)
+			return &pawn;
+	}
+	// Return nullptr if no pawn with the specified ID is found
+	return nullptr;
+}
+
+bool statusToBool(MoveStatus type) {
+	// Return true for successful move statuses, false for others
+	return type == MOVE_SUCCESSFUL || type == MOVE_TO_COURT;
+}
+
+void checkNewPoint(Point *toPoint, int pointIndex) {
+	// Update the 'isHome' status of the last pawn in the point
+	toPoint->pawns[toPoint->pawnsInside - 1]->isHome = isHomeBoard(pointIndex, nPoints, toPoint->pawns[toPoint->pawnsInside - 1]->moveDirection);
+}
+
+MoveStatus handlePawnMovement(Board &game, Move move, MoveMade &history) {
+	// Check if any pawn of the current player is on the bar
+	int indexOnBar = pawnIndexOnBar(game, game.currentPlayerId);
+	if (indexOnBar >= 0) {
+		// Move pawn from bar to point
+		return handleMoveBarToPoint(game, move, indexOnBar, history);
+	} else {
+		// Move pawn from one point to another
+		return handleMovePointToPoint(game, move, history);
+	}
+}
+
+void reverseMoves(Board &game, MoveMade &head) {
+	// Return if there are no moves to reverse
+	if (!head.moveOrder)
+		return;
+
+	// Retrieve the pawn involved in the last move and set the current player ID
+	Pawn *pawn = getPawn(game, head.prevMove->pawnId);
+	if (pawn != nullptr)
+		game.currentPlayerId = pawn->ownerId;
+
+	// Start from the most recent move
+	MoveMade *tempMove = head.prevMove;
+	int totalMoves = tempMove->moveOrder;
+
+	// Reverse each move in the history
+	for (int i = 0; i <= totalMoves; ++i) {
+		reverseMove(game, head, tempMove);
+		tempMove = tempMove->prevMove;
+		removeAfter(&head);
+	}
+}
+
+int hasPawnsOnBar(Bar &bar, int playerId) {
+	int count = 0; // Initialize count of pawns
+	// Iterate through each pawn on the bar
+	for (auto &pawn : bar.pawns) {
+		if (pawn == nullptr) // Skip if there is no pawn
+			continue;
+		if (pawn->ownerId == playerId) // Increment count if pawn belongs to the specified player
+			count++;
+	}
+	return count; // Return the total count of pawns
+}
+
+
+void serialisePawn(Pawn pawn, uint8_t *buffer, size_t &offset) {
+	std::memcpy(buffer + offset, &pawn, sizeof(Pawn));
+	offset += sizeof(Pawn);
+}
+
+Pawn deserializePawn(const uint8_t *buffer, size_t &index) {
+	Pawn pawn;
+	std::memcpy(&pawn, buffer + index, sizeof(Pawn));
+	index += sizeof(Pawn);
+	return pawn;
+}
+
+void serialisePawnPointer(Pawn *pawn, uint8_t* buffer, size_t &offset) {
+	if (pawn == nullptr){
+		serializeInt(-1, buffer, offset);
+	} else {
+		serializeInt(pawn->id, buffer, offset);
+	}
+}
+
+Pawn *deserializePawnPointer(Board &board, const uint8_t *buffer, size_t &offset) {
+	int id = deserializeInt(buffer, offset);
+	if (id == -1)
+		return nullptr;
+	for (Pawn &pawn : board.pawns)
+		if (pawn.id == id)
+			return &pawn;
+	return nullptr;
+}
+
+// PRIVATE FUNCTION DECLARATIONS //
 
 bool canBeMoved(Board &game, int pointIndex) {
 	// Index out of range
@@ -35,12 +175,6 @@ int calculateDestination(Board &game, int index, int moveBy) {
 	return destinationIndex;
 }
 
-/*
- * function checks for what kind of move will happen
- * 	BLOCKED - can not move to this Point
- * 	POSSIBLE - can move to this Point
- * 	CAPTURE - can move and a Capture will happen
- */
 MoveType canMoveTo(Board &game, Pawn *pawn, int toIndex) {
 	// Consider the destination indexes are already check
 	int destinationSize = game.points[toIndex].pawnsInside;
@@ -60,37 +194,7 @@ MoveType canMoveTo(Board &game, Pawn *pawn, int toIndex) {
 	return CAPTURE;
 }
 
-Pawn *getPawn(Board &game, int id) {
-	for ( auto &pawn : game.pawns)
-		if (pawn.id == id)
-			return &pawn;
-	return nullptr;
-}
-
-void resizeTable(int *&table, int &size, int increase=1) {
-	int newSize = size + increase;
-	// Create a new array with size increased by 1
-	int *newArray = new int[newSize];
-
-	// Copy the elements from the old array to the new array
-	for (int i = 0; i < size; ++i) {
-		newArray[i] = table[i];
-	}
-
-	// Initialize the new element
-	for (int i = size; i < newSize; ++i) {
-		newArray[i] = 0;
-	}
-
-	// Delete the old array
-	delete[] table;
-
-	// Update the original array pointer and size
-	table = newArray;
-	size = newSize;
-}
-
-int *findPlayerIndexes(Board &game, int playerId, int &count, int limit=0) {
+int *findPlayerIndexes(Board &game, int playerId, int &count, int limit) {
 	auto indexes = new int [count];
 	for (int i = 0; i < nPoints; ++i) {
 		Point point = game.points[i];
@@ -103,12 +207,6 @@ int *findPlayerIndexes(Board &game, int playerId, int &count, int limit=0) {
 	}
 
 	return indexes;
-}
-
-void initTable(int *&table, int count, int value) {
-	for (int i = 0; i < count; ++i) {
-		table[i] = value;
-	}
 }
 
 void findCapturingMoves(const int *playerIndexes, int playerN, const int *opponentIndexes, int opponentN, int *&capturingMoves, int &count, int moveBy) {
@@ -161,10 +259,6 @@ MoveType checkForCapture(Board &game, int from, int moveBy, int destination) {
 			return CAPTURE_POSSIBLE;
 	}
 	return POSSIBLE;
-}
-
-bool statusToBool(MoveStatus type) {
-	return type == MOVE_SUCCESSFUL || type == MOVE_TO_COURT;
 }
 
 int minHomeIndex(int fromIndex) {
@@ -235,28 +329,7 @@ bool enumToBool(MoveType value) {
 	return !(value == BLOCKED || value == NOT_ALLOWED);
 }
 
-int hasPawnsOnBar(Bar &bar, int playerId) {
-	int count = 0;
-	for (auto & pawn : bar.pawns) {
-		if (pawn == nullptr)
-			continue;
-		if (pawn->ownerId == playerId)
-			count++;
-	}
-	return count;
-}
-
-short findMoveDirection(Pawn **pawns, int count, int playerId) {
-	for (int i = 0; i < count; ++i) {
-		if (pawns[i] == nullptr)
-			continue;
-		if (pawns[i]->ownerId == playerId)
-			return pawns[i]->moveDirection;
-	}
-	return 0;
-}
-
-MoveStatus moveBarToPoint(Board &game, Move move, int indexOnBar, MoveMade &history) {
+MoveStatus handleMoveBarToPoint(Board &game, Move move, int indexOnBar, MoveMade &history) {
 	if (!removingFromBar(game, move))
 		return PAWNS_ON_BAR;
 
@@ -275,10 +348,6 @@ MoveStatus moveBarToPoint(Board &game, Move move, int indexOnBar, MoveMade &hist
 	moveBarToPoint(game, history, indexOnBar, toIndex);
 
 	return MOVE_SUCCESSFUL;
-}
-
-void checkNewPoint(Point *toPoint, int pointIndex) {
-	toPoint->pawns[toPoint->pawnsInside - 1]->isHome = isHomeBoard(pointIndex, nPoints, toPoint->pawns[toPoint->pawnsInside - 1]->moveDirection);
 }
 
 void checkWinningCondition(Board &game, int pointIndex) {
@@ -303,7 +372,7 @@ MoveStatus handleMoving(Board &game, MoveMade &history, MoveType moveType, Move 
 	return MOVE_SUCCESSFUL;
 }
 
-MoveStatus movePointToPoint(Board &game, Move move, MoveMade &history) {
+MoveStatus handleMovePointToPoint(Board &game, Move move, MoveMade &history) {
 	MoveType moveType = determineMoveType(game, move.from, move.by);
 	if (!enumToBool(moveType))
 		return MOVE_FAILED;
@@ -316,15 +385,6 @@ MoveStatus movePointToPoint(Board &game, Move move, MoveMade &history) {
 	int toIndex = move.from + move.by * direction;
 
 	return handleMoving(game, history, moveType, move, toIndex);
-}
-
-MoveStatus handlePawnMovement(Board &game, Move move, MoveMade &history) {
-	int indexOnBar = pawnIndexOnBar(game, game.currentPlayerId);
-	if (indexOnBar >= 0) {
-		return moveBarToPoint(game, move, indexOnBar, history);
-	} else {
-		return movePointToPoint(game, move, history);
-	}
 }
 
 void reverseMove(Board &game, MoveMade &head, MoveMade *move) {
@@ -344,54 +404,4 @@ void reverseMove(Board &game, MoveMade &head, MoveMade *move) {
 		case COURT_TO_POINT:
 			break;
 	}
-}
-
-void reverseMove(Board &game, MoveMade &head) {
-	if (!head.moveOrder)
-		return;
-
-	Pawn *pawn = getPawn(game, head.prevMove->pawnId);
-	if (pawn != nullptr)
-		game.currentPlayerId = pawn->ownerId;
-
-	MoveMade *tempMove = head.prevMove;
-	int totalMoves = tempMove->moveOrder;
-	for (int i = 0; i <= totalMoves; ++i) {
-		reverseMove(game, head, tempMove);
-		tempMove = tempMove->prevMove;
-		removeAfter(&head);
-	}
-}
-
-
-/// Handle Serialization of Pawn object
-void serialisePawn(Pawn pawn, uint8_t *buffer, size_t &offset) {
-	std::memcpy(buffer + offset, &pawn, sizeof(Pawn));
-	offset += sizeof(Pawn);
-}
-
-Pawn deserializePawn(const uint8_t *buffer, size_t &index) {
-	Pawn pawn;
-	std::memcpy(&pawn, buffer + index, sizeof(Pawn));
-	index += sizeof(Pawn);
-	return pawn;
-}
-
-/// Handle POINTER serialization to a Pawn object
-void serialisePawnPointer(Pawn *pawn, uint8_t* buffer, size_t &offset) {
-	if (pawn == nullptr){
-		serializeInt(-1, buffer, offset);
-	} else {
-		serializeInt(pawn->id, buffer, offset);
-	}
-}
-
-Pawn *deserializePawnPointer(Board &board, const uint8_t *buffer, size_t &offset) {
-	int id = deserializeInt(buffer, offset);
-	if (id == -1)
-		return nullptr;
-	for (Pawn &pawn : board.pawns)
-		if (pawn.id == id)
-			return &pawn;
-	return nullptr;
 }

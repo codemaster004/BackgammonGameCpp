@@ -49,6 +49,8 @@ enum PawnColor {
 
 /**
  * @brief Enumerates the status of a move after being played.
+ *
+ * Private information for the checking function
  */
 enum MoveStatus {
 	MOVE_SUCCESSFUL, ///< Move was successful.
@@ -74,40 +76,105 @@ typedef struct Pawn {
 } Pawn;
 
 
+/**
+ * @brief Retrieves a pointer to a Pawn structure based on its ID.
+ *
+ * @param game Reference to the Board structure containing the pawns.
+ * @param id The ID of the pawn to be retrieved.
+ * @return Pawn* Pointer to the Pawn structure with the specified ID, or nullptr if not found.
+ */
 Pawn *getPawn(Board &game, int id);
 
+/**
+ * @brief Converts a MoveStatus to a boolean value.
+ *
+ * @param type The MoveStatus to be evaluated.
+ * @return bool True if the status indicates a successful move, false otherwise.
+ */
 bool statusToBool(MoveStatus type);
 
-bool canBeMoved(Board &game, int pointIndex);
-
-MoveType canMoveTo(Board &game, Pawn *pawn, int toIndex);
-
-MoveType determineMoveType(Board &game, int pointIndex, int moveBy);
-
-MoveStatus moveBarToPoint(Board &game, Move move, int indexOnBar, MoveMade &history);
-
-MoveStatus movePointToPoint(Board &game, Move move, MoveMade &history);
-
+/**
+ * @brief Handles the movement of a pawn based on the current move.
+ *
+ * @param game Reference to the Board structure representing the game state.
+ * @param move The Move structure containing details of the move to be made.
+ * @param history Reference to the MoveMade structure for recording the move.
+ * @return MoveStatus The status of the move after execution.
+ */
 MoveStatus handlePawnMovement(Board &game, Move move, MoveMade &history);
 
-bool enumToBool(MoveType value);
-
+/**
+ * @brief Counts the number of pawns a player has on the bar.
+ *
+ * @param bar Reference to the Bar structure containing the pawns.
+ * @param playerId The ID of the player whose pawns are being counted.
+ * @return int The number of pawns the specified player has on the bar.
+ */
 int hasPawnsOnBar(Bar &bar, int playerId);
 
-short findMoveDirection(Pawn **pawns, int count, int playerId);
+/**
+ * @brief Reverses the moves made up to a certain point in the game.
+ *
+ * @param game Reference to the Board structure representing the game state.
+ * @param head Reference to the MoveMade structure that serves as the head of the moves list.
+ */
+void reverseMoves(Board &game, MoveMade &head);
 
-void reverseMove(Board &game, MoveMade &head);
-
+/**
+ * @brief Updates the 'isHome' status of the last pawn in a point.
+ *
+ * @param toPoint Pointer to the Point structure where the pawn is placed.
+ * @param pointIndex The index of the point on the board.
+ */
 void checkNewPoint(Point *toPoint, int pointIndex);
 
-/// Handle Serialization of Pawn object
+/**
+ * @brief Serializes a Pawn structure into a buffer.
+ *
+ * Copies the Pawn structure into a buffer using memcpy, effectively serializing it.
+ * The offset in the buffer is incremented by the size of Pawn.
+ *
+ * @param pawn The Pawn structure to be serialized.
+ * @param buffer Pointer to the buffer where the serialized data will be stored.
+ * @param offset Reference to the size_t variable indicating the current offset in the buffer.
+ */
 void serialisePawn(Pawn pawn, uint8_t *buffer, size_t &offset);
 
+/**
+ * @brief Deserializes a Pawn structure from a buffer.
+ *
+ * Reconstructs a Pawn structure by copying data from a buffer using memcpy.
+ * The index in the buffer is incremented by the size of Pawn.
+ *
+ * @param buffer Pointer to the buffer containing the serialized data.
+ * @param index Reference to the size_t variable indicating the current index in the buffer.
+ * @return Pawn The deserialized Pawn structure.
+ */
 Pawn deserializePawn(const uint8_t *buffer, size_t &index);
 
-/// Handle POINTER serialization to a Pawn object
+/**
+ * @brief Serializes a pointer to a Pawn structure into a buffer.
+ *
+ * Serializes the ID of the Pawn if the pointer is not null; otherwise, serializes -1.
+ * This approach is used to handle nullable Pawn pointers.
+ *
+ * @param pawn Pointer to the Pawn structure to be serialized.
+ * @param buffer Pointer to the buffer where the serialized data will be stored.
+ * @param offset Reference to the size_t variable indicating the current offset in the buffer.
+ */
 void serialisePawnPointer(Pawn *pawn, uint8_t* buffer, size_t &offset);
 
+/**
+ * @brief Deserializes a pointer to a Pawn structure from a buffer.
+ *
+ * Reconstructs a pointer to a Pawn structure by matching the serialized ID
+ * with a Pawn's ID in the board. Returns nullptr if the serialized ID is -1.
+ *
+ * @param board Reference to the Board containing the Pawn structures.
+ * @param buffer Pointer to the buffer containing the serialized data.
+ * @param offset Reference to the size_t variable indicating the current offset in the buffer.
+ * @return Pawn* Pointer to the deserialized Pawn structure, or nullptr if not found.
+ */
 Pawn *deserializePawnPointer(Board &board, const uint8_t *buffer, size_t &offset);
 
 #endif //BACKGAMMONGAME_PAWN_H

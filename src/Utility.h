@@ -35,4 +35,8 @@ char *joinStrings1(const char *string1, uint len1, const char *string2, uint len
 
 char *joinStrings2(const char*string1, const char *string2);
 
+void initTable(int *&table, int count, int value);
+
+void resizeTable(int *&table, int &size, int increase=1);
+
 #endif //BACKGAMMONGAME_UTILITY_H

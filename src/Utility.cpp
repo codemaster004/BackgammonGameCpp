@@ -119,3 +119,32 @@ char *joinStrings2(const char*string1, const char *string2) {
 	uint len2 = len(string2);
 	return joinStrings1(string1, (int) (len1) - 1, string2, (int) (len2) - 1);
 }
+
+void initTable(int *&table, int count, int value) {
+	for (int i = 0; i < count; ++i) {
+		table[i] = value;
+	}
+}
+
+void resizeTable(int *&table, int &size, int increase) {
+	int newSize = size + increase;
+	// Create a new array with size increased by 1
+	int *newArray = new int[newSize];
+
+	// Copy the elements from the old array to the new array
+	for (int i = 0; i < size; ++i) {
+		newArray[i] = table[i];
+	}
+
+	// Initialize the new element
+	for (int i = size; i < newSize; ++i) {
+		newArray[i] = 0;
+	}
+
+	// Delete the old array
+	delete[] table;
+
+	// Update the original array pointer and size
+	table = newArray;
+	size = newSize;
+}
