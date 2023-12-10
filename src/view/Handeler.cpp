@@ -7,6 +7,7 @@
 #include "Handeler.h"
 #include "Drawing.h"
 #include "../controller/InputControll.h"
+#include "../model/SerializeToFile.h"
 
 
 Placement initMenuSpace(Pos center, MenuElement values[], int nElements) {
@@ -62,7 +63,8 @@ void createPlayerNames(UserInterface ui, char **&players, int &selected) {
 			numberToString(playerPoints, (int)(nDigits(playerPoints, 10))),
 		};
 
-		joinStrings(players[i], data, count);
+		joinStrings0(players[i], data, count);
+		delete[] data[4];
 
 		if (ui.board.players[i].id == ui.board.currentPlayerId)
 			selected = i;
@@ -111,6 +113,16 @@ void handleCourt(UserInterface ui) {
 	attroff(A_BOLD);
 }
 
+void updateScores(UserInterface &ui) {
+	for (auto &scores : ui.playersScores)
+		for (auto &player : ui.board.players)
+			if (scores.id == player.id) {
+				scores.points = player.points;
+				break;
+			}
+	saveScores("hall.txt", ui.playersScores);
+}
+
 void givePointsForWinning(UserInterface &ui) {
 	Player *winner = getPlayer(ui.board, ui.board.winnerPlayerId);
 	Player *opponent = getOpponent(ui.board, winner->id);
@@ -122,12 +134,14 @@ void givePointsForWinning(UserInterface &ui) {
 	} else {
 		winner->points += 1;
 	}
+	updateScores(ui);
 }
 
 void handleGameWon(UserInterface &ui) {
 	resetMenuTo(ui, GAME_WON);
 	givePointsForWinning(ui);
 	ui.menu.selected = -1;
+	ui.board.winnerPlayerId = -1;
 	messageSet(ui.infoMess, "Game Won");
 }
 

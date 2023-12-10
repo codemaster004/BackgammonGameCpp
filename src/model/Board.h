@@ -29,6 +29,8 @@ typedef struct Board {
 } Board;
 
 
+void clearPlayers(Board &game);
+
 void setClearBoard(Board &gameBoard);
 
 void clearDices(int *dices);

@@ -19,13 +19,15 @@
  *   11 10 09 08 07 06   05 04 03 02 01 00
  */
 
-/// Clear the Board Structure for a New Game
-void setClearBoard(Board &gameBoard) {
-	gameBoard.currentPlayerId = NULL;
-	for (auto &player: gameBoard.players) {
+void clearPlayers(Board &game) {
+	game.currentPlayerId = NULL;
+	for (auto &player: game.players) {
 		player = {.id=-1};
 	}
+}
 
+/// Clear the Board Structure for a New Game
+void setClearBoard(Board &gameBoard) {
 	// set Bar to keep 0 Pawns
 	gameBoard.bar = Bar{0};
 

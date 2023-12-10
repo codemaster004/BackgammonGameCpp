@@ -50,6 +50,14 @@ void resetMenuTo(UserInterface &ui, MenuMode mode) {
 	resetMessages(ui);
 }
 
+void loadCurrentScores(UserInterface &ui) {
+	for (auto &scores : ui.playersScores)
+		for (auto &player : ui.board.players)
+			if (scores.id == player.id) {
+				player.points = scores.points;
+				break;
+			}
+}
 
 void newGameController(int input, UserInterface &ui) {
 	char name[] = "game0.txt";
@@ -63,6 +71,7 @@ void newGameController(int input, UserInterface &ui) {
 			resetMenuTo(ui, DEFAULT);
 			loadFromFile(name, ui.board);
 			loadHistoryFromFile(name, ui.history);
+			loadCurrentScores(ui);
 			break;
 		default:
 			break;
@@ -94,9 +103,10 @@ void gamePlayController(int input, UserInterface &ui) {
 void createDiceMessage(UserInterface &ui) {
 	int digits = (int) (nDigits(ui.currentMove.by, 10));
 	const char *moveBy = numberToString(ui.currentMove.by, digits);
-	const char *str = joinStrings("Move by: ", 9, moveBy, digits);
+	const char *str = joinStrings1("Move by: ", 9, moveBy, digits);
 	messageSet(ui.infoMess, str);
 	delete[] str;
+	delete[] moveBy;
 }
 
 void createErrorMessage(UserInterface &ui, MoveStatus errorId) {

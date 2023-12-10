@@ -103,7 +103,7 @@ void createDiceOption(char **&options, int index, int value) {
 
 	// Construct the option string & join parts into one
 	const char *diceName[4] = {"Dice (", diceNumber, "): ", diceValue};
-	joinStrings(options[index], diceName, 4);
+	joinStrings0(options[index], diceName, 4);
 
 	// Free allocated memory
 	delete[] diceNumber;

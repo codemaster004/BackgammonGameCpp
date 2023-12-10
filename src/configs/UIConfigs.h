@@ -32,6 +32,7 @@
 #define BOARD_OFFSET_X 0
 #define COURT_OFFSET_X 1
 #define COURT_OFFSET_Y 2
+#define VERTICAL_SPACING 1
 
 #define POINT_HEIGHT 6
 

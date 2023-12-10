@@ -29,10 +29,10 @@ int stringToNumber(const char *str);
 
 void revertTable(char **from, char **to);
 
-void joinStrings(char *&buffer, const char **data, int count);
+void joinStrings0(char *&buffer, const char **data, int count);
 
-char *joinStrings(const char *string1, uint len1, const char *string2, uint len2);
+char *joinStrings1(const char *string1, uint len1, const char *string2, uint len2);
 
-char *joinStrings(const char*string1, const char *string2);
+char *joinStrings2(const char*string1, const char *string2);
 
 #endif //BACKGAMMONGAME_UTILITY_H

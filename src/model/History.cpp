@@ -70,7 +70,7 @@ void saveHistoryToFile(char filename[], MoveMade &head) {
 	char *encodedFile = encodeBase64(bufferTable, index);
 	delete[] bufferTable;
 
-	char *path = joinStrings(hisDir, sizeof(hisDir) - 1, filename, 9);
+	char *path = joinStrings1(hisDir, sizeof(hisDir) - 1, filename, 9);
 	FILE *file = fopen(path, "w");
 	delete[] path;
 
@@ -91,7 +91,7 @@ void loadHistoryFromFile(char filename[], MoveMade &head) {
 	initByteContainer(bufferTable);
 	const char *hisDir = "../moves/";
 
-	char *path = joinStrings(hisDir, filename);
+	char *path = joinStrings2(hisDir, filename);
 	FILE *file = fopen(path, "r");
 	delete[] path;
 

@@ -52,6 +52,7 @@ int main(int argc, char **argv) {
 
 	UserInterface UI = initUI();
 	UI.board = Board{};
+	clearPlayers(UI.board);
 	setClearBoard(UI.board);
 
 	loadScores("hall.txt", UI);
@@ -146,23 +147,22 @@ void createPlayerHallText(UserInterface ui, char **text, int index) {
 	};
 
 	text[index] = new char [MAX_NAME_LENGTH + 8];
-	joinStrings(text[index], data, 5);
+	joinStrings0(text[index], data, 5);
+	delete[] data[0];
+	delete[] data[4];
 }
 
 void renderHallOfFame(UserInterface &ui) {
-//	ui.playersScores[0] = {0, "Hello", 0};
-//	ui.playersScores[1] = {1, "World", 12};
-//	ui.playersScores[2] = {2, "Foo", 3};
+	Placement pos = createCentersPlacement(ui.space.boardCenter, MAX_NAME_LENGTH + 10, N_ALL_PLAYERS * (TEXT_HEIGHT + VERTICAL_SPACING) + borders + VERTICAL_SPACING);
 
-	Placement pos = {20, 3, 50, 11};
 	drawBorders(pos);
-	pos.min.y += BORDER_WIDTH + 1;
+	pos.min.y += BORDER_WIDTH + VERTICAL_SPACING;
 	char **text = new char *[N_ALL_PLAYERS];
 	for (int i = 0; i < N_ALL_PLAYERS; ++i) {
 		createPlayerHallText(ui, text, i);
 	}
 
-	drawSpreadTextVertical(pos, text, 3, ui.nowPickedPlayer, 1);
+	drawSpreadTextVertical(pos, text, 3, ui.nowPickedPlayer, VERTICAL_SPACING);
 
 	for (int i = 0; i < N_ALL_PLAYERS; ++i) {
 		delete[] text[i];

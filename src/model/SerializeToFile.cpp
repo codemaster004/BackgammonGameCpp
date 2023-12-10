@@ -42,7 +42,7 @@ void saveToFile(char filename[], Board &game) {
 	char *encodedFile = encodeBase64(bufferTable, index);
 	delete[] bufferTable;
 
-	char *path = joinStrings((char *)(savesDir), sizeof(savesDir) - 1, filename, len(filename) - 1);
+	char *path = joinStrings1((char *) (savesDir), sizeof(savesDir) - 1, filename, len(filename) - 1);
 	FILE *file = fopen(path, "w");
 	delete[] path;
 
@@ -64,7 +64,7 @@ void loadFromFile(char filename[], Board &game) {
 	auto *bufferTable = new char[encodedLen];
 	size_t index = 0;
 
-	char *path = joinStrings((char *)(savesDir), sizeof(savesDir) - 1, filename, len(filename) - 1);
+	char *path = joinStrings1((char *) (savesDir), sizeof(savesDir) - 1, filename, len(filename) - 1);
 	FILE *file = fopen(path, "r");
 	delete[] path;
 
@@ -97,7 +97,7 @@ void saveScores(char filename[], ScorePlayer scores[]) {
 	char *encodedFile = encodeBase64(buffer, index);
 	delete[] buffer;
 
-	char *path = joinStrings((char *)(savesDir), sizeof(savesDir) - 1, filename, len(filename) - 1);
+	char *path = joinStrings1((char *) (savesDir), sizeof(savesDir) - 1, filename, len(filename) - 1);
 	FILE *file = fopen(path, "w");
 	delete[] path;
 
@@ -109,6 +109,8 @@ void saveScores(char filename[], ScorePlayer scores[]) {
 
 		fclose(file);
 	}
+
+	delete[] encodedFile;
 }
 
 void loadScores(char filename[], UserInterface &ui) {
@@ -117,7 +119,7 @@ void loadScores(char filename[], UserInterface &ui) {
 	auto *buffer = new char[encodedLen];
 	size_t index = 0;
 
-	char *path = joinStrings((char *)(savesDir), sizeof(savesDir) - 1, filename, len(filename) - 1);
+	char *path = joinStrings1((char *) (savesDir), sizeof(savesDir) - 1, filename, len(filename) - 1);
 	FILE *file = fopen(path, "r");
 	delete[] path;
 

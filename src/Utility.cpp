@@ -42,8 +42,7 @@ uint len(const char *text) {
 }
 
 uint nDigits(int n, int base) {
-	if (n == 0)
-		return 1;
+	if (!n) return 1;
 
 	uint count = 1;
 	uint i = 1;
@@ -93,7 +92,7 @@ void revertTable(char **from, char **to) {
 	}
 }
 
-void joinStrings(char *&buffer, const char **data, int count) {
+void joinStrings0(char *&buffer, const char **data, int count) {
 	int index = 0;
 	for (int i = 0; i < count; ++i) {
 
@@ -104,7 +103,7 @@ void joinStrings(char *&buffer, const char **data, int count) {
 	}
 }
 
-char *joinStrings(const char *string1, uint len1, const char *string2, uint len2) {
+char *joinStrings1(const char *string1, uint len1, const char *string2, uint len2) {
 	char *fullString = new char [len1 + len2];
 	for (int i = 0; i < len1; ++i) {
 		fullString[i] = string1[i];
@@ -115,8 +114,8 @@ char *joinStrings(const char *string1, uint len1, const char *string2, uint len2
 	return fullString;
 }
 
-char *joinStrings(const char*string1, const char *string2) {
+char *joinStrings2(const char*string1, const char *string2) {
 	uint len1 = len(string1);
 	uint len2 = len(string2);
-	return joinStrings(string1, (int)(len1) - 1, string2, (int) (len2) - 1);
+	return joinStrings1(string1, (int) (len1) - 1, string2, (int) (len2) - 1);
 }

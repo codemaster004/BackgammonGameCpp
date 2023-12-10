@@ -198,8 +198,10 @@ void drawVertically(Pos pos, const char *text, UiColorsId color) {
 
 void drawVerticalInfo(Pos pos, const char *label, int value, UiColorsId color, bool force) {
 	if (value > 0 || force) {
-		char *text = joinStrings(label, numberToString(value, 2));
+		char *num = numberToString(value, 2);
+		char *text = joinStrings2(label, num);
 		drawVertically(pos, text, color);
+		delete[] num;
 		delete[] text;
 	}
 }
