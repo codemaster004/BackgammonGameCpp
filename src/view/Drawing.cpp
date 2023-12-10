@@ -21,6 +21,18 @@ void printColor(UiColorsId color, int x, int y, char text) {
 	attroff(COLOR_PAIR(color));
 }
 
+UiColorsId *generateColors(int count, int selected) {
+	auto *colors = new UiColorsId[count];
+	for (int i = 0; i < count; ++i) {
+		if (selected < 0) {
+			colors[i] = FOREGROUND;
+		} else {
+			colors[i] = i == selected ? FOREGROUND_LIGHT : FOREGROUND_DARK;
+		}
+	}
+	return colors;
+}
+
 void drawLine(char symbol, Placement pos) {
 	int deltaX = pos.max.x - pos.min.x;
 	int deltaY = pos.max.y - pos.min.y;
@@ -60,8 +72,8 @@ void drawLineString(const char symbol[], Placement pos) {
 }
 
 void drawLinePawn(Pawn pawn, Placement pos) {
-	const char pawn1[] = { ")(" };
-	const char pawn2[] = { "[]" };
+	const char pawn1[] = {")("};
+	const char pawn2[] = {"[]"};
 
 	for (int y = pos.min.y; y < pos.max.y; y++) {
 		if (pawn.color == PAWN_WHITE) {
@@ -101,8 +113,8 @@ void drawPiece(const char *symbol, int offsetX, int offsetY) {
 }
 
 void drawPieces(int offsetX, int offsetY) {
-	const char piece1[] = { "/\\" };
-	const char piece2[] = { "''" };
+	const char piece1[] = {"/\\"};
+	const char piece2[] = {"''"};
 
 	char *reversePiece = reverseString(piece1);
 	drawPiece(reversePiece, offsetX, offsetY);
@@ -129,24 +141,34 @@ void drawCenteredText(Placement pos, int spacing, int len, char **text, int coun
 }
 
 void drawSpreadText(Placement pos, char **text, int count, int selected) {
-	int textSpace = (pos.max.x - pos.min.x) / count;
+	UiColorsId *colors = generateColors(count, selected);
+
+	int wordSpace = (pos.max.x - pos.min.x) / count;
+
 	Placement tempPos = pos;
-	tempPos.max.x = tempPos.min.x + textSpace;
-
-	auto *colors = new UiColorsId [count];
-	for (int i = 0; i < count; ++i) {
-		if (selected < 0) {
-			colors[i] = FOREGROUND;
-		} else {
-			colors[i] = i == selected ? FOREGROUND_LIGHT : FOREGROUND_DARK;
-		}
-	}
-
+	tempPos.max.x = tempPos.min.x + wordSpace;
 	for (int i = 0; i < count; ++i) {
 		uint textLen = len(text[i]);
-		drawCenteredText(tempPos, 0, (int) (textLen), text + i, 1, &colors[i], 1);
-		moveSpace(tempPos, Pos{textSpace});
+		drawCenteredText(tempPos, 0, (int) (textLen), text + i, 1, colors + i, 1);
+		moveSpace(tempPos, Pos{wordSpace});
 	}
+	delete[] colors;
+}
+
+void drawSpreadTextVertical(Placement pos, char **text, int count, int selected, int spacing) {
+	UiColorsId *colors = generateColors(count, selected);
+
+	int wordSpace = TEXT_HEIGHT + spacing;
+
+	Placement tempPos = pos;
+	tempPos.max.y = tempPos.min.y + wordSpace;
+	for (int i = 0; i < count; ++i) {
+		uint textLen = len(text[i]);
+		drawCenteredText(tempPos, 0, (int) (textLen), text + i, 1, colors + i, 1);
+
+		moveSpace(tempPos, Pos{.y=wordSpace});
+	}
+
 	delete[] colors;
 }
 
@@ -168,7 +190,7 @@ void setColourTheme(short baseRed, short baseGreen, short baseBlue) {
 }
 
 void drawVertically(Pos pos, const char *text, UiColorsId color) {
-	int length = (int)(len(text));
+	int length = (int) (len(text));
 	for (int i = 0; i < length; ++i) {
 		printColor(color, pos.x, pos.y + i, text[i]);
 	}

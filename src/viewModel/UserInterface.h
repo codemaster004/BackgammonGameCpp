@@ -29,7 +29,7 @@ enum MenuMode {
  */
 enum UiState {
 	WELCOME_SCREEN, ///< Welcome screen state.
-	PICK_SAVE,      ///< State for picking a saved game.
+	PICK_USER,      ///< State for picking a playing user.
 	GAME_PLAY       ///< State during game play.
 };
 

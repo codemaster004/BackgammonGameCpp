@@ -35,6 +35,12 @@ int getInput(int argc);
 void interface(UserInterface &ui);
 
 /**
+ * @brief Renders the area to pick player and see current scores.
+ * @param ui Reference to the UserInterface object.
+ */
+void renderHallOfFame(UserInterface ui);
+
+/**
  * @brief Entry point of the application. Initializes the game and handles the main game loop.
  * @param argc Argument count.
  * @param argv Argument table of "strings".
@@ -77,6 +83,27 @@ int main(int argc, char **argv) {
 	return 0;
 }
 
+void interface(UserInterface &ui) {
+	if (ui.needToRefresh) {
+		delete[] ui.menu.elements;
+		clear();
+		redefineMenu(ui);
+		ui.needToRefresh = false;
+	}
+
+	if (ui.state == GAME_PLAY) {
+		generateBasicBoard(ui);
+		generateInteractiveUI(ui);
+	} else if (ui.state == WELCOME_SCREEN) {
+		starterScreen(ui);
+	} else if (ui.state == PICK_USER) {
+		renderHallOfFame(ui);
+	}
+
+	// Refresh the screen to show changes
+	refresh();
+}
+
 int getInput(int argc) {
 	if (argc > 1)
 		return getch();
@@ -105,23 +132,20 @@ void startScreen(int argc) {
 	init_pair(BACKGROUND_DARK, COLOR_BLACK, COLOUR_MAIN_DARK);
 }
 
-void interface(UserInterface &ui) {
-	if (ui.needToRefresh) {
-		delete[] ui.menu.elements;
-		clear();
-		redefineMenu(ui);
-		ui.needToRefresh = false;
-	}
+void renderHallOfFame(UserInterface ui) {
+	ScorePlayer scores[] = {
+		{0, "Hello", 0},
+		{1, "World", 12},
+		{2, "Foo", 3},
+	};
+	Placement pos = {20, 3, 50, 11};
+	drawBorders(pos);
+	pos.min.y += BORDER_WIDTH + 1;
+	char *text[] = {"Hello", "World", "Foo"};
+	drawSpreadTextVertical(pos, text, 3, 0, 1);
 
-	if (ui.state == GAME_PLAY) {
-		generateBasicBoard(ui);
-		generateInteractiveUI(ui);
-	} else if (ui.state == WELCOME_SCREEN) {
-		starterScreen(ui);
-	}
-
-	// Refresh the screen to show changes
-	refresh();
+	// Handle and display the game menu at a position relative to the board's center and maximum Y value
+	handleMenu(ui.menu, Pos{ui.space.boardCenter.x, ui.space.board.max.y + MENU_TOP_SPACING});
 }
 
 /**

@@ -25,6 +25,8 @@ void drawCenteredText(Placement pos, int spacing, int len, char **text, int coun
 
 void drawSpreadText(Placement pos, char **text, int count, int selected=-1);
 
+void drawSpreadTextVertical(Placement pos, char **text, int count, int selected, int spacing);
+
 void drawLinePawn(Pawn pawn, Placement pos);
 
 void setColourTheme(short baseRed = 0, short baseGreen = 166, short baseBlue = 0);

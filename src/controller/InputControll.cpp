@@ -55,8 +55,8 @@ void newGameController(int input, UserInterface &ui) {
 	char name[] = "game0.txt";
 	switch (input) {
 		case 'n':
-			ui.state = GAME_PLAY;
-			resetMenuTo(ui, DEFAULT);
+			ui.state = PICK_USER;
+			resetMenuTo(ui, STARTING_GAME);
 			break;
 		case 'l':
 			ui.state = GAME_PLAY;

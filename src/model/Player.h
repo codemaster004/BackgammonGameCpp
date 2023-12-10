@@ -25,6 +25,19 @@ typedef struct Player {
 } Player;
 
 
+/**
+ * @brief Represents players' saved scores.
+ *
+ * This structure holds information about players score, includes ID, nick,
+ * and their overall score
+ */
+typedef struct ScorePlayer {
+	int id;                   ///< Unique identifier for the player.
+	char name[MAX_NAME_LENGTH]; ///< Name of the player.
+	int points;               ///< Points accumulated by the player.
+} ScorePlayer;
+
+
 void changePlayers(Board &game);
 
 Player *getPlayer(Board &game, int playerId);
