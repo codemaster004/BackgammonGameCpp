@@ -35,18 +35,43 @@ typedef struct MoveMade {
 } MadeMove;
 
 
+/**
+ * @brief Inserts a new move after a specified move in the moves list.
+ *
+ * @param data The MoveMade data to be inserted.
+ * @param lastMove Pointer to the MoveMade structure after which the new move will be inserted.
+ */
 void addAfter(MoveMade data, MoveMade *lastMove);
 
+/**
+ * @brief Removes the move that immediately follows the specified move in the moves list.
+ *
+ * @param latestMove Pointer to the MoveMade structure before the move to be removed.
+ */
 void removeAfter(MoveMade *latestMove);
 
-MoveMade *getFist(MoveMade head);
-
-void serializeHistory(MoveMade &head, uint8_t *buffer, size_t &offset);
-
-void deserializeHistory(const uint8_t *buffer, size_t limit, MoveMade &history);
-
-void loadHistoryFromFile(char filename[], MoveMade &head);
-
+/**
+ * @brief Saves the history of moves to a file.
+ *
+ * This function serializes the history of moves and then saves it to a specified file.
+ * The serialized history is first converted to Base64 format before writing to the file.
+ * The file is stored in a predefined directory for saved moves.
+ *
+ * @param filename Name of the file where the history will be saved.
+ * @param head The head of the moves list, containing the total move order.
+ */
 void saveHistoryToFile(char filename[], MoveMade &head);
+
+/**
+ * @brief Loads the history of moves from a file.
+ *
+ * This function reads a file containing the serialized and encoded history of moves,
+ * decodes it from Base64 format, and then deserializes it to reconstruct the history
+ * in the game. The file is read from a predefined directory for saved moves.
+ *
+ * @param filename Name of the file from which the history will be loaded.
+ * @param head Reference to the MoveMade structure where the loaded history will be stored.
+ */
+void loadHistoryFromFile(char filename[], MoveMade &head);
 
 #endif //BACKGAMMONGAME_HISTORY_H
