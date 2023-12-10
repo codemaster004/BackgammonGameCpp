@@ -25,6 +25,8 @@ Placement initIndex(Placement board, int offset);
 
 Pos initCenter(Placement boardSpace, Placement gameSpace);
 
+Placement createCentersPlacement(Pos center, int width, int height);
+
 void moveSpace(Placement &space, Pos by);
 
 int width(Placement space);

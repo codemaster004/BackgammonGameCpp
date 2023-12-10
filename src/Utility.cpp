@@ -6,6 +6,12 @@
 
 #include "Utility.h"
 
+// PRIVATE FUNCTION HEADERS //
+
+// PUBLIC FUNCTION DECLARATIONS //
+
+// PRIVATE FUNCTION DECLARATIONS //
+
 char *reverseString(const char *str) {
 	unsigned long length = std::strlen(str);
 	char *reversed = new char[length + 1];
@@ -42,6 +48,8 @@ uint len(const char *text) {
 }
 
 uint nDigits(int n, int base) {
+	if (!n) return 1;
+
 	uint count = 1;
 	uint i = 1;
 	while (n / count) {
@@ -58,8 +66,9 @@ uint maxInBase(int n, int base) {
 	return count / base;
 }
 
-char *numberToString(int number, int width) {
+char *numberToString(int number, uint width) {
 	char *str = new char[width + 1];
+	str[0] = '0'; // Default value
 	str[width] = '\0';
 
 	for (int i = width - 1; i >= 0; --i) {
@@ -89,7 +98,7 @@ void revertTable(char **from, char **to) {
 	}
 }
 
-void joinStrings(char *&buffer, const char **data, int count) {
+void joinStrings0(char *&buffer, const char **data, int count) {
 	int index = 0;
 	for (int i = 0; i < count; ++i) {
 
@@ -100,7 +109,7 @@ void joinStrings(char *&buffer, const char **data, int count) {
 	}
 }
 
-char *joinStrings(const char *string1, int len1, const char *string2, int len2) {
+char *joinStrings1(const char *string1, uint len1, const char *string2, uint len2) {
 	char *fullString = new char [len1 + len2];
 	for (int i = 0; i < len1; ++i) {
 		fullString[i] = string1[i];
@@ -111,8 +120,37 @@ char *joinStrings(const char *string1, int len1, const char *string2, int len2) 
 	return fullString;
 }
 
-char *joinStrings(const char*string1, const char *string2) {
+char *joinStrings2(const char*string1, const char *string2) {
 	uint len1 = len(string1);
 	uint len2 = len(string2);
-	return joinStrings(string1, (int)(len1) - 1, string2, (int) (len2) - 1);
+	return joinStrings1(string1, (int) (len1) - 1, string2, (int) (len2) - 1);
+}
+
+void initTable(int *&table, int count, int value) {
+	for (int i = 0; i < count; ++i) {
+		table[i] = value;
+	}
+}
+
+void resizeTable(int *&table, int &size, int increase) {
+	int newSize = size + increase;
+	// Create a new array with size increased by 1
+	int *newArray = new int[newSize];
+
+	// Copy the elements from the old array to the new array
+	for (int i = 0; i < size; ++i) {
+		newArray[i] = table[i];
+	}
+
+	// Initialize the new element
+	for (int i = size; i < newSize; ++i) {
+		newArray[i] = 0;
+	}
+
+	// Delete the old array
+	delete[] table;
+
+	// Update the original array pointer and size
+	table = newArray;
+	size = newSize;
 }

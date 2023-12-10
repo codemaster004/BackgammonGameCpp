@@ -12,3 +12,7 @@ header.txt
 # Game Saves
 games
 moves
+
+# Clion Scratch files
+scratch*
+

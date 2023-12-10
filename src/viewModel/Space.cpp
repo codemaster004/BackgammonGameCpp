@@ -5,10 +5,16 @@
 #include "Space.h"
 #include "../configs/UIConfigs.h"
 
+// PRIVATE FUNCTION HEADERS //
+
+// PUBLIC FUNCTION DECLARATIONS //
+
+// PRIVATE FUNCTION DECLARATIONS //
 
 Placement initGameSpace() {
 	Placement space{.min={OFFSET_X, OFFSET_Y}};
-	space.max = {space.min.x + N_BOARDS * (boardWidth + borders + BAR_WIDTH) - BAR_WIDTH + DICE_WIDTH + BORDER_WIDTH + TEXT_WIDTH + COURT_OFFSET_X - 1,
+	space.max = {space.min.x + N_BOARDS * (boardWidth + borders + BAR_WIDTH) - BAR_WIDTH + DICE_WIDTH + BORDER_WIDTH +
+				 TEXT_WIDTH + COURT_OFFSET_X - 1,
 				 space.min.y + boardHeight + borders - 1};
 
 	return space;
@@ -28,7 +34,7 @@ Placement initDice(Placement game) {
 		.min={game.min.x,
 			  game.min.y + BOARD_OFFSET_Y + HEADER_OFFSET + INDEX_OFFSET + TEXT_HEIGHT * 2},
 	};
-	space.max={space.min.x + BORDER_WIDTH + borders + 1, space.min.y + boardHeight + borders - 1};
+	space.max = {space.min.x + BORDER_WIDTH + borders + 1, space.min.y + boardHeight + borders - 1};
 	return space;
 }
 
@@ -48,6 +54,13 @@ Pos initCenter(Placement boardSpace, Placement gameSpace) {
 	return Pos{
 		.x=gameSpace.min.x + (gameSpace.max.x - gameSpace.min.x) / 2,
 		.y=boardSpace.min.y + (boardSpace.max.y - boardSpace.min.y) / 2
+	};
+}
+
+Placement createCentersPlacement(Pos center, int width, int height) {
+	return {
+		.min={center.x - width / 2, center.y - height / 2},
+		.max={center.x + width / 2, center.y + height / 2}
 	};
 }
 
