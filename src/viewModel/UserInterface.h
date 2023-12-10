@@ -11,6 +11,17 @@
 #include "Space.h"
 #include "../model/History.h"
 
+
+/**
+ * @enum UiState
+ * @brief Represents different states of the user interface.
+ */
+enum UiState {
+	WELCOME_SCREEN, ///< Welcome screen state.
+	PICK_USER,      ///< State for picking a playing user.
+	GAME_PLAY       ///< State during game play.
+};
+
 /**
  * @enum MenuMode
  * @brief Represents the various modes of the game menu.
@@ -24,15 +35,8 @@ enum MenuMode {
 	PICK_PLAYERS,   ///< Mode for picking playing users.
 };
 
-/**
- * @enum UiState
- * @brief Represents different states of the user interface.
- */
-enum UiState {
-	WELCOME_SCREEN, ///< Welcome screen state.
-	PICK_USER,      ///< State for picking a playing user.
-	GAME_PLAY       ///< State during game play.
-};
+typedef struct MenuElement MenuElement;
+
 
 /**
  * @struct GameSpace
@@ -48,18 +52,6 @@ typedef struct GameSpace {
 	Placement indexesBottom;///< Placement of indexes at the bottom.
 	Placement gameSpace;    ///< Placement of the entire game space.
 } GameSpace;
-
-/**
- * @struct MenuElement
- * @brief Represents an element in the game menu.
- *
- * This structure holds the information about a single menu element, including its ID, key, and value.
- */
-typedef struct MenuElement {
-	int id;               ///< The ID of the menu element.
-	char key;             ///< The key associated with this menu element.
-	const char *value;    ///< The value or label of the menu element.
-} MenuElement;
 
 /**
  * @struct Menu

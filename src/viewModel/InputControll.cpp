@@ -10,6 +10,7 @@
 #include "../model/Board.h"
 #include "InputControll.h"
 #include "../model/SerializeToFile.h"
+#include "../viewModel//Menu.h"
 
 // PRIVATE FUNCTION HEADERS //
 

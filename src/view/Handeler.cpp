@@ -8,6 +8,7 @@
 #include "Drawing.h"
 #include "../viewModel/InputControll.h"
 #include "../model/SerializeToFile.h"
+#include "../viewModel/Menu.h"
 
 // PRIVATE FUNCTION HEADERS //
 
@@ -92,23 +93,6 @@ void generatePlayers(UserInterface &ui) {
 	delete[] players;
 }
 
-void generateBasicBoard(UserInterface &ui) {
-	generateHeader(ui);
-
-	generatePlayers(ui);
-
-	attron(COLOR_PAIR(FOREGROUND));
-
-	handleBoardOutline(ui.space.board);
-
-	handlePieces(ui.space.board);
-
-	// Dies
-	handleDices(ui.space.dice, ui.space.boardCenter, ui.board.dices);
-
-	attroff(COLOR_PAIR(FOREGROUND));
-}
-
 void handleCourt(UserInterface ui) {
 	Pos courtTop = {ui.space.gameSpace.max.x, ui.space.boardCenter.y - COURT_OFFSET_Y - 5};
 	Pos courtBottom = {ui.space.gameSpace.max.x, ui.space.boardCenter.y + COURT_OFFSET_Y};
@@ -141,6 +125,81 @@ void givePointsForWinning(UserInterface &ui) {
 		winner->points += 1;
 	}
 	updateScores(ui);
+}
+
+int generateColorsForIndexes(char **text, int count, int pickedIndex, UiColorsId *&colors) {
+	int index = -1;
+	for (int i = 0; i < count; ++i) {
+		if (stringToNumber(text[i]) == pickedIndex) {
+			index = i;
+		}
+	}
+	if (pickedIndex == -1) {
+		colors = new UiColorsId[1];
+		colors[0] = FOREGROUND;
+		return 1;
+	} else if (index < 0) {
+		colors = new UiColorsId[1];
+		colors[0] = FOREGROUND_DARK;
+		return 1;
+	} else {
+		colors = new UiColorsId[count];
+		for (int i = 0; i < count; ++i) {
+			colors[i] = i == index ? FOREGROUND_LIGHT : FOREGROUND_DARK;
+		}
+		return count;
+	}
+}
+
+void handleIndexes(Placement posBot, Placement posTop, int selected, int width, char **indexes, int offsetTop,
+				   int offsetBot) {
+	UiColorsId *colors = nullptr;
+
+	int nColours = generateColorsForIndexes(&indexes[offsetTop], POINTS_PER_BOARD, selected, colors);
+	drawCenteredText(posBot, pieceSpacing, width,
+					 &indexes[offsetTop], POINTS_PER_BOARD, colors, nColours);
+	delete[] colors;
+
+	colors = nullptr;
+	nColours = generateColorsForIndexes(&indexes[offsetBot], POINTS_PER_BOARD, selected, colors);
+	drawCenteredText(posTop, pieceSpacing, width,
+					 &indexes[offsetBot], POINTS_PER_BOARD, colors, nColours);
+	delete[] colors;
+}
+
+void handlePawnDrawing(Board &game, Placement &space, int indexTop, int indexBot) {
+
+	int count = min(game.points[indexTop].pawnsInside, POINT_HEIGHT);
+	if (count) {
+		space.max.y = space.min.y + count;
+		drawLinePawn(*game.points[indexTop].pawns[0], space);
+	}
+
+
+	count = min(game.points[indexBot].pawnsInside, POINT_HEIGHT);
+	if (count) {
+		space.max.y = space.min.y + count;
+		moveSpace(space, Pos{0, boardHeight - count});
+		drawLinePawn(*game.points[indexBot].pawns[0], space);
+		moveSpace(space, Pos{0, -boardHeight + count});
+	}
+}
+
+void generateBasicBoard(UserInterface &ui) {
+	generateHeader(ui);
+
+	generatePlayers(ui);
+
+	attron(COLOR_PAIR(FOREGROUND));
+
+	handleBoardOutline(ui.space.board);
+
+	handlePieces(ui.space.board);
+
+	// Dies
+	handleDices(ui.space.dice, ui.space.boardCenter, ui.board.dices);
+
+	attroff(COLOR_PAIR(FOREGROUND));
 }
 
 void handleGameWon(UserInterface &ui) {
@@ -177,8 +236,6 @@ void generateInteractiveUI(UserInterface &ui) {
 		delete[] indexes[i];
 	}
 	delete[] indexes;
-//	delete[] testMenu;
-
 }
 
 void handleBoardOutline(Placement space) {
@@ -226,46 +283,6 @@ void handleDices(Placement space, Pos center, int *dices) {
 	}
 }
 
-int generateColorsForIndexes(char **text, int count, int pickedIndex, UiColorsId *&colors) {
-	int index = -1;
-	for (int i = 0; i < count; ++i) {
-		if (stringToNumber(text[i]) == pickedIndex) {
-			index = i;
-		}
-	}
-	if (pickedIndex == -1) {
-		colors = new UiColorsId[1];
-		colors[0] = FOREGROUND;
-		return 1;
-	} else if (index < 0) {
-		colors = new UiColorsId[1];
-		colors[0] = FOREGROUND_DARK;
-		return 1;
-	} else {
-		colors = new UiColorsId[count];
-		for (int i = 0; i < count; ++i) {
-			colors[i] = i == index ? FOREGROUND_LIGHT : FOREGROUND_DARK;
-		}
-		return count;
-	}
-}
-
-void handleIndexes(Placement posBot, Placement posTop, int selected, int width, char **indexes, int offsetTop,
-				   int offsetBot) {
-	UiColorsId *colors = nullptr;
-
-	int nColours = generateColorsForIndexes(&indexes[offsetTop], POINTS_PER_BOARD, selected, colors);
-	drawCenteredText(posBot, pieceSpacing, width,
-					 &indexes[offsetTop], POINTS_PER_BOARD, colors, nColours);
-	delete[] colors;
-
-	colors = nullptr;
-	nColours = generateColorsForIndexes(&indexes[offsetBot], POINTS_PER_BOARD, selected, colors);
-	drawCenteredText(posTop, pieceSpacing, width,
-					 &indexes[offsetBot], POINTS_PER_BOARD, colors, nColours);
-	delete[] colors;
-}
-
 void handleIndexes(char **indexes, int pickedIndex, int digits, Placement posTop, Placement posBot) {
 	revertTable(indexes, indexes + nPoints / 2);
 
@@ -297,27 +314,9 @@ void handleMenu(Menu menu, Pos center) {
 				color = FOREGROUND_DARK;
 			}
 		}
-		printColor(color, menuSpace.min.x, menuSpace.min.y, menu.elements[i].value);
+		printColorString(color, menuSpace.min.x, menuSpace.min.y, menu.elements[i].value);
 
 		menuSpace.min.x += (int) (len(menu.elements[i].value) - 1) + OPTION_SPACING;
-	}
-}
-
-void handlePawnDrawing(Board &game, Placement &space, int indexTop, int indexBot) {
-
-	int count = min(game.points[indexTop].pawnsInside, POINT_HEIGHT);
-	if (count) {
-		space.max.y = space.min.y + count;
-		drawLinePawn(*game.points[indexTop].pawns[0], space);
-	}
-
-
-	count = min(game.points[indexBot].pawnsInside, POINT_HEIGHT);
-	if (count) {
-		space.max.y = space.min.y + count;
-		moveSpace(space, Pos{0, boardHeight - count});
-		drawLinePawn(*game.points[indexBot].pawns[0], space);
-		moveSpace(space, Pos{0, -boardHeight + count});
 	}
 }
 
