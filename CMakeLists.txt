@@ -21,8 +21,8 @@ add_executable(BackgammonGame src/main.cpp
         src/Utility.cpp
         src/viewModel/UserInterface.cpp
         src/viewModel/UserInterface.h
-        src/controller/InputControll.cpp
-        src/controller/InputControll.h
+        src/viewModel/InputControll.cpp
+        src/viewModel/InputControll.h
         src/view/Drawing.cpp
         src/view/Drawing.h
         src/viewModel/Space.cpp
@@ -38,6 +38,8 @@ add_executable(BackgammonGame src/main.cpp
         src/model/History.h
         src/ByteContainer.cpp
         src/ByteContainer.h
+        src/viewModel/Menu.cpp
+        src/viewModel/Menu.h
 )
 
 target_link_libraries(BackgammonGame ncurses)

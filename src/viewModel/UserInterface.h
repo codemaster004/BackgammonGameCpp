@@ -158,29 +158,6 @@ void setBasicGameState(UserInterface &ui);
 void titleArt(int offsetX, int offsetY);
 
 /**
- * @brief Calculates the limit for the number of dice Options to show
- *
- * This function determines the limit on the number of dice based on the current state
- * of the dice in the user interface. It increments the limit for each dice with a value
- * greater than zero. If all dices can be used add one to the limit.
- *
- * @param ui Reference to the UserInterface object representing the game's UI state.
- * @return int The calculated limit for the number of dice.
- */
-int calcDiceLimit(UserInterface &ui);
-
-/**
- * @brief Redefines the game menu based on the current menu mode.
- *
- * Sets the initial selected menu item, determines the number of menu options based on the
- * current menu mode, and populates the options and keys for the menu. It also initializes
- * menu elements with these options and keys.
- *
- * @param ui Reference to the UserInterface containing the menu to be redefined.
- */
-void redefineMenu(UserInterface &ui);
-
-/**
  * @brief Resets a message string to blank spaces.
  *
  * Fills the entire message array with blank spaces. This function is used to clear

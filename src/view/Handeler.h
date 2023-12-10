@@ -30,4 +30,6 @@ void handlePawnPlacement(Board &game, Placement space);
 
 void handleGameWon(UserInterface &ui);
 
+void handlePlayerHallText(UserInterface ui, char **text, int index);
+
 #endif //BACKGAMMONGAME_HANDELER_H

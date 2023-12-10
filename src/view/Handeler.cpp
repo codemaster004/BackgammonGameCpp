@@ -6,7 +6,7 @@
 #include "../configs/UIConfigs.h"
 #include "Handeler.h"
 #include "Drawing.h"
-#include "../controller/InputControll.h"
+#include "../viewModel/InputControll.h"
 #include "../model/SerializeToFile.h"
 
 
@@ -298,7 +298,7 @@ void handleMenu(Menu menu, Pos center) {
 	}
 }
 
-void placePawns(Board &game, Placement &space, int indexTop, int indexBot) {
+void handlePawnDrawing(Board &game, Placement &space, int indexTop, int indexBot) {
 
 	int count = min(game.points[indexTop].pawnsInside, POINT_HEIGHT);
 	if (count) {
@@ -326,7 +326,7 @@ void handlePawnPlacement(Board &game, Placement space) {
 	for (int i = 0; i < N_BOARDS; ++i) {
 		for (int j = 0; j < POINTS_PER_BOARD; ++j) {
 			int offset = i * POINTS_PER_BOARD + j;
-			placePawns(game, space, base + offset, base - offset - 1);
+			handlePawnDrawing(game, space, base + offset, base - offset - 1);
 			moveSpace(space, Pos{change, 0});
 		}
 		moveSpace(space, Pos{pieceSpacing / 2 * 2 + borders + BAR_WIDTH - pieceSpacing, 0});
@@ -347,4 +347,22 @@ void handleMessages(UserInterface &ui) {
 	tempMessages[0] = ui.errorMess;
 	length = len(ui.errorMess);
 	drawCenteredText(textPos, 0, (int) (length), tempMessages, 1, &colours, 1);
+}
+
+void handlePlayerHallText(UserInterface ui, char **text, int index) {
+	int id = ui.playersScores[index].id;
+	int points = ui.playersScores[index].points;
+
+	const char *data[5] = {
+		numberToString(id, nDigits(id, 10)),
+		". ",
+		ui.playersScores[index].name,
+		": ",
+		numberToString(points, nDigits(points, 10)),
+	};
+
+	text[index] = new char [MAX_NAME_LENGTH + 8];
+	joinStrings0(text[index], data, 5);
+	delete[] data[0];
+	delete[] data[4];
 }

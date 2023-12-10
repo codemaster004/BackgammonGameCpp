@@ -6,7 +6,7 @@
 #define BACKGAMMONGAME_INPUTCONTROLL_H
 
 #include "../model/Board.h"
-#include "../viewModel/UserInterface.h"
+#include "UserInterface.h"
 
 void gameSetUp(Board &game);
 

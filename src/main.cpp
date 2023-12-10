@@ -10,10 +10,11 @@
 
 #include "configs/UIConfigs.h"
 #include "model/Board.h"
-#include "controller/InputControll.h"
+#include "viewModel/InputControll.h"
 #include "view/Handeler.h"
 #include "view/Drawing.h"
 #include "model/SerializeToFile.h"
+#include "viewModel/Menu.h"
 
 
 /**
@@ -39,7 +40,7 @@ void interface(UserInterface &ui);
  * @brief Renders the area to pick player and see current scores.
  * @param ui Reference to the UserInterface object.
  */
-void renderHallOfFame(UserInterface &ui);
+void handleHallOfFame(UserInterface &ui);
 
 /**
  * @brief Entry point of the application. Initializes the game and handles the main game loop.
@@ -100,7 +101,7 @@ void interface(UserInterface &ui) {
 	} else if (ui.state == WELCOME_SCREEN) {
 		starterScreen(ui);
 	} else if (ui.state == PICK_USER) {
-		renderHallOfFame(ui);
+		handleHallOfFame(ui);
 	}
 
 	// Refresh the screen to show changes
@@ -135,32 +136,15 @@ void startScreen(int argc) {
 	init_pair(BACKGROUND_DARK, COLOR_BLACK, COLOUR_MAIN_DARK);
 }
 
-void createPlayerHallText(UserInterface ui, char **text, int index) {
-	int id = ui.playersScores[index].id;
-	int points = ui.playersScores[index].points;
 
-	const char *data[5] = {
-		numberToString(id, nDigits(id, 10)),
-		". ",
-		ui.playersScores[index].name,
-		": ",
-		numberToString(points, nDigits(points, 10)),
-	};
-
-	text[index] = new char [MAX_NAME_LENGTH + 8];
-	joinStrings0(text[index], data, 5);
-	delete[] data[0];
-	delete[] data[4];
-}
-
-void renderHallOfFame(UserInterface &ui) {
+void handleHallOfFame(UserInterface &ui) {
 	Placement pos = createCentersPlacement(ui.space.boardCenter, MAX_NAME_LENGTH + 10, N_ALL_PLAYERS * (TEXT_HEIGHT + VERTICAL_SPACING) + borders + VERTICAL_SPACING);
 
 	drawBorders(pos);
 	pos.min.y += BORDER_WIDTH + VERTICAL_SPACING;
 	char **text = new char *[N_ALL_PLAYERS];
 	for (int i = 0; i < N_ALL_PLAYERS; ++i) {
-		createPlayerHallText(ui, text, i);
+		handlePlayerHallText(ui, text, i);
 	}
 
 	drawSpreadTextVertical(pos, text, 3, ui.nowPickedPlayer, VERTICAL_SPACING);
