@@ -55,7 +55,8 @@ int main(int argc, char **argv) {
 	clearPlayers(UI.board);
 	setClearBoard(UI.board);
 
-	loadScores("hall.txt", UI);
+	char filename[] = "hall.txt";
+	loadScores(filename, UI);
 
 	UI.state = WELCOME_SCREEN;
 	UI.menu.mode = STARTING_GAME;

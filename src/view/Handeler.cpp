@@ -120,7 +120,8 @@ void updateScores(UserInterface &ui) {
 				scores.points = player.points;
 				break;
 			}
-	saveScores("hall.txt", ui.playersScores);
+	char filename[] = "hall.txt";
+	saveScores(filename, ui.playersScores);
 }
 
 void givePointsForWinning(UserInterface &ui) {

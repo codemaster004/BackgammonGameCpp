@@ -62,7 +62,7 @@ void deserializeHistory(const uint8_t *buffer, size_t limit, MoveMade &history) 
 }
 
 void saveHistoryToFile(char filename[], MoveMade &head) {
-	const char hisDir[] = "../moves/";
+	const char hisDir[] = "../saves/moves/";
 	auto *bufferTable = new uint8_t[head.moveOrder*MOVE_SIZE];
 
 	size_t index = 0;
@@ -89,7 +89,7 @@ void saveHistoryToFile(char filename[], MoveMade &head) {
 void loadHistoryFromFile(char filename[], MoveMade &head) {
 	ByteContainer bufferTable;
 	initByteContainer(bufferTable);
-	const char *hisDir = "../moves/";
+	const char *hisDir = "../saves/moves/";
 
 	char *path = joinStrings2(hisDir, filename);
 	FILE *file = fopen(path, "r");

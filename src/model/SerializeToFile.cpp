@@ -34,7 +34,7 @@ int deserializeInt(const uint8_t *buffer, size_t &index) {
 }
 
 void saveToFile(char filename[], Board &game) {
-	const char savesDir[] = "../games/";
+	const char savesDir[] = "../saves/games/";
 	auto *bufferTable = new uint8_t[boardSize];
 
 	size_t index = 0;
@@ -59,7 +59,7 @@ void saveToFile(char filename[], Board &game) {
 }
 
 void loadFromFile(char filename[], Board &game) {
-	const char savesDir[] = "../games/";
+	const char savesDir[] = "../saves/games/";
 	int encodedLen = finalEncodedDataLen((int) (boardSize));
 	auto *bufferTable = new char[encodedLen];
 	size_t index = 0;
@@ -87,7 +87,7 @@ void loadFromFile(char filename[], Board &game) {
 }
 
 void saveScores(char filename[], ScorePlayer scores[]) {
-	const char savesDir[] = "../";
+	const char savesDir[] = "../saves/";
 	auto *buffer = new uint8_t[N_ALL_PLAYERS * PLAYERS_SIZE];
 
 	size_t index = 0;
@@ -114,7 +114,7 @@ void saveScores(char filename[], ScorePlayer scores[]) {
 }
 
 void loadScores(char filename[], UserInterface &ui) {
-	const char savesDir[] = "../";
+	const char savesDir[] = "../saves/";
 	int encodedLen = finalEncodedDataLen(N_ALL_PLAYERS * PLAYERS_SIZE);
 	auto *buffer = new char[encodedLen];
 	size_t index = 0;
