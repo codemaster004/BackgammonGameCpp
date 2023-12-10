@@ -36,7 +36,7 @@
 
 #define POINT_HEIGHT 6
 
-#define COLOR_THEME 230, 120, 220
+#define COLOR_THEME 255,110,10
 
 #define MAX_MESSAGE_LEN 25
 

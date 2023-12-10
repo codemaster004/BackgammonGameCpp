@@ -12,6 +12,14 @@
 
 // PRIVATE FUNCTION HEADERS //
 
+/**
+ * @brief Finds the first free index on a game bar to place a pawn.
+ *
+ * @param bar The game bar being checked for a free slot.
+ * @return The index of the first free slot, or -1 if none is available.
+ */
+int getFreeIndexOnBar(Bar bar);
+
 // PUBLIC FUNCTION DECLARATIONS //
 
 bool removingFromBar(Board &game, Move move) {
@@ -163,14 +171,16 @@ void movePointToBar(Board &game, MoveMade &history, int fromIndex, int order) {
 
 	// Move up to CAPTURE_THRESHOLD pawns from the point to the bar
 	for (int i = 0; i < CAPTURE_THRESHOLD; ++i) {
+		int toIndex = getFreeIndexOnBar(game.bar);
 		// Record each move in history if the order is non-negative
 		if (order >= 0) {
-			addAfter({.type=POINT_TO_BAR, .from=fromIndex, .to=game.bar.pawnsInside, .moveOrder=order,
+			addAfter({.type=POINT_TO_BAR, .from=fromIndex, .to=toIndex, .moveOrder=order,
 						 .pawnId=fromPoint->pawns[i]->id}, &history);
 			history.moveOrder++;
 		}
 		// Move the pawn to the bar
-		game.bar.pawns[game.bar.pawnsInside++] = fromPoint->pawns[i];
+		game.bar.pawns[toIndex] = fromPoint->pawns[i];
+		game.bar.pawnsInside++;
 	}
 
 	// Update the number of pawns remaining at the starting point
@@ -262,3 +272,14 @@ Bar deserializeBar(Board &board, const uint8_t *buffer, size_t &index) {
 }
 
 // PRIVATE FUNCTION DECLARATIONS //
+
+int getFreeIndexOnBar(Bar bar) {
+	for (int i = 0; i < totalPawns; i++) {
+		// Check if the current slot is free (null)
+		if (bar.pawns[i] == nullptr)
+			// Return the index of the free slot
+			return i;
+	}
+	// Return -1 if no free slot is found
+	return -1;
+}
