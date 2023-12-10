@@ -143,17 +143,21 @@ int *forceCapture(Board &game, int moveBy, int direction, int &count) {
 	return capturingMoves;
 }
 
-MoveType checkForCapture(const int *indexes, int count, int picked) {
+MoveType checkForCapture(Board &game, int from, int moveBy, int destination) {
+	int count = 0;
+	int multiplier = from > destination ? -1 : 1;
+	int *indexes = forceCapture(game, moveBy, multiplier, count);
+
 	if (count > 0) {
 		// capturing a pawn is possible in this move
-		bool forced = false;
-		for (int i = 0; i < count; ++i)
-			if (indexes[i] == picked)
-				forced = true;
+		int extremeIndex = indexes[0];
+		for (int i = 1; i < count; ++i)
+			if (indexes[i] * multiplier < extremeIndex * multiplier)
+				extremeIndex = indexes[i];
 		delete[] indexes;
 
-		if (!forced)
-			// the player does not want to capture
+		if (extremeIndex != from)
+			// the player does not want to capture so make him
 			return CAPTURE_POSSIBLE;
 	}
 	return POSSIBLE;
@@ -219,9 +223,8 @@ MoveType determineMoveType(Board &game, int pointIndex, int moveBy) {
 	if (escapeMode != POSSIBLE)
 		return escapeMode;
 
-	int captureCount = 0;
-	int *captureIndexes = forceCapture(game, moveBy, pointIndex > destination ? -1 : 1, captureCount);
-	MoveType forceMove = checkForCapture(captureIndexes, captureCount, pointIndex);
+
+	MoveType forceMove = checkForCapture(game, pointIndex, moveBy, destination);
 	if (forceMove == CAPTURE_POSSIBLE)
 		return CAPTURE_POSSIBLE;
 
@@ -336,6 +339,7 @@ void reverseMove(Board &game, MoveMade &head, MoveMade *move) {
 			movePointToBar(game, head, move->to, -1);
 			break;
 		case POINT_TO_COURT:
+			moveCourtToPoint(game, head, move->from, move->pawnId, -1);
 			break;
 		case COURT_TO_POINT:
 			break;

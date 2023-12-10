@@ -64,6 +64,8 @@ void movePointToCourt(Board &game, MoveMade &history, int fromIndex, int order=0
 
 void movePointToBar(Board &game, MoveMade &history, int fromIndex, int order=0);
 
+void moveCourtToPoint(Board &game, MoveMade &history, int toIndex, int pawnId, int order);
+
 int hasPawnsOnPoint(Board &game, int index);
 
 bool canBeEscaping(Board &game, int index);

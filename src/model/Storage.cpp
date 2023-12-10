@@ -125,6 +125,19 @@ void movePointToBar(Board &game, MoveMade &history, int fromIndex, int order) {
 	fromPoint->pawnsInside -= CAPTURE_THRESHOLD;
 }
 
+void moveCourtToPoint(Board &game, MoveMade &history, int toIndex, int pawnId, int order) {
+	Point *point = &game.points[toIndex];
+	Pawn *pawn = getPawn(game, pawnId);
+	Court *court = pawnsCourt(game, pawn);
+	point->pawns[point->pawnsInside++] = court->pawns[--court->pawnsInside];
+	court->pawns[court->pawnsInside] = nullptr;
+
+	if (order >= 0) {
+		addAfter({COURT_TO_POINT, court->pawnsInside, toIndex, order, pawn->id}, &history);
+		history.moveOrder++;
+	}
+}
+
 void serialisePoint(Point point, uint8_t *buffer, size_t &offset) {
 	serializeInt(point.pawnsInside, buffer, offset);
 	for (auto &pawn : point.pawns) {
