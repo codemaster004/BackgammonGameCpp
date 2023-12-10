@@ -133,16 +133,15 @@ void startScreen(int argc) {
 }
 
 void renderHallOfFame(UserInterface ui) {
-	ScorePlayer scores[] = {
-		{0, "Hello", 0},
-		{1, "World", 12},
-		{2, "Foo", 3},
-	};
+	ui.playersScores[0] = {0, "Hello", 0};
+	ui.playersScores[0] = {1, "World", 12};
+	ui.playersScores[0] = {2, "Foo", 3};
+
 	Placement pos = {20, 3, 50, 11};
 	drawBorders(pos);
 	pos.min.y += BORDER_WIDTH + 1;
 	char *text[] = {"Hello", "World", "Foo"};
-	drawSpreadTextVertical(pos, text, 3, 0, 1);
+	drawSpreadTextVertical(pos, text, 3, ui.nowPickedPlayer, 1);
 
 	// Handle and display the game menu at a position relative to the board's center and maximum Y value
 	handleMenu(ui.menu, Pos{ui.space.boardCenter.x, ui.space.board.max.y + MENU_TOP_SPACING});

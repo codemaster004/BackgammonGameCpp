@@ -232,33 +232,39 @@ void populateKeys(char *&keys, const char origin[], int limit) {
  * and delegates the actual population of the array to the populateOptions function.
  *
  * @param options Reference to an array of string pointers to be populated with options.
- * @param nOptions The number of options to populate.
+ * @param count The number of options to populate.
  * @param mode The current menu mode, which determines the set of options to use.
  */
-void createOptions(char **&options, int nOptions, MenuMode mode) {
+void createOptions(char **&options, int count, MenuMode mode) {
 	const char *basic[] = {"(R)oll", "(U)ndo", "(S)ave", "(Q)uit"};
 	const char *start[] = {"(N)ew Game", "(L)oad Game", "(Q)uit"};
 	const char *point[] = {"Pick Piece (Space)", "End Turn (-)"};
 	const char *win[] = {"(N)ew Game", "(Q)uit"};
+	const char *hall[] = {"Select (Space)", "(Q)uit"};
 
+	const char **selected;
 	// Populate the options based on the current menu mode
 	switch (mode) {
 		case DEFAULT:
-			populateOptions(options, basic, nOptions);
+			selected = basic;
 			break;
 		case PICK_POINT:
-			populateOptions(options, point, nOptions);
+			selected = point;
 			break;
 		case PICK_DICE:
 			// Pick Dice is Handled in main Switch case so in this case do nothing
-			break;
+			return;
 		case STARTING_GAME:
-			populateOptions(options, start, nOptions);
+			selected = start;
 			break;
 		case GAME_WON:
-			populateOptions(options, win, nOptions);
+			selected = win;
+			break;
+		case PICK_PLAYERS:
+			selected = hall;
 			break;
 	}
+	populateOptions(options, selected, count);
 }
 
 /**
@@ -269,31 +275,35 @@ void createOptions(char **&options, int nOptions, MenuMode mode) {
  * and utilizes the populateKeys function for actual array population.
  *
  * @param keys Reference to a character array to be populated with keys.
- * @param nKeys The number of keys to populate.
+ * @param count The number of keys to populate.
  * @param mode The current menu mode, which determines the set of keys to use.
  */
-void createKeys(char *&keys, int nKeys, MenuMode mode) {
+void createKeys(char *&keys, int count, MenuMode mode) {
 	const char basic[] = {'r', 'u', 's', 'q'};
 	const char start[] = {'n', 'l', 'q'};
 	const char point[] = {' ', '-'};
 	const char win[] = {'n', 'q'};
+	const char hall[] = {' ', 'q'};
 
 	// Populate the keys array based on the current menu mode
 	switch (mode) {
 		case DEFAULT:
-			populateKeys(keys, basic, nKeys);
+			populateKeys(keys, basic, count);
 			break;
 		case PICK_POINT:
-			populateKeys(keys, point, nKeys);
+			populateKeys(keys, point, count);
 			break;
 		case PICK_DICE:
 			// Pick Dice is Handled in main Switch case so in this case do nothing
-			break;
+			return;
 		case STARTING_GAME:
-			populateKeys(keys, start, nKeys);
+			populateKeys(keys, start, count);
 			break;
 		case GAME_WON:
-			populateKeys(keys, win, nKeys);
+			populateKeys(keys, win, count);
+			break;
+		case PICK_PLAYERS:
+			populateKeys(keys, hall, count);
 			break;
 	}
 }
@@ -306,13 +316,13 @@ void redefineMenu(UserInterface &ui) {
 	// Determine the number of menu options based on the current menu mode
 	switch (ui.menu.mode) {
 		case DEFAULT:
-			ui.menu.count = N_GAME_MENU_OPTIONS;
+			ui.menu.count = N_GAME_OPTIONS;
 			break;
 		case STARTING_GAME:
-			ui.menu.count = N_STARTER_MENU_OPTIONS;
+			ui.menu.count = N_STARTER_OPTIONS;
 			break;
 		case PICK_POINT:
-			ui.menu.count = N_PIECE_MENU_OPTIONS;
+			ui.menu.count = N_PIECE_OPTIONS;
 			// No item selected by default in PICK_POINT mode
 			ui.menu.selected = -1;
 			ui.pickedIndex = 0;
@@ -321,7 +331,8 @@ void redefineMenu(UserInterface &ui) {
 			createDiceMenu(ui, options, keys);
 			break;
 		case GAME_WON:
-			ui.menu.count = N_WIN_MENU_OPTIONS;
+		case PICK_PLAYERS:
+			ui.menu.count = N_WIN_OPTIONS;
 			ui.menu.selected = -1;
 			break;
 	}

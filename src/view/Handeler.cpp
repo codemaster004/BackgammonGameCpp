@@ -23,7 +23,7 @@ Placement initMenuSpace(Pos center, MenuElement values[], int nElements) {
 	};
 }
 
-[[maybe_unused]] Placement initTextSpace(Pos center, char **values, int nElements) {
+Placement initTextSpace(Pos center, char **values, int nElements) {
 	uint realLen = OPTION_SPACING * (nElements - 1);
 	for (int i = 0; i < nElements; ++i) {
 		realLen += len(values[i]) - 1;

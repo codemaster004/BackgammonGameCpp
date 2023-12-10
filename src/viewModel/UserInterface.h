@@ -21,6 +21,7 @@ enum MenuMode {
 	PICK_DICE,      ///< Mode for picking dice.
 	STARTING_GAME,  ///< Mode for starting the game.
 	GAME_WON,       ///< Mode after the game was won.
+	PICK_PLAYERS,   ///< Mode for picking playing users.
 };
 
 /**
@@ -80,21 +81,22 @@ typedef struct Menu {
  * This structure encompasses all elements of the user interface, including the game board, menu, game space, and various states and messages.
  */
 typedef struct UserInterface {
-	const char *gameName;             ///< Name of the game.
-	const char *authorId;             ///< ID of the author.
-	const char *authorName;           ///< Name of the author.
-	Board board;                      ///< Game board.
-	int currentScores[N_PLAYERS];     ///< Current scores of the players.
-	Menu menu;                        ///< Game menu.
-	GameSpace space;                  ///< Game space layout.
-	bool needToRefresh;               ///< Flag indicating if the UI needs to be refreshed.
-	bool gameEnded;                   ///< Flag indicating if the game has ended.
-	UiState state;                    ///< Current state of the UI.
-	Move currentMove;                 ///< The current move.
-	int pickedIndex;                  ///< The index picked by the player.
-	char infoMess[MAX_MESSAGE_LEN];   ///< Information message.
-	char errorMess[MAX_MESSAGE_LEN];  ///< Error message.
-	MadeMove history;                 ///< History of moves made.
+	const char *gameName;                 ///< Name of the game.
+	const char *authorId;                 ///< ID of the author.
+	const char *authorName;               ///< Name of the author.
+	Board board;                          ///< Game board.
+	int nowPickedPlayer;                  ///< Then index of selected player to join game.
+	ScorePlayer playersScores[N_ALL_PLAYERS]; ///< Current scores of the players.
+	Menu menu;                            ///< Game menu.
+	GameSpace space;                      ///< Game space layout.
+	bool needToRefresh;                   ///< Flag indicating if the UI needs to be refreshed.
+	bool gameEnded;                       ///< Flag indicating if the game has ended.
+	UiState state;                        ///< Current state of the UI.
+	Move currentMove;                     ///< The current move.
+	int pickedIndex;                      ///< The index picked by the player.
+	char infoMess[MAX_MESSAGE_LEN];       ///< Information message.
+	char errorMess[MAX_MESSAGE_LEN];      ///< Error message.
+	MadeMove history;                     ///< History of moves made.
 } UserInterface;
 
 /**

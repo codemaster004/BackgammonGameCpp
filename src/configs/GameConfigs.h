@@ -25,6 +25,7 @@
 /////////////////////////////////////////////////////////
 
 #define N_PLAYERS 2
+#define N_ALL_PLAYERS 3
 
 #define MAX_NAME_LENGTH 16
 
