@@ -20,7 +20,6 @@ typedef struct Board Board;
 typedef struct Player {
 	int id;                   ///< Unique identifier for the player.
 	char name[MAX_NAME_LENGTH]; ///< Name of the player.
-//	PawnColor color;          ///< Color of the player's pawns.
 	int points;               ///< Points accumulated by the player.
 } Player;
 
@@ -54,5 +53,8 @@ void serialisePlayerPointer(Player *player, uint8_t *buffer, size_t &offset);
 
 Player *deserializePlayerPointer(Board &board, const uint8_t *buffer, size_t &offset);
 
+void serializeScorePlayer(ScorePlayer player, uint8_t *buffer, size_t &offset);
+
+ScorePlayer deserializeScorePlayer(const uint8_t *buffer, size_t &index);
 
 #endif //BACKGAMMONGAME_PLAYER_H

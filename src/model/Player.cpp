@@ -14,11 +14,6 @@ void changePlayers(Board &game) {
 	game.currentPlayerId = getOpponent(game, game.currentPlayerId)->id;
 }
 
-void serialisePlayer(Player player, uint8_t *buffer, size_t &offset) {
-	std::memcpy(buffer + offset, &player, sizeof(Player));
-	offset += sizeof(Player);
-}
-
 Player *getPlayer(Board &game, int playerId) {
 	for (auto &player: game.players)
 		if (player.id == playerId)
@@ -35,12 +30,22 @@ Player *getOpponent(Board &game, int playerId) {
 	return nullptr;
 }
 
+void serialisePlayer(Player player, uint8_t *buffer, size_t &offset) {
+	std::memcpy(buffer + offset, &player, sizeof(Player));
+	offset += sizeof(Player);
+}
+
 void serialisePlayerPointer(Player *player, uint8_t *buffer, size_t &offset) {
 	if (player == nullptr) {
 		serializeInt(-1, buffer, offset);
 	} else {
 		serializeInt(player->id, buffer, offset);
 	}
+}
+
+void serializeScorePlayer(ScorePlayer player, uint8_t *buffer, size_t &offset) {
+	std::memcpy(buffer + offset, &player, sizeof(ScorePlayer));
+	offset += sizeof(ScorePlayer);
 }
 
 Player deserializePlayer(const uint8_t *buffer, size_t &index) {
@@ -58,4 +63,11 @@ Player *deserializePlayerPointer(Board &board, const uint8_t *buffer, size_t &of
 		if (player.id == id)
 			return &player;
 	return nullptr;
+}
+
+ScorePlayer deserializeScorePlayer(const uint8_t *buffer, size_t &index) {
+	ScorePlayer player;
+	std::memcpy(&player, buffer + index, sizeof(ScorePlayer));
+	index += sizeof(ScorePlayer);
+	return player;
 }

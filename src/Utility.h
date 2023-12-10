@@ -31,7 +31,7 @@ void revertTable(char **from, char **to);
 
 void joinStrings(char *&buffer, const char **data, int count);
 
-char *joinStrings(const char *string1, int len1, const char *string2, int len2);
+char *joinStrings(const char *string1, uint len1, const char *string2, uint len2);
 
 char *joinStrings(const char*string1, const char *string2);
 

@@ -104,7 +104,7 @@ void joinStrings(char *&buffer, const char **data, int count) {
 	}
 }
 
-char *joinStrings(const char *string1, int len1, const char *string2, int len2) {
+char *joinStrings(const char *string1, uint len1, const char *string2, uint len2) {
 	char *fullString = new char [len1 + len2];
 	for (int i = 0; i < len1; ++i) {
 		fullString[i] = string1[i];

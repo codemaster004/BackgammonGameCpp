@@ -13,8 +13,7 @@
 
 
 void gameSetUp(Board &game) {
-//	game.currentPlayerId = rand() % 2;
-	game.currentPlayerId = 0;
+	game.currentPlayerId = game.players[rand() % N_PLAYERS].id;
 	for (int &dice: game.dices) {
 		dice = 0;
 	}
@@ -225,6 +224,7 @@ void pickPlayerController(int input, UserInterface &ui) {
 			break;
 		case KEY_UP:
 		case KEY_DOWN:
+		case 's':
 			ui.nowPickedPlayer = newSelected(ui.nowPickedPlayer, input == KEY_UP ? -1 : 1, N_ALL_PLAYERS);
 			break;
 		default:

@@ -42,7 +42,7 @@ void saveToFile(char filename[], Board &game) {
 	char *encodedFile = encodeBase64(bufferTable, index);
 	delete[] bufferTable;
 
-	char *path = joinStrings((char *)(savesDir), sizeof(savesDir) - 1, filename, 9);
+	char *path = joinStrings((char *)(savesDir), sizeof(savesDir) - 1, filename, len(filename) - 1);
 	FILE *file = fopen(path, "w");
 	delete[] path;
 
@@ -64,7 +64,7 @@ void loadFromFile(char filename[], Board &game) {
 	auto *bufferTable = new char[encodedLen];
 	size_t index = 0;
 
-	char *path = joinStrings((char *)(savesDir), sizeof(savesDir) - 1, filename, 9);
+	char *path = joinStrings((char *)(savesDir), sizeof(savesDir) - 1, filename, len(filename) - 1);
 	FILE *file = fopen(path, "r");
 	delete[] path;
 
@@ -84,4 +84,56 @@ void loadFromFile(char filename[], Board &game) {
 	deserializeBoard(decodedBoard, index, game);
 
 	delete[] decodedBoard;
+}
+
+void saveScores(char filename[], ScorePlayer scores[]) {
+	const char savesDir[] = "../";
+	auto *buffer = new uint8_t[N_ALL_PLAYERS * PLAYERS_SIZE];
+
+	size_t index = 0;
+	for (int i = 0; i < N_ALL_PLAYERS; ++i) {
+		serializeScorePlayer(scores[i], buffer, index);
+	}
+	char *encodedFile = encodeBase64(buffer, index);
+	delete[] buffer;
+
+	char *path = joinStrings((char *)(savesDir), sizeof(savesDir) - 1, filename, len(filename) - 1);
+	FILE *file = fopen(path, "w");
+	delete[] path;
+
+	int encodedLen = finalEncodedDataLen((int) (index));
+	if (file != nullptr) {
+		for (int i = 0; i < encodedLen; ++i) {
+			fputc(encodedFile[i], file);
+		}
+
+		fclose(file);
+	}
+}
+
+void loadScores(char filename[], UserInterface &ui) {
+	const char savesDir[] = "../";
+	int encodedLen = finalEncodedDataLen(N_ALL_PLAYERS * PLAYERS_SIZE);
+	auto *buffer = new char[encodedLen];
+	size_t index = 0;
+
+	char *path = joinStrings((char *)(savesDir), sizeof(savesDir) - 1, filename, len(filename) - 1);
+	FILE *file = fopen(path, "r");
+	delete[] path;
+
+	int ch;
+	while ((ch = fgetc(file)) != EOF) {
+		buffer[index++] = (char) (ch);
+	}
+	fclose(file);
+
+	uint8_t *decodedFile = decodeBase64(buffer, encodedLen);
+	delete[] buffer;
+
+	index = 0;
+	for (auto &playersScore: ui.playersScores)
+		playersScore = deserializeScorePlayer(decodedFile, index);
+
+
+	delete[] decodedFile;
 }

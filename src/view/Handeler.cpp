@@ -55,7 +55,7 @@ void createPlayerNames(UserInterface ui, char **&players, int &selected) {
 
 		int playerPoints = ui.board.players[i].points;
 		const char *data[count] = {
-			(char *) (ui.board.players[i].id ? pawn2 : pawn1),
+			(char *) (i ? pawn2 : pawn1),
 			" ",
 			ui.board.players[i].name,
 			": ",

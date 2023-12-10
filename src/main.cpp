@@ -13,6 +13,7 @@
 #include "controller/InputControll.h"
 #include "view/Handeler.h"
 #include "view/Drawing.h"
+#include "model/SerializeToFile.h"
 
 
 /**
@@ -53,13 +54,15 @@ int main(int argc, char **argv) {
 	UI.board = Board{};
 	setClearBoard(UI.board);
 
-	if (DEBUG_MODE) {
-		UI.state = GAME_PLAY;
-		UI.menu.mode = DEFAULT;
-	} else {
-		UI.state = WELCOME_SCREEN;
-		UI.menu.mode = STARTING_GAME;
-	}
+	loadScores("hall.txt", UI);
+
+	UI.state = WELCOME_SCREEN;
+	UI.menu.mode = STARTING_GAME;
+//	if (DEBUG_MODE) {
+//		UI.state = GAME_PLAY;
+//		UI.menu.mode = DEFAULT;
+//	}
+
 	redefineMenu(UI);
 
 	int ch = 0;
@@ -147,9 +150,9 @@ void createPlayerHallText(UserInterface ui, char **text, int index) {
 }
 
 void renderHallOfFame(UserInterface &ui) {
-	ui.playersScores[0] = {0, "Hello", 0};
-	ui.playersScores[1] = {1, "World", 12};
-	ui.playersScores[2] = {2, "Foo", 3};
+//	ui.playersScores[0] = {0, "Hello", 0};
+//	ui.playersScores[1] = {1, "World", 12};
+//	ui.playersScores[2] = {2, "Foo", 3};
 
 	Placement pos = {20, 3, 50, 11};
 	drawBorders(pos);
