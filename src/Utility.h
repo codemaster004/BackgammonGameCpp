@@ -23,7 +23,7 @@ uint nDigits(int n, int base);
 
 uint maxInBase(int n, int base);
 
-char* numberToString(int number, int width);
+char* numberToString(int number, uint width);
 
 int stringToNumber(const char *str);
 

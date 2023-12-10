@@ -20,8 +20,8 @@ typedef struct Board Board;
 typedef struct Player {
 	int id;                   ///< Unique identifier for the player.
 	char name[MAX_NAME_LENGTH]; ///< Name of the player.
-	PawnColor color;         ///< Color of the player's pawns.
-	int points;              ///< Points accumulated by the player.
+//	PawnColor color;          ///< Color of the player's pawns.
+	int points;               ///< Points accumulated by the player.
 } Player;
 
 

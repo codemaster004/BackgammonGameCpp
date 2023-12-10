@@ -38,7 +38,7 @@ void interface(UserInterface &ui);
  * @brief Renders the area to pick player and see current scores.
  * @param ui Reference to the UserInterface object.
  */
-void renderHallOfFame(UserInterface ui);
+void renderHallOfFame(UserInterface &ui);
 
 /**
  * @brief Entry point of the application. Initializes the game and handles the main game loop.
@@ -52,8 +52,6 @@ int main(int argc, char **argv) {
 	UserInterface UI = initUI();
 	UI.board = Board{};
 	setClearBoard(UI.board);
-
-	gameSetUp(UI.board);
 
 	if (DEBUG_MODE) {
 		UI.state = GAME_PLAY;
@@ -132,16 +130,41 @@ void startScreen(int argc) {
 	init_pair(BACKGROUND_DARK, COLOR_BLACK, COLOUR_MAIN_DARK);
 }
 
-void renderHallOfFame(UserInterface ui) {
+void createPlayerHallText(UserInterface ui, char **text, int index) {
+	int id = ui.playersScores[index].id;
+	int points = ui.playersScores[index].points;
+
+	const char *data[5] = {
+		numberToString(id, nDigits(id, 10)),
+		". ",
+		ui.playersScores[index].name,
+		": ",
+		numberToString(points, nDigits(points, 10)),
+	};
+
+	text[index] = new char [MAX_NAME_LENGTH + 8];
+	joinStrings(text[index], data, 5);
+}
+
+void renderHallOfFame(UserInterface &ui) {
 	ui.playersScores[0] = {0, "Hello", 0};
-	ui.playersScores[0] = {1, "World", 12};
-	ui.playersScores[0] = {2, "Foo", 3};
+	ui.playersScores[1] = {1, "World", 12};
+	ui.playersScores[2] = {2, "Foo", 3};
 
 	Placement pos = {20, 3, 50, 11};
 	drawBorders(pos);
 	pos.min.y += BORDER_WIDTH + 1;
-	char *text[] = {"Hello", "World", "Foo"};
+	char **text = new char *[N_ALL_PLAYERS];
+	for (int i = 0; i < N_ALL_PLAYERS; ++i) {
+		createPlayerHallText(ui, text, i);
+	}
+
 	drawSpreadTextVertical(pos, text, 3, ui.nowPickedPlayer, 1);
+
+	for (int i = 0; i < N_ALL_PLAYERS; ++i) {
+		delete[] text[i];
+	}
+	delete[] text;
 
 	// Handle and display the game menu at a position relative to the board's center and maximum Y value
 	handleMenu(ui.menu, Pos{ui.space.boardCenter.x, ui.space.board.max.y + MENU_TOP_SPACING});

@@ -61,7 +61,7 @@ uint maxInBase(int n, int base) {
 	return count / base;
 }
 
-char *numberToString(int number, int width) {
+char *numberToString(int number, uint width) {
 	char *str = new char[width + 1];
 	str[0] = '0'; // Default value
 	str[width] = '\0';

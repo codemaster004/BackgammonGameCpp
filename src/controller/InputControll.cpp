@@ -4,6 +4,7 @@
 
 #include "ncurses.h"
 #include "cstdlib"
+#include "cstring"
 
 #include "../configs/GameConfigs.h"
 #include "../model/Board.h"
@@ -12,8 +13,6 @@
 
 
 void gameSetUp(Board &game) {
-	for (auto &player:game.players)
-		player = {.id=-1};
 //	game.currentPlayerId = rand() % 2;
 	game.currentPlayerId = 0;
 	for (int &dice: game.dices) {
@@ -192,17 +191,37 @@ void gameWonController(int input, UserInterface &ui) {
 	}
 }
 
-void addPlayerToGame(UserInterface &ui) {
+bool trySettingName(UserInterface &ui) {
+	for (int i = 0; i < N_PLAYERS; ++i) {
+		ScorePlayer selected = ui.playersScores[ui.nowPickedPlayer];
 
-	ui.state = GAME_PLAY;
-	resetMenuTo(ui, DEFAULT);
+		if (ui.board.players[i].id == selected.id)
+			return false;
+
+		if (ui.board.players[i].id < 0) {
+			ui.board.players[i].id = selected.id;
+			strcpy((char *)(ui.board.players[i].name), selected.name);
+			ui.board.players[i].points = selected.points;
+
+			return i == N_PLAYERS - 1;
+		}
+	}
+
+	return false;
+}
+
+void addPlayerToGame(UserInterface &ui) {
+	if (trySettingName(ui)) {
+		gameSetUp(ui.board);
+		ui.state = GAME_PLAY;
+		resetMenuTo(ui, DEFAULT);
+	}
 }
 
 void pickPlayerController(int input, UserInterface &ui) {
 	switch (input) {
 		case ' ':
 			addPlayerToGame(ui);
-
 			break;
 		case KEY_UP:
 		case KEY_DOWN:
