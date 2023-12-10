@@ -29,7 +29,7 @@
 
 #define MAX_NAME_LENGTH 16
 
-const uint nPoints = N_BOARDS * POINTS_PER_BOARD * 2;
-const uint totalPawns = N_PLAYERS * PAWNS_PER_PLAYER;
+const int nPoints = N_BOARDS * POINTS_PER_BOARD * 2;
+const int totalPawns = N_PLAYERS * PAWNS_PER_PLAYER;
 
 #endif //BACKGAMMONGAME_GAMECONFIGS_H
