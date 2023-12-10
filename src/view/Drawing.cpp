@@ -9,6 +9,12 @@
 #include "../model/Board.h"
 #include "Drawing.h"
 
+// PRIVATE FUNCTION HEADERS //
+
+// PUBLIC FUNCTION DECLARATIONS //
+
+// PRIVATE FUNCTION DECLARATIONS //
+
 void printColor(UiColorsId color, int x, int y, const char *text) {
 	attron(COLOR_PAIR(color));
 	mvprintw(y, x, "%s", text);

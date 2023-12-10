@@ -10,6 +10,12 @@
 #include "SerializeToFile.h"
 
 
+// PRIVATE FUNCTION HEADERS //
+
+// PUBLIC FUNCTION DECLARATIONS //
+
+// PRIVATE FUNCTION DECLARATIONS //
+
 void changePlayers(Board &game) {
 	game.currentPlayerId = getOpponent(game, game.currentPlayerId)->id;
 }

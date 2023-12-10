@@ -9,6 +9,11 @@
 #include "../viewModel/InputControll.h"
 #include "../model/SerializeToFile.h"
 
+// PRIVATE FUNCTION HEADERS //
+
+// PUBLIC FUNCTION DECLARATIONS //
+
+// PRIVATE FUNCTION DECLARATIONS //
 
 Placement initMenuSpace(Pos center, MenuElement values[], int nElements) {
 	uint realLen = OPTION_SPACING * (nElements - 1);

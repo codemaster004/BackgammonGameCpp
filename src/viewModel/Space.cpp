@@ -5,6 +5,11 @@
 #include "Space.h"
 #include "../configs/UIConfigs.h"
 
+// PRIVATE FUNCTION HEADERS //
+
+// PUBLIC FUNCTION DECLARATIONS //
+
+// PRIVATE FUNCTION DECLARATIONS //
 
 Placement initGameSpace() {
 	Placement space{.min={OFFSET_X, OFFSET_Y}};

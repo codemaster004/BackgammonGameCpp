@@ -6,6 +6,12 @@
 
 #include "Utility.h"
 
+// PRIVATE FUNCTION HEADERS //
+
+// PUBLIC FUNCTION DECLARATIONS //
+
+// PRIVATE FUNCTION DECLARATIONS //
+
 char *reverseString(const char *str) {
 	unsigned long length = std::strlen(str);
 	char *reversed = new char[length + 1];

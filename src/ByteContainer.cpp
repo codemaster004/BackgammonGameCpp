@@ -4,6 +4,11 @@
 
 #include "ByteContainer.h"
 
+// PRIVATE FUNCTION HEADERS //
+
+// PUBLIC FUNCTION DECLARATIONS //
+
+// PRIVATE FUNCTION DECLARATIONS //
 
 void initByteContainer(ByteContainer &self, int size, int partitionSize)  {
 	self.partitionSize = partitionSize;

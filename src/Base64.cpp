@@ -2,11 +2,13 @@
 // Created by Filip Dabkowski on 26/11/2023.
 //
 
-#include "cstring"
-#include "cstdint"
-
 #include "Base64.h"
 
+// PRIVATE FUNCTION HEADERS //
+
+// PUBLIC FUNCTION DECLARATIONS //
+
+// PRIVATE FUNCTION DECLARATIONS //
 
 int createBitMask(int numberOfUpBits, int rightOffset) {
 	return ((1 << numberOfUpBits) - 1) << rightOffset;

@@ -10,6 +10,12 @@
 #include "Player.h"
 #include "Pawn.h"
 
+// PRIVATE FUNCTION HEADERS //
+
+// PUBLIC FUNCTION DECLARATIONS //
+
+// PRIVATE FUNCTION DECLARATIONS //
+
 bool removingFromBar(Board &game, Move move) {
 	if (hasPawnsOnBar(game.bar, game.currentPlayerId)) {
 		return move.from == nPoints;

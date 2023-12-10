@@ -11,6 +11,11 @@
 #include "InputControll.h"
 #include "../model/SerializeToFile.h"
 
+// PRIVATE FUNCTION HEADERS //
+
+// PUBLIC FUNCTION DECLARATIONS //
+
+// PRIVATE FUNCTION DECLARATIONS //
 
 void gameSetUp(Board &game) {
 	game.currentPlayerId = game.players[rand() % N_PLAYERS].id;
